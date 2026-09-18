@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/context';
 import { authColors } from '@/components/auth-ui';
 
 export default function PrivateLayout() {
-  const { state } = useAuth();
+  const { state, diaryScope } = useAuth();
   if (state.status === 'bootstrapping') {
     return (
       <View style={styles.loading}>
@@ -17,7 +17,10 @@ export default function PrivateLayout() {
   if (state.status !== 'signed-in' && !(state.status === 'recoverable-error' && state.user)) {
     return <Redirect href="/" />;
   }
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <Stack key={diaryScope?.ownerId} screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="(tabs)" />
+    <Stack.Screen name="diaries/[id]" options={{ headerShown: true, title: 'Diary', headerStyle: { backgroundColor: authColors.surface }, headerTintColor: authColors.ink }} />
+  </Stack>;
 }
 
 const styles = StyleSheet.create({

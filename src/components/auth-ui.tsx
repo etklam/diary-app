@@ -1,8 +1,8 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type PressableProps } from 'react-native';
 
 export const authColors = {
-  canvas: '#F4F1EA', surface: '#FFFCF6', ink: '#17221E', muted: '#63706A', border: '#D7D0C3',
-  action: '#173F35', actionPressed: '#0F3028', onAction: '#FFFFFF',
+  canvas: '#F4F4F5', surface: '#FFFFFF', ink: '#202124', muted: '#60636A', border: '#DADCE0',
+  action: '#343740', actionPressed: '#202228', onAction: '#FFFFFF',
   warningBackground: '#FFF1D6', warningText: '#76511A', errorBackground: '#FCE8E6', errorText: '#8B2C24',
 } as const;
 

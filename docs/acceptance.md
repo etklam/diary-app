@@ -49,3 +49,7 @@ The first native attempt under Android Studio's JDK 25 failed during React Nativ
 | Safe area and 1.3 font scale | Set Android font scale to 1.3 and complete login | PASS; controls remained reachable; scale reset to 1.0 afterward | `docs/evidence/p0/font-scale-login.png` |
 
 All screenshots contain only synthetic identities and no passwords, token values, real diary content, or private user data. The detailed runtime sequence is recorded in `docs/evidence/p0/runtime-results.md`.
+
+## Subsequent P1A acceptance
+
+The P0 record above is retained unchanged. Product shell, read-only Timeline and Diary Detail acceptance is recorded separately in [P1A acceptance](evidence/p1a/acceptance.md), with its own baseline, commands, synthetic screenshots and verification limits.

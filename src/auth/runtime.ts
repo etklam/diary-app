@@ -43,7 +43,7 @@ export function createAuthRuntime(
   config: ApiConfig,
   storage: NativeSessionStorage,
   transport?: typeof globalThis.fetch,
-): AuthRuntime {
+): AuthRuntime & { api: ReturnType<typeof createApiClient> } {
   const fetchWithTimeout = createTimeoutFetch(transport ?? globalThis.fetch);
   const nativeSession = createNativeSession({
     baseUrl: config.baseUrl,
@@ -53,6 +53,7 @@ export function createAuthRuntime(
   const api = createApiClient({ baseUrl: config.baseUrl, fetch: nativeSession.fetch });
 
   return {
+    api,
     login: nativeSession.login,
     logout: nativeSession.logout,
     async verifyCurrentUser() {

@@ -11,21 +11,21 @@ export default function AccountScreen() {
   if (!user) return <Redirect href="/" />;
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView edges={['left', 'right']} style={styles.page}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.heading}>
-          <Text style={styles.eyebrow}>PROTECTED ACCOUNT</Text>
-          <Text style={styles.title}>Session verified</Text>
-          <Text testID="auth-status" style={styles.subtitle}>Authenticated with GET /api/auth/me</Text>
+          <Text style={styles.eyebrow}>TRADE BASIC</Text>
+          <Text style={styles.title}>Account</Text>
+          <Text testID="auth-status" style={styles.subtitle}>Your account and session</Text>
         </View>
         {state.status === 'recoverable-error' ? (
           <View style={styles.warningBlock}>
-            <StatusMessage tone="warning">The latest session check could not reach the API. Your verified account and token pair were kept.</StatusMessage>
+            <StatusMessage tone="warning">We could not check your connection. Your account is still signed in on this device.</StatusMessage>
             <PrimaryButton testID="retry-session" label="Retry verification" onPress={() => void retryVerification()} />
           </View>
         ) : null}
         <View style={styles.card}>
-          <Text style={styles.label}>Verified email</Text>
+          <Text style={styles.label}>Email</Text>
           <Text testID="verified-email" selectable style={styles.value}>{user.email}</Text>
           <View style={styles.rule} />
           <Text style={styles.label}>Account role</Text>

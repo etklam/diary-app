@@ -31,7 +31,7 @@ export default function LoginScreen() {
   }, []);
 
   if (state.status === 'signed-in' || (state.status === 'recoverable-error' && state.user)) {
-    return <Redirect href="/account" />;
+    return <Redirect href="/timeline" />;
   }
 
   const busy = state.status === 'bootstrapping';
@@ -47,9 +47,9 @@ export default function LoginScreen() {
         style={styles.flex}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.heading}>
-            <Text style={styles.eyebrow}>DIARY</Text>
+            <Text style={styles.eyebrow}>TRADE BASIC</Text>
             <Text style={styles.title}>Sign in</Text>
-            <Text style={styles.subtitle}>Use an account from the configured diary test API.</Text>
+            <Text style={styles.subtitle}>Your trading journal, ready when you are.</Text>
           </View>
 
           {state.status === 'configuration-error' ? (

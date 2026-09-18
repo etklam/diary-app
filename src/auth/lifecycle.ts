@@ -137,7 +137,9 @@ export function createAuthLifecycle(options: {
       if (!stored) {
         if (expected === operation) {
           setOwner(null);
-          emit({ status: 'signed-out' });
+          emit(previousUser
+            ? { status: 'session-invalid', issue: 'session-invalid' }
+            : { status: 'signed-out' });
         }
         return;
       }
