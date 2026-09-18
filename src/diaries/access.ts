@@ -18,6 +18,8 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
   let owner: string | null = null;
   let generation = 0;
   const listeners = new Set<() => void>();
+  let mutation = 0;
+  const mutationListeners = new Set<() => void>();
   let scope: {
     ownerId: string;
     isCurrent(): boolean;
@@ -74,6 +76,13 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
   const unsubscribe = lifecycle.subscribe(update);
   update();
   return {
+    getMutation: () => mutation,
+    subscribeMutations: (listener: () => void) => { mutationListeners.add(listener); return () => { mutationListeners.delete(listener); }; },
+    changed(expected: NonNullable<typeof scope>) {
+      if (scope !== expected || !expected.isCurrent()) return;
+      ++mutation;
+      mutationListeners.forEach(listener => listener());
+    },
     getScope: () => scope,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     dispose: () => { unsubscribe(); ++generation; scope = null; listeners.forEach(listener => listener()); },

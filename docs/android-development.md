@@ -38,6 +38,10 @@ adb -s <serial> shell monkey -p com.etklam.diaryapp -c android.intent.category.L
 
 ## API routing and fault testing
 
+P1B adds `expo-sqlite` with SQLCipher, an encrypted database key in SecureStore, backup exclusions, and a config plugin marking explicitly single-attempt mutation bodies as OkHttp `isOneShot`. Android otherwise may resend a POST after connection loss independently of JavaScript. These changes require a new APK; Metro alone cannot update them. Preserve CNG: regenerate through the config plugins, never hand-edit `android/`.
+
+P1B's successful build used the same JDK 17 / API 36 toolchain, project NDK `27.1.12297006`, plus SQLite's requested NDK `27.0.12077973`. The latter's Gradle download stalled on this host; installing that exact official NDK separately allowed the build to finish. Development startup prints only the SQLCipher version after the key and database checks succeed. It never prints the key or draft content.
+
 An AVD maps `10.0.2.2` to host loopback. Other VM products use different host routes; configure the route actually reachable from the selected VM.
 
 `scripts/test-network-proxy.mjs` is an optional local TCP pass-through used only to interrupt transport during acceptance. It implements no API, auth, token, or application behavior. Start the real authorized API on port 3201, the proxy on 3101, and point the app at `http://10.0.2.2:3101`. Stop and restart only the proxy to test loss and recovery without destroying server-side sessions.
@@ -52,3 +56,5 @@ adb -s <serial> shell dumpsys activity activities
 ```
 
 If host curl succeeds but the app fails, check VM host routing, the service bind address, and Windows firewall. A host curl alone does not pass Android acceptance.
+
+For P1B use `DIARY_DISPOSABLE_TEST_ENV=1 node scripts/test-write-proxy.mjs` instead of the TCP proxy (both use port 3101). This local-only HTTP proxy forwards to port 3201 and exposes non-secret counters on `http://127.0.0.1:3102`. `/?mode=drop` consumes a committed response before dropping the connection; `hold` keeps it pending for process-death testing; `offline` disconnects before forwarding; `http401` and `http503` return synthetic mutation failures (503 includes `Retry-After: 0`). `normal` releases held responses by closing them. GET reconciliation always forwards except in offline mode. Nothing logs credentials or bodies. Never point this harness at production.

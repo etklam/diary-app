@@ -16,6 +16,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: './assets/expo.icon',
   },
   android: {
+    allowBackup: false,
     package: 'com.etklam.diaryapp',
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
@@ -34,7 +35,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#173F35',
+        backgroundColor: '#343740',
         image: './assets/images/splash-icon.png',
         imageWidth: 76,
       },
@@ -42,7 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-secure-store',
       {
-        configureAndroidBackup: true,
+        configureAndroidBackup: false,
       },
     ],
     [
@@ -53,6 +54,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    ['expo-sqlite', { useSQLCipher: true }],
+    './plugins/with-draft-backup.cjs',
+    './plugins/with-single-attempt-writes.cjs',
   ],
   experiments: {
     typedRoutes: true,

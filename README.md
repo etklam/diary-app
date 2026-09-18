@@ -1,6 +1,6 @@
 # diary-app
 
-`diary-app` is a standalone Expo SDK 57 Android client for the existing diary-v3 API. The current P0 scope is native login, authenticated `GET /api/auth/me`, secure session restore, and logout.
+`diary-app` is a standalone Expo SDK 57 Android client for the existing diary-v3 API. Trade Basic includes native authentication, Timeline, read-only Diary Detail, and Quick Diary with encrypted durable drafts and explicit create/append saves.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ npm run doctor
 npm run android:build
 ```
 
-`android:build` runs `expo run:android`, which generates the ignored native project, builds and installs the development client, starts Metro, and launches the app. For an installed binary, start Metro with `npm run start:dev-client` and launch the `diary-app` development client from Android. Expo Go is not the P0 native acceptance target.
+`android:build` runs `expo run:android`, which generates the ignored native project, builds and installs the development client, starts Metro, and launches the app. P1B requires a new native binary for SQLCipher and single-attempt HTTP writes. If an older generated `android/` directory exists, regenerate it first with `$env:APP_VARIANT='development'; npx expo prebuild --platform android --no-install`. For an installed P1B binary, start Metro with `npm run start:dev-client`. Expo Go is not an acceptance target.
 
 Run local checks with `npm run verify`.
 
@@ -31,4 +31,4 @@ $env:DIARY_TEST_PASSWORD = '<synthetic password>'
 npm run test:api
 ```
 
-See [Android development](docs/android-development.md), [shared packages](docs/shared-packages.md), and [P0 acceptance](docs/acceptance.md) for reproducible details.
+See [Android development](docs/android-development.md), [shared packages](docs/shared-packages.md), [P0 acceptance](docs/acceptance.md), [P1A acceptance](docs/evidence/p1a/acceptance.md), and [P1B acceptance](docs/evidence/p1b/acceptance.md) for reproducible details.

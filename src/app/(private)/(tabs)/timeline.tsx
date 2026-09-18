@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,9 +15,16 @@ export default function TimelineScreen() {
 }
 
 function Timeline({ scope }: { scope: DiaryReadScope }) {
+  const { diaryMutation, beginQuick } = useAuth();
+  const observed = useRef(diaryMutation);
   const model = useMemo(() => createTimelineState(scope), [scope]);
   const state = useSyncExternalStore(model.subscribe, model.getSnapshot);
   useEffect(() => { void model.load(); return model.cancel; }, [model]);
+  useEffect(() => {
+    if (observed.current === diaryMutation) return;
+    observed.current = diaryMutation;
+    void model.refresh();
+  }, [diaryMutation, model]);
   if (!scope.isCurrent()) return null;
   return <SafeAreaView edges={['left', 'right']} style={styles.page}>
     <FlatList
@@ -27,8 +34,9 @@ function Timeline({ scope }: { scope: DiaryReadScope }) {
       contentContainerStyle={styles.content}
       refreshing={state.phase === 'refresh'}
       onRefresh={() => void model.refresh()}
-      ListHeaderComponent={<View>
+      ListHeaderComponent={<View style={{ gap: 12 }}>
         <Text style={styles.heading}>Timeline</Text>
+        <PrimaryButton label="+ Quick Diary" onPress={() => { beginQuick(); router.push('/diaries/quick'); }} />
         {state.issue && state.failed !== 'more' && <ReadFailure issue={state.issue} retry={() => void model.retry()} />}
       </View>}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
