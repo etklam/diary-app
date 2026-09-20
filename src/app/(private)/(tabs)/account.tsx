@@ -35,7 +35,7 @@ export default function AccountScreen() {
           <Text style={styles.label}>Timezone</Text>
           <Text style={styles.value}>{user.timezone}</Text>
         </View>
-        <HelpButton screen="account" />
+        <HelpButton screen="account" code={state.status === 'recoverable-error' ? state.issue : undefined} />
         <PrimaryButton testID="logout-button" label="Log out" onPress={() => void logout()} />
       </ScrollView>
     </SafeAreaView>

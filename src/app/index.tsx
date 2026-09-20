@@ -80,7 +80,7 @@ export default function LoginScreen() {
             </View>
           ) : null}
 
-          <HelpButton screen="login" label="取得帳號／登入協助 · Beta／Help" />
+          <HelpButton screen="login" code={'issue' in state ? state.issue : state.status === 'configuration-error' ? 'configuration-error' : undefined} label="取得帳號／登入協助 · Beta／Help" />
           <View style={styles.form}>
             <View style={styles.field}>
               <Text style={styles.label}>Email</Text>

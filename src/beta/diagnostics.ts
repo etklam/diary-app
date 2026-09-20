@@ -1,6 +1,6 @@
 export const screens = ['login', 'account', 'diary-read', 'quick', 'review-editor', 'root', 'help'] as const;
 export type SupportScreen = typeof screens[number];
-const codes = new Set(['AUTH_UNAUTHORIZED', 'AUTH_LOGIN_INVALID_CREDENTIALS', 'DIARY_NOT_FOUND', 'DIARY_ALREADY_EXISTS', 'SYS_VALIDATION_ERROR', 'SERVICE_UNAVAILABLE', 'network', 'server', 'storage', 'validation', 'session', 'conflict', 'invalid-response', 'not-found', 'connection', 'RENDER_ERROR', 'UNKNOWN_WRITE']);
+const codes = new Set(['AUTH_UNAUTHORIZED', 'AUTH_LOGIN_INVALID_CREDENTIALS', 'DIARY_NOT_FOUND', 'DIARY_ALREADY_EXISTS', 'SYS_VALIDATION_ERROR', 'SERVICE_UNAVAILABLE', 'network', 'server', 'storage', 'validation', 'session', 'conflict', 'invalid-response', 'not-found', 'connection', 'invalid-credentials', 'logout-unconfirmed', 'session-invalid', 'configuration-error', 'RENDER_ERROR', 'UNKNOWN_WRITE']);
 export function safeFailure(input: { code?: unknown; requestId?: unknown }) {
   return {
     code: typeof input.code === 'string' && codes.has(input.code) ? input.code : 'unavailable',

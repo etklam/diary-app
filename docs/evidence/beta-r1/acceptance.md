@@ -5,7 +5,7 @@
 ## Baseline and implementation
 
 * Actual starting branch `main`, clean working tree, HEAD `06a56c338f94d441675225fc7ea62478a24bf6b8` (`chore: ignore .idea directory`). No newer local commit at inspection. Latest feature ancestor: `98cf7a4e7903272b9a50583264735377e1cc25d6`.
-* Implementation reference: the Beta-R1 commit containing this record (`git log --format=%H -- docs/evidence/beta-r1/acceptance.md`). Final delivery identifies the commit; no artifact is attributed to the starting commit.
+* Implementation commit: `585f98d6f67660672e662c83a26f08747c164979` (`feat: prepare standalone Android beta packaging and tester support`), followed by the final safe auth-diagnostic/evidence commit identified in delivery (`git log --format=%H -- docs/evidence/beta-r1/acceptance.md`). No artifact is attributed to the starting commit.
 * Read AGENTS/CLAUDE, README, development/Android/shared-package docs, P1C-1/P1C-2A evidence, config/wrapper/CI and existing auth, access, draft managers and native plugins. Read [versioned Expo 57 docs](https://docs.expo.dev/versions/v57.0.0/) before code changes.
 * Shared artifacts/source provenance `7e3a39ad5c4900f88d9d8193b7077610d48f9418` unchanged. Expo 57.0.24, React Native 0.86.3 and existing networking stack unchanged. Added SDK-compatible `expo-application ~57.0.3` solely for native installed version/build; lockfile adds that package only. A new native binary is required for this module.
 * Previous 129-test and development-VM records are historical, not verification of Beta-R1. No previous acceptance files were rewritten.
@@ -40,7 +40,7 @@ Correction: tracked `src/types/platform.d.ts` contains only an English explanati
 
 ## Commands and actual results
 
-Windows/PowerShell, Node 24. Clean worktree dependency installation was independent, not copied. Final source-only sync never copied local Expo/native/dependency state.
+Windows/PowerShell, Node 24. Clean worktree dependency installation was independent, not copied. After committing the implementation, also created `../diary-app-beta-r1-final` directly from `585f98d6f67660672e662c83a26f08747c164979`: fresh `npm ci`, an explicit absence check for `.expo`/`expo-env.d.ts`/`android`, and the full check sequence below all passed. The final four-file auth-diagnostic adjustment was copied as source only and typecheck/lint/tests/export repeated; no local Expo/native/dependency state was copied.
 
 | Command / check | Actual result |
 | --- | --- |
@@ -51,8 +51,8 @@ Windows/PowerShell, Node 24. Clean worktree dependency installation was independ
 | `npm run doctor` | PASS, 21/21 |
 | `npm run lint` | PASS |
 | `npm run typecheck` | PASS before Expo generation |
-| `npm test` | Initial clean candidate: 164 PASS / 2 opt-in API tests skipped; final source: 166 PASS / 2 opt-in tests skipped after extra owner-metadata tests |
-| `npm run android:bundle` | PASS, 1,442 modules, 27 assets, one Hermes bundle; host development-profile export only |
+| `npm test` | Final clean candidate: **166 PASS / 2 opt-in API tests skipped**; the opt-in tests separately pass below. Earlier clean iteration: 164 PASS before extra owner-metadata tests |
+| `npm run android:bundle` | PASS, final clean candidate 1,445 modules, 27 assets, one Hermes bundle; host development-profile export only |
 | `git diff --check` | PASS |
 | `release:validate`, `android:preview:local`, `android:preview:eas` with matching preview selectors but no approved API | All correctly exit 1: `A hosted HTTPS origin is required.` |
 | APK audit against existing developer APK | Correct rejection: `Not the stable preview application ID` |

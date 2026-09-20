@@ -22,6 +22,7 @@ describe('privacy-safe beta help', () => {
     expect(summary).not.toContain(privateText); expect(summary).not.toContain('9223372036854775806');
     expect(summary).not.toContain('123'); expect(summary).toContain('Screen: help');
     expect(safeFailure({ code: 'UNKNOWN_WRITE', requestId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' })).toEqual({ code: 'UNKNOWN_WRITE', requestId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' });
+    expect(safeFailure({ code: 'invalid-credentials' }).code).toBe('invalid-credentials');
   });
   it('uses actual native installed version and build, not JS manifest identity', async () => {
     const { installedInfo, currentDiagnostic, supportConfig } = await import('../../src/beta/runtime');
