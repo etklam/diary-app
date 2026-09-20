@@ -12,7 +12,7 @@ The first closed Android beta now freezes the implemented product scope. **Beta-
 
 `npm run android:preview:eas` and `npm run android:preview:local` are separate from the development wrapper. Both require approved preview configuration; the local path additionally requires authorized signing material and a fresh committed checkout without `android/`. The preview identity is `com.etklam.diaryapp.preview` / **Trade Basic Beta**, with explicit monotonically increasing versionCode. Do not reuse a debug APK, uninstall to resolve a signing conflict, or expect developer-app drafts to migrate. `expo-application` adds native installed version/build reporting and requires a rebuilt binary. Existing SDK/network/shared-package versions and draft/session namespaces are unchanged.
 
-**Beta-R2** is next: validate the actual signed candidate on real devices, with Metro stopped, HTTPS backend/fault tests, install-over preservation and blocking fixes. P1C-2B and additional product modules are deferred until beta feedback. No invitation or public release is authorized by this phase.
+**Beta-R2** was attempted as a continuous build-and-acceptance task and remains **BLOCKED**: fresh clean host checks and five disposable API smokes pass, but approved release configuration/signing, a signed APK, physical-device coverage and verified delivery are still unavailable. See [Beta-R2 evidence and exact prerequisites](docs/evidence/beta-r2/acceptance.md). P1C-2B and additional product modules remain deferred until beta feedback. No invitation or public release is authorized by this work.
 
 - Node.js 22.13 or newer; the recorded P0 build uses Node 24
 - npm and a clean `npm ci`

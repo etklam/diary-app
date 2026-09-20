@@ -1,6 +1,6 @@
 # Closed Android beta release runbook
 
-Beta-R1 prepares a candidate for Beta-R2. It does **not** authorize invitations or public publication. First cohort: approximately 5–10 individually approved testers. See [current evidence](../evidence/beta-r1/acceptance.md); no signed preview artifact is available from that run.
+Beta-R1 packaging is implemented. The continuous Phase 1 build / Phase 2 acceptance attempt is **BLOCKED**; see [current Beta-R2 evidence](../evidence/beta-r2/acceptance.md) for fresh host/API results and the consolidated operator-input list. No signed preview artifact or verified download entry exists. First cohort remains approximately 5–10 individually approved testers. This work does not authorize invitations or public publication.
 
 ## Operator decisions required before packaging
 
@@ -69,6 +69,18 @@ Before invitations, Beta-R2 must use that exact artifact:
 * Short first-run guidance and dismiss/reopen; keyboard/native Back; narrow width and font scale 1.3; reach all recovery actions; inspect/copy/share a diagnostic through the real support destination.
 * Verify SQLCipher fail-closed opening, SecureStore and backup exclusions in this release binary. Exercise single-attempt POST and PATCH response loss/delayed writes in an isolated **HTTPS** fault setup. Do not enable cleartext, bypass certificate verification or reuse the HTTP developer proxy as release evidence.
 * Install a higher-version candidate over an existing beta with a session and drafts; verify they survive. Broader real-device/upgrade coverage belongs to Beta-R2.
+
+Run these gates as one continuous release task, not a new product phase. Target two physical devices with different manufacturers or OS versions; record model, OS, ABI and exact APK hash. An emulator is a separate layer. Simultaneously prepare one nonempty Quick draft and Review drafts for two diaries, then compare dates, outcomes and multiline fields exactly after force-stop. Keep unknown-attempt restoration as a separate scenario. Verify expiry, cancel/discard logout, A → B → A and late callbacks without exposing another owner's writing. Host repository tests are not native SQLCipher evidence.
+
+If no earlier signed preview exists, use the authorized identity for a controlled N → N+1 pair, increasing versionCode while keeping environment, origin and storage namespaces unchanged. Prepare a session, Quick and multiple Review drafts, plus a separate unresolved-attempt scenario before installing over N. Check native version, existing key/database readability, unchanged writing, no automatic mutation and normal operations afterwards. A same-source pair proves install-over continuity only, not schema migration.
+
+Release HTTPS faults must cover both POST and PATCH before dispatch, commit with lost/replaced response, delayed original request after an unchanged read, retryable response, auth rejection and process death while unknown. Observe received/forwarded/commit counts per case. Prefer isolated authorized ingress with unchanged candidate bytes; a separate test-origin APK must have its own hash/evidence and cannot stand in for the distributable. Do not weaken TLS or add test-control endpoints to the app.
+
+## Private delivery gate
+
+Use an existing authorized EAS internal route or owner-approved transfer mechanism. Record actual link-access behavior: possession of an unlisted URL may grant download access; it does not prove authenticated private access. Download as an intended tester can and compare SHA-256 with the audited APK. An installation link never grants individual API access. Without a hosting authorization, hand the actual signed artifact to the owner for controlled transfer and leave the transfer gate outstanding; a developer-local path is not a tester download.
+
+The handoff must name the actual account provisioning/recovery process and support destination, confirmed data notice, version/build/checksum, and tested Android devices. Use the existing [繁體中文指南](tester-guide.md) for six short tasks and sanitized feedback. Do not distribute its current blocked version as if these missing operational details had been verified. Pause distribution on a blocking report; preserve installations and issue only a corrective higher-version build under the same certificate after retesting.
 
 ## Host and disposable checks
 

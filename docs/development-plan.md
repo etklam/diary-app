@@ -71,13 +71,15 @@ Product scope is frozen at the existing authentication, Quick Diary/encrypted dr
 | Clean-checkout Expo ambient type initialization | VERIFIED (host) | Original two CSS type errors reproduced without generated Expo state; installed `expo/types` reference fixes them; clean typecheck/tests/export pass |
 | Standalone preview profiles, HTTPS/config validation, stable separate identity and signing guard | IMPLEMENTED | Separate EAS/local Gradle paths; regression tests; missing approved deployment/signing blocks a candidate artifact |
 | First-use guidance, About/Help, explicit privacy-safe reporting and rendering recovery | IMPLEMENTED | Unit tests and limited development-VM Help evidence; actual standalone behavior pending |
-| Signed APK, hosted HTTPS standalone acceptance and invitation readiness | NOT VERIFIED / BLOCKED | No approved API/support/data policy or authorized EAS/release signing configuration; no preview artifact or successful hosted CI observed |
+| Signed APK, hosted HTTPS standalone acceptance and invitation readiness | NOT VERIFIED / BLOCKED | No approved API/support/data policy or authorized release signing configuration; no preview artifact. Baseline hosted CI success now re-observed in Beta-R2; it is not native acceptance |
 
 See the [operator runbook](beta/release-runbook.md) and [Traditional Chinese tester guide](beta/tester-guide.md). Beta-R1 is not authorization to invite testers or publish publicly.
 
-## Beta-R2 — Real-device candidate acceptance and blocking fixes: PLANNED
+## Beta-R2 — Real-device candidate acceptance and blocking fixes: BLOCKED
 
-Smallest next phase: supply the missing approved operator settings, build/audit a signed preview candidate, then validate standalone launch without Metro, hosted HTTPS auth/writes, force-stop/session/draft recovery, support, narrow/large-font UI and install-over preservation on real devices. Verify native single-attempt POST/PATCH using release-compatible HTTPS faults. Fix blockers before the first 5–10 individually approved testers. Do not expand features while completing candidate acceptance.
+2026-09-21 continuous Phase 1 / Phase 2 execution is recorded in [Beta-R2 acceptance](evidence/beta-r2/acceptance.md). Clean npm ci and typecheck before generation, dependencies, doctor 21/21, lint, 166 host tests, Android export and all five disposable API smokes passed. The old CSS problem did not recur. Hosted CI 35523669847 was re-observed successful for unchanged App source 940f4dd; subsequent documentation commit CI is not claimed.
+
+Release validation and the local preview build both exit 1 at missing approved HTTPS configuration. No signed candidate exists. Operator deployment/support/data-policy approval, stable signing/version history, individual-account process, isolated HTTPS fault ingress and delivery route remain missing; device discovery found only an Android 16 x86_64 emulator, no physical devices. Exact input/security instructions and blocked artifact/core-flow/draft/owner/install-over/fault/download gates are in the evidence record. Host results do not satisfy them. No new product phase is introduced; complete these same two phases once their external prerequisites are available. No invitations or public distribution occurred.
 
 ## P1C-2B — Rescheduling and return-to-queue: PLANNED, DEFERRED UNTIL BETA FEEDBACK
 
