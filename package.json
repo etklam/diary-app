@@ -60,6 +60,7 @@
     "test:api": "node ./scripts/auth-api-smoke.mjs",
     "test:api:reads": "node ./scripts/diary-read-api-smoke.mjs",
     "test:api:quick": "vitest run tests/api/quick-api.test.ts",
+    "test:api:discovery": "node ./scripts/discovery-api-smoke.mjs",
     "test:network-proxy": "node ./scripts/test-network-proxy.mjs",
     "dependencies:check": "expo install --check",
     "doctor": "npx expo-doctor",

@@ -1,6 +1,10 @@
 # diary-app
 
-`diary-app` is a standalone Expo SDK 57 Android client for the existing diary-v3 API. Trade Basic includes native authentication, Timeline, read-only Diary Detail, and Quick Diary with encrypted durable drafts and explicit create/append saves.
+`diary-app` is a standalone Expo SDK 57 Android client for the existing diary-v3 API. Trade Basic includes native authentication, searchable Timeline, monthly Calendar, read-only diary Review Queue and Detail, and Quick Diary with encrypted durable drafts and explicit create/append saves.
+
+Timeline searches bounded server summaries with symbol, date range, review status and date sorting. Calendar reads month activity independently of Timeline and can initialize a new Quick Diary for an empty day; existing drafts are offered for resumption without changing their date. Review uses server groups/counts and a shared page cursor, with no review mutations. Discovery data stays in memory and native Back preserves each screen's context.
+
+Unknown write outcomes remain locked for read-only checking, including gateway errors and an unchanged reconciliation read. Only documented application rejections that guarantee no mutation unlock editing. Discard on explicit logout abandons the local attempt; it does not prove the server did not save it. There is no automatic replay or global exactly-once guarantee.
 
 ## Prerequisites
 
@@ -32,3 +36,7 @@ npm run test:api
 ```
 
 See [Android development](docs/android-development.md), [shared packages](docs/shared-packages.md), [P0 acceptance](docs/acceptance.md), [P1A acceptance](docs/evidence/p1a/acceptance.md), and [P1B acceptance](docs/evidence/p1b/acceptance.md) for reproducible details.
+
+P1C-1 implementation and fresh verification are recorded in [P1C-1 acceptance](docs/evidence/p1c-1/acceptance.md). P1C-2 review authoring/mutations and full diary editing remain planned. Historical P1B evidence is not the current write-safety contract.
+
+The opt-in `npm run test:api:discovery` requires `DIARY_DISPOSABLE_TEST_ENV=1`, a local `DIARY_API_BASE_URL`, and `DIARY_TEST_DATABASE_URL` naming the uniquely provisioned `diary_v3_e2e_<uuid>` database from diary-v3's existing test harness. `DIARY_V3_DIR` optionally locates that checkout's fixture toolchain (default `../diary-v3`). It creates synthetic A/B accounts and 33 diaries, uses bound disposable SQL fixtures for review buckets, and cleans its diaries. Accounts are removed when the disposable database is disposed. Never use production or a persistent development database. See the evidence record for the fault-proxy regression gate and optional retained VM fixtures.

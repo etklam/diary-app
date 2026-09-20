@@ -95,6 +95,31 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
         restored.invalidate();
       }
       expect(a.changed).toHaveBeenCalledTimes(2);
+      if (process.env.DIARY_FAULT_PROXY === '1') {
+        const control = async (mode?: string) => (await fetch(`http://127.0.0.1:3102/${mode ? `?mode=${mode}` : ''}`)).json();
+        for (const mode of ['committed502', 'committed503', 'committed504', 'delayed']) {
+          await control('normal');
+          const model = controller(); await model.start();
+          model.edit({ date: body.date, mode: 'append', content: `Synthetic gate ${mode}` });
+          const before = await control(mode);
+          await model.save();
+          expect(model.getSnapshot().draft.writeState).toBe('uncertain');
+          expect((await repo.load(baseUrl, a.ownerId))?.attempt).not.toBeNull();
+          await model.save();
+          if (mode === 'delayed') {
+            await model.checkResult(); expect(model.getSnapshot().recovery).toBe('pending');
+            await model.save(); expect((await control()).posts).toBe(before.posts + 1);
+            await control('release');
+            await vi.waitFor(async () => expect((await control()).commits).toBe(before.commits + 1));
+          }
+          await model.checkResult(); expect(model.getSnapshot().recovery).toBe('applied');
+          const after = await control(); expect(after.posts).toBe(before.posts + 1); expect(after.commits).toBe(before.commits + 1);
+          expect((await a.quick.byDate(body.date))?.content?.split(`Synthetic gate ${mode}`)).toHaveLength(2);
+          model.invalidate();
+        }
+        await control('normal');
+        console.log('P1C safety gate: committed non-JSON 502/503/504 and delayed commit after unchanged reconciliation; one POST each: PASS');
+      }
       if (process.env.DIARY_KEEP_VM_ACCOUNTS === '1') {
         await mkdir('.expo', { recursive: true });
         await writeFile('.expo/p1b-fixtures.json', JSON.stringify({ a: registered[0], b: registered[1], ownerA: a.ownerId, ownerB: b.ownerId }));

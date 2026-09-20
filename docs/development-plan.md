@@ -38,9 +38,25 @@ Verified at the automated, real API, and Android API 36 VM layers in [P1B accept
 | Single-attempt transport at both session and Android HTTP layers | VERIFIED | 401, retryable 503 and committed response loss each send one POST |
 | Keyboard, long content, 1.3 font scale, reachable recovery controls | VERIFIED | Synthetic VM screenshots and exact 1,944-character restoration |
 
-## P1C — Search/Calendar/Review flows: PLANNED
+## P1C-1 — Diary discovery, Calendar, read-only Review Queue: IMPLEMENTED
 
-Search/filter UI, Calendar and Review flows remain outside P1B. Timeline only uses the default date-desc summary query. No P1C work has started.
+Fresh automated, disposable API and Android VM results are recorded in [P1C-1 acceptance](evidence/p1c-1/acceptance.md). The P0/P1A/P1B records above remain historical evidence at their documented layers; they are not reruns of this implementation.
+
+| Scope | Status | Evidence |
+| --- | --- | --- |
+| Focused P1B safety correction | IMPLEMENTED | Gateway/non-JSON failures retain attempts; unchanged reads remain pending, never authorize another Save; regression tests and fault proxy |
+| Server summary search and filters | IMPLEMENTED | Shared contracts, debounce, cancellation/generations, bounded pagination and server totals |
+| Civil monthly Calendar and selected-date Quick Diary | IMPLEMENTED | Independent activity range, unknown/error states, account-timezone today, protected existing drafts |
+| Read-only diary Review Queue | IMPLEMENTED | `target=diary`, server buckets/counts, shared page cursor, latest-50 completed limit |
+| Native navigation and post-save invalidation | IMPLEMENTED | Existing Detail stack, mounted read state, mutation generation shared across read surfaces |
+
+## P1C-2 — Review authoring and mutation workflows: PLANNED
+
+Create/edit review, complete review, reschedule and return to queue. Define write safety for those operations before implementing mutations. P1C-1 does not mark all P1C verified.
+
+## Remaining diary product work: PLANNED
+
+Full diary editing, delete workflows and templates remain unimplemented. No automatic uploads, persistent discovery cache, background synchronization or new idempotency protocol is included in P1C-1.
 
 ## P2 — Broader product/distribution: PLANNED
 

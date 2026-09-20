@@ -82,7 +82,7 @@ function Composer({ controller }: { controller: QuickController }) {
             <PrimaryButton label="Check saved diary" busy={state.busy} onPress={() => void controller.checkResult()} />
             {state.existingId && <PrimaryButton label="Open saved diary" onPress={() => router.push({ pathname: '/diaries/[id]', params: { id: state.existingId! } })} />}
           </View>}
-          {state.recovery === 'not-applied' && <Text style={styles.meta}>No change was found from this save. Your draft is ready; press Save if you want to try again.</Text>}
+          {state.recovery === 'pending' && <Text style={styles.meta}>No change is visible yet. The original request may still commit. Your attempt remains locked; check again later.</Text>}
         </>}
       </ScrollView>
       <View style={styles.footer}>

@@ -32,7 +32,7 @@ function sql(db: DatabaseSync): DraftDatabase {
     runAsync: async (query, ...params) => db.prepare(query).run(...params),
     getFirstAsync: async <T>(query: string, ...params: (string | number | null)[]) => (db.prepare(query).get(...params) as T | undefined) ?? null };
 }
-async function setup(overrides: Partial<QuickApi> = {}, saved?: QuickDraft) {
+async function setup(overrides: Partial<QuickApi> = {}, saved?: QuickDraft, pristine = false) {
   const db = new DatabaseSync(':memory:');
   const repo = await openDraftRepository(sql(db));
   if (saved) await repo.save(saved);
@@ -41,7 +41,7 @@ async function setup(overrides: Partial<QuickApi> = {}, saved?: QuickDraft) {
   const model = createQuickController({ scope: draft().scope, timezone: 'Asia/Taipei', api, repository: Promise.resolve(repo),
     now: () => new Date('2025-12-31T23:00:00Z'), attemptId: () => 'local-attempt' });
   controllers.push(model); await model.start();
-  if (!saved) model.edit({ title: 'Synthetic title', content: 'Synthetic content', tags: 'one', stockSymbols: 'syn' });
+  if (!saved && !pristine) model.edit({ title: 'Synthetic title', content: 'Synthetic content', tags: 'one', stockSymbols: 'syn' });
   return { db, repo, api, model };
 }
 
@@ -119,6 +119,39 @@ describe('encryption initialization fails closed', () => {
 });
 
 describe('Quick Diary write state machine', () => {
+  it('initializes only a pristine new draft from Calendar, never a restored draft or attempt', async () => {
+    const { model } = await setup();
+    expect(model.initializeDate('2024-02-29')).toBe(false);
+    model.edit({ title: '', content: '', tags: '', stockSymbols: '' });
+    expect(model.initializeDate('2024-02-29')).toBe(false);
+    const fresh = await setup({}, undefined, true);
+    expect(fresh.model.initializeDate('2024-02-29')).toBe(true);
+    expect(fresh.model.getSnapshot().draft.date).toBe('2024-02-29');
+    const restored = await setup({}, newDraft(draft().scope, '1', 'Asia/Taipei'));
+    expect(restored.model.initializeDate('2024-02-29')).toBe(false);
+    model.edit({ content: 'Synthetic' }); await model.save();
+    expect(model.initializeDate('2024-03-01')).toBe(false);
+  });
+  it.each([502, 503, 504])('retains the attempt when a committed append receives HTTP %i', async status => {
+    let server = diary();
+    const { model, api, repo } = await setup({ byDate: vi.fn(async () => server), write: vi.fn(async () => {
+      server = diary({ content: 'Synthetic content\n\n---\n\nSynthetic content' });
+      return { ok: false as const, status, code: null };
+    }) });
+    model.edit({ mode: 'append' }); await model.save();
+    expect((await repo.load(draft().scope, '1'))?.attempt).not.toBeNull();
+    await model.save(); expect(api.write).toHaveBeenCalledOnce();
+    await model.checkResult(); expect(model.getSnapshot().recovery).toBe('applied');
+  });
+  it('an unchanged read cannot unlock an append that commits later', async () => {
+    let server = diary();
+    const { model, api, repo } = await setup({ byDate: vi.fn(async () => server), write: vi.fn(async () => { throw new Error('timeout'); }) });
+    model.edit({ mode: 'append' }); await model.save(); await model.checkResult();
+    expect((await repo.load(draft().scope, '1'))?.attempt).not.toBeNull();
+    await model.save(); expect(api.write).toHaveBeenCalledOnce();
+    server = diary({ content: 'Synthetic content\n\n---\n\nSynthetic content' });
+    await model.checkResult(); expect(model.getSnapshot().recovery).toBe('applied');
+  });
   it('uses account timezone for today and shared title/canonical input helpers', () => {
     const instant = new Date('2026-01-01T01:00:00Z');
     expect(newDraft('scope', '1', 'America/Los_Angeles', instant).date).toBe('2025-12-31');
@@ -150,8 +183,9 @@ describe('Quick Diary write state machine', () => {
     await model.flush(); await model.save();
     expect(await repo.load(draft().scope, '1')).toBeNull(); expect(api.write).toHaveBeenCalledOnce();
   });
-  it.each([400, 401, 403, 409, 500])('received HTTP %i retains an editable draft without replay', async status => {
-    const { model, api, repo } = await setup({ write: vi.fn(async () => ({ ok: false as const, status, code: status === 409 ? 'DIARY_ALREADY_EXISTS' : null })) });
+  // P1B's status-only assumption was unsafe: only these documented rejection codes unlock editing.
+  it.each([401, 409])('documented application rejection %i retains an editable draft without replay', async status => {
+    const { model, api, repo } = await setup({ write: vi.fn(async () => ({ ok: false as const, status, code: status === 409 ? 'DIARY_ALREADY_EXISTS' : 'AUTH_UNAUTHORIZED' })) });
     await model.save();
     expect(api.write).toHaveBeenCalledOnce();
     expect(await repo.load(draft().scope, '1')).toMatchObject({ writeState: 'definitive-error', content: draft().content, attempt: null });
@@ -179,9 +213,9 @@ describe('Quick Diary write state machine', () => {
     await model.save(); expect(model.getSnapshot().draft.writeState).toBe('uncertain');
     await model.save(); expect(api.write).toHaveBeenCalledOnce();
     await model.checkResult(); expect(api.write).toHaveBeenCalledOnce();
-    expect(model.getSnapshot().recovery).toBe(committed ? 'applied' : 'not-applied');
+    expect(model.getSnapshot().recovery).toBe(committed ? 'applied' : 'pending');
     if (committed) expect(await repo.load(draft().scope, '1')).toBeNull();
-    else expect(await repo.load(draft().scope, '1')).toMatchObject({ writeState: 'editing', attempt: null });
+    else expect(await repo.load(draft().scope, '1')).toMatchObject({ writeState: 'uncertain' });
   });
   it.each([false, true])('append committed=%s uses exact baseline/separator/tag/symbol union', async committed => {
     const baseline = diary({ content: 'Synthetic original', tags: ['old'], tagsString: 'old', stockSymbols: ['OLD'] });
@@ -192,7 +226,7 @@ describe('Quick Diary write state machine', () => {
     }) });
     await model.lookup(); expect(model.getSnapshot().draft.mode).toBe('append');
     await model.save(); await model.checkResult();
-    expect(model.getSnapshot().recovery).toBe(committed ? 'applied' : 'not-applied'); expect(api.write).toHaveBeenCalledOnce();
+    expect(model.getSnapshot().recovery).toBe(committed ? 'applied' : 'pending'); expect(api.write).toHaveBeenCalledOnce();
   });
   it('concurrent edits and duplicate-looking text stay ambiguous without resend', async () => {
     const baseline = diary({ content: 'Synthetic original' }); let server = baseline;
@@ -262,6 +296,14 @@ describe('Quick Diary write state machine', () => {
 });
 
 describe('native write transport and owner lifecycle', () => {
+  it.each([400, 401, 403, 409, 500, 502, 503, 504])('unrecognized non-JSON HTTP %i stays uncertain through the actual generated client', async status => {
+    const lifecycle = {} as ReturnType<typeof createAuthLifecycle>;
+    const client = createApiClient({ baseUrl: 'http://localhost', fetch: async () => new Response('Synthetic gateway failure', { status }) });
+    const quick = createQuickApi(client, { ownerId: '1', isCurrent: () => true, changed: vi.fn() }, lifecycle);
+    const { model, repo } = await setup({ write: quick.write }); await model.save();
+    expect(model.getSnapshot().draft.writeState).toBe('uncertain');
+    expect((await repo.load(draft().scope, '1'))?.attempt).not.toBeNull();
+  });
   it('mutation 401 sends one POST with bearer, omit and no automatic refresh/replay', async () => {
     let stored: ReturnType<typeof session> | null = session(); const requests: Request[] = [];
     const runtime = createAuthRuntime({ appEnvironment: 'development', baseUrl: 'http://localhost:3101', sessionStorageKey: 'test' },

@@ -30,8 +30,12 @@ export function createQuickManager(options: {
   options.diaries.subscribe(update);
   update();
   return {
-    begin() {
+    async begin(date?: string) {
       if (controller?.getSnapshot().confirmedId) { ownerScope = null; update(); }
+      const expected = controller;
+      await loaded;
+      if (!expected || expected !== controller) return false;
+      return date ? expected.initializeDate(date) : true;
     },
     getSnapshot: () => controller,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },

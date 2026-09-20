@@ -25,7 +25,7 @@ export function createTimeoutFetch(
 ): typeof globalThis.fetch {
   return async (input, init) => {
     const controller = new AbortController();
-    const existingSignal = init?.signal;
+    const existingSignal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
     const forwardAbort = () => controller.abort(existingSignal?.reason);
     if (existingSignal?.aborted) forwardAbort();
     else existingSignal?.addEventListener('abort', forwardAbort, { once: true });

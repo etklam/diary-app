@@ -46,10 +46,11 @@ function comparable(diary: DiaryResponse) {
   const { updatedAt: _updatedAt, tradePlans: _plans, tradePlanSummary: _summary, ...fields } = diary;
   return { ...fields, stockSymbols: symbols(diary.stockSymbols) };
 }
-export function reconcile(attempt: WriteAttempt, latest: DiaryResponse | null): 'applied' | 'not-applied' | 'ambiguous' {
+export function reconcile(attempt: WriteAttempt, latest: DiaryResponse | null): 'applied' | 'pending' | 'ambiguous' {
   const { baseline, payload } = attempt;
-  if (!latest) return baseline === null ? 'not-applied' : 'ambiguous';
-  if (baseline && same(latest, baseline)) return 'not-applied';
+  // A read is a snapshot, not a fence against a request still committing.
+  if (!latest) return baseline === null ? 'pending' : 'ambiguous';
+  if (baseline && same(latest, baseline)) return 'pending';
   if (!baseline) {
     if (latest.date === payload.date && latest.title === payload.title && latest.content === payload.content
       && same(latest.tags, payload.tags ?? []) && same(symbols(latest.stockSymbols), symbols(payload.stockSymbols ?? []))

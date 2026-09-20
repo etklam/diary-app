@@ -19,7 +19,7 @@ type AuthContextValue = {
   diaryScope: DiaryReadScope | null;
   quick: QuickController | null;
   diaryMutation: number;
-  beginQuick(): void;
+  beginQuick(date?: string): Promise<boolean>;
   login(email: string, password: string): Promise<void>;
   logout(): Promise<void>;
   retryVerification(): Promise<void>;
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const diaryScope = useSyncExternalStore(application?.diaries.subscribe ?? emptySubscribe, application?.diaries.getScope ?? emptyScope);
   const quick = useSyncExternalStore(application?.quick.subscribe ?? emptySubscribe, application?.quick.getSnapshot ?? emptyScope);
   const diaryMutation = useSyncExternalStore(application?.diaries.subscribeMutations ?? emptySubscribe, application?.diaries.getMutation ?? zeroMutation);
-  const beginQuick = useCallback(() => application?.quick.begin(), [application]);
+  const beginQuick = useCallback(async (date?: string) => await application?.quick.begin(date) ?? false, [application]);
   const [state, setState] = useState<AppAuthState>(() => lifecycle
     ? lifecycle.getState()
     : { status: 'configuration-error', message: 'The API origin is missing or unsafe for this build.' });

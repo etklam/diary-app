@@ -13,6 +13,8 @@ export default function ProductTabs() {
     tabBarStyle: { backgroundColor: authColors.surface, height: 64 + insets.bottom + Math.max(0, fontScale - 1) * 24 },
   }}>
     <Tabs.Screen name="timeline" options={{ title: 'Timeline', tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>≡</Text> }} />
+    <Tabs.Screen name="calendar" options={{ title: 'Calendar', tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>▦</Text> }} />
+    <Tabs.Screen name="review" options={{ title: 'Review', tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>✓</Text> }} />
     <Tabs.Screen name="account" options={{ title: 'Account', tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>○</Text> }} />
   </Tabs>;
 }

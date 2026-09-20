@@ -6,6 +6,8 @@ let mode = 'normal';
 let posts = 0;
 let commits = 0;
 const held = new Set();
+const delayed = [];
+const heldReads = new Set();
 const proxy = http.createServer((request, response) => {
   if (mode === 'offline') { request.socket.destroy(); return; }
   const mutation = request.method === 'POST' && request.url === '/api/diaries';
@@ -17,10 +19,40 @@ const proxy = http.createServer((request, response) => {
     return;
   }
   const fault = mutation ? mode : 'normal';
+  const holdRead = mode === 'hold-reads' && request.method === 'GET' && /^\/api\/(diaries\/(summary|activity)|reviews)(\?|$)/.test(request.url);
+  if (fault === 'delayed') {
+    // Keep the accepted request alive upstream of the app's timeout. Release is
+    // explicit so a reconciliation GET can observe the old database snapshot.
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
+    request.on('end', () => {
+      const body = Buffer.concat(chunks);
+      delayed.push(() => {
+        const upstream = http.request({ hostname: '127.0.0.1', port: 3201, method: 'POST', path: request.url,
+          headers: { ...request.headers, host: '127.0.0.1:3201' } }, result => {
+          if (result.statusCode === 201) commits++;
+          result.resume();
+        });
+        upstream.on('error', () => {}); upstream.end(body);
+      });
+      response.writeHead(504, { 'content-type': 'text/plain' }).end('Synthetic timeout; upstream remains pending');
+    });
+    return;
+  }
   const upstream = http.request({ hostname: '127.0.0.1', port: 3201, method: request.method, path: request.url,
     headers: { ...request.headers, host: '127.0.0.1:3201' } }, result => {
     if (mutation && result.statusCode === 201) commits++;
-    if (fault === 'drop' || fault === 'hold') {
+    if (holdRead) {
+      const chunks = [];
+      result.on('data', chunk => chunks.push(chunk));
+      result.on('end', () => {
+        const release = () => { response.writeHead(result.statusCode, result.headers); response.end(Buffer.concat(chunks)); };
+        if (response.destroyed) return;
+        heldReads.add(release); response.on('close', () => heldReads.delete(release));
+      });
+    } else if (/^committed50[234]$/.test(fault)) {
+      result.resume(); result.on('end', () => response.writeHead(Number(fault.slice(-3)), { 'content-type': 'text/plain' }).end('Synthetic gateway error after commit'));
+    } else if (fault === 'drop' || fault === 'hold') {
       result.resume();
       result.on('end', () => {
         if (fault === 'drop') response.destroy();
@@ -34,12 +66,16 @@ const proxy = http.createServer((request, response) => {
 const control = http.createServer((request, response) => {
   const requested = new URL(request.url, 'http://localhost').searchParams.get('mode');
   if (requested) {
-    if (!['normal', 'offline', 'drop', 'hold', 'http401', 'http503'].includes(requested)) { response.writeHead(400).end(); return; }
+    if (requested === 'release') { for (const send of delayed.splice(0)) send(); }
+    else if (!['normal', 'offline', 'drop', 'hold', 'http401', 'http503', 'committed502', 'committed503', 'committed504', 'delayed', 'hold-reads'].includes(requested)) { response.writeHead(400).end(); return; }
     mode = requested;
-    if (mode === 'normal') { for (const pending of held) pending.destroy(); held.clear(); }
+    if (mode === 'normal') {
+      for (const pending of held) pending.destroy(); held.clear();
+      for (const release of heldReads) release(); heldReads.clear();
+    }
   }
   response.setHeader('content-type', 'application/json');
-  response.end(JSON.stringify({ mode, posts, commits, held: held.size }));
+  response.end(JSON.stringify({ mode, posts, commits, held: held.size, delayed: delayed.length, heldReads: heldReads.size }));
 });
 proxy.listen(3101, '127.0.0.1');
 control.listen(3102, '127.0.0.1', () => console.log('Disposable write proxy: API 3101, control 3102; no payload logging.'));

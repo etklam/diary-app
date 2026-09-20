@@ -1,6 +1,10 @@
 import type { createApiClient } from '@diary/api-client';
 import { diaryResponseSchema } from '@diary/contracts';
 import { diarySummaryListResponseSchema } from '@diary/contracts/diary-summary';
+import { diaryListQuerySchema } from '@diary/contracts/diary-list';
+import { diaryActivityQuerySchema, diaryActivityResponseSchema } from '@diary/contracts/diary-activity';
+import { reviewQueueQuerySchema, reviewGroupsResponseSchema } from '@diary/contracts/review-queue';
+import type { DiscoveryQuery } from './query';
 
 import type { AuthLifecycle } from '../auth/lifecycle';
 
@@ -10,6 +14,9 @@ export class ReadError extends Error {
 }
 export class StaleRead extends Error {}
 export type SummaryPage = ReturnType<typeof diarySummaryListResponseSchema.parse>;
+export type Activity = ReturnType<typeof diaryActivityResponseSchema.parse>;
+export type ReviewGroups = ReturnType<typeof reviewGroupsResponseSchema.parse>;
+export const reviewBuckets = ['overdue', 'today', 'upcoming', 'unscheduled', 'completed'] as const;
 export type DiaryReadScope = ReturnType<typeof createDiaryAccess>['getScope'] extends () => infer T ? NonNullable<T> : never;
 
 // One capability per authenticated owner epoch. Logout invalidates it synchronously,
@@ -23,7 +30,9 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
   let scope: {
     ownerId: string;
     isCurrent(): boolean;
-    summary(page: number): Promise<SummaryPage>;
+    summary(page: number, query?: DiscoveryQuery, signal?: AbortSignal): Promise<SummaryPage>;
+    activity(dateFrom: string, dateTo: string, signal?: AbortSignal): Promise<Activity>;
+    reviews(page: number, signal?: AbortSignal): Promise<ReviewGroups>;
     detail(id: string): Promise<ReturnType<typeof diaryResponseSchema.parse>>;
   } | null = null;
 
@@ -57,9 +66,26 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
     scope = {
       ownerId: next,
       isCurrent,
-      summary: page => read(
-        () => api.GET('/api/diaries/summary', { params: { query: { page, limit: 20, sortBy: 'date-desc' } } }),
+      summary: (page, query = { sortBy: 'date-desc' }, signal) => read(
+        () => api.GET('/api/diaries/summary', { signal, params: { query: diaryListQuerySchema.parse({ ...query, page, limit: 20 }) } }),
         value => diarySummaryListResponseSchema.parse(value),
+      ),
+      activity: (dateFrom, dateTo, signal) => read(
+        () => api.GET('/api/diaries/activity', { signal, params: { query: diaryActivityQuerySchema.parse({ dateFrom, dateTo }) } }),
+        value => {
+          const result = diaryActivityResponseSchema.parse(value);
+          if (result.dateFrom !== dateFrom || result.dateTo !== dateTo || result.data.some(day => day.date < dateFrom || day.date > dateTo)
+            || new Set(result.data.map(day => day.date)).size !== result.data.length) throw new Error('Incomplete activity range');
+          return result;
+        },
+      ),
+      reviews: (page, signal) => read(
+        () => api.GET('/api/reviews', { signal, params: { query: reviewQueueQuerySchema.parse({ target: 'diary', page, limit: 20 }) } }),
+        value => {
+          const result = reviewGroupsResponseSchema.parse(value);
+          if (reviewBuckets.some(bucket => result[bucket].length > 20 || result[bucket].some(item => item.targetType !== 'diary'))) throw new Error('Unexpected review target');
+          return result;
+        },
       ),
       detail: id => {
         // Validate the serialized int64 without rounding it through Number.

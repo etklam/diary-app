@@ -20,7 +20,7 @@ function detail(id = largeId, owner = '1') {
   return diaryResponseSchema.parse({ id, userId: owner, title: 'Synthetic journal', date: '2026-01-01', content: 'Line one\nLine two', tags: [], tagsString: null, stockSymbols: [], createdVia: 'WEB', createdByLabel: null, createdAt: '2026-01-01T00:30:00.000Z', updatedAt: '2026-01-01T00:30:00.000Z' });
 }
 function scope(overrides: Partial<DiaryReadScope> = {}): DiaryReadScope {
-  return { ownerId: '1', isCurrent: () => true, summary: async () => page(), detail: async id => detail(id), ...overrides };
+  return { ownerId: '1', isCurrent: () => true, summary: async () => page(), activity: async (dateFrom, dateTo) => ({ data: [], dateFrom, dateTo }), reviews: async () => ({ counts: { overdue: 0, today: 0, upcoming: 0, unscheduled: 0, completed: 0 }, overdue: [], today: [], upcoming: [], unscheduled: [], completed: [] }), detail: async id => detail(id), ...overrides };
 }
 
 describe('Timeline state', () => {

@@ -29,8 +29,7 @@ export function createQuickApi(api: ReturnType<typeof createApiClient>, owner: P
     },
     async write(payload) {
       check();
-      // Preserve HTTP status even if an error response isn't valid JSON. A malformed
-      // success body remains uncertain because it cannot identify the saved diary.
+      // Status is diagnostic only; the controller requires a documented rejection code.
       const result = await api.POST('/api/diaries', { body: payload, parseAs: 'text',
         headers: { [NO_AUTOMATIC_SESSION_RETRY_HEADER]: '1' } });
       check();
@@ -40,7 +39,7 @@ export function createQuickApi(api: ReturnType<typeof createApiClient>, owner: P
           const errorBody: unknown = result.error;
           const parsed = apiErrorResponseSchema.safeParse(typeof errorBody === 'string' ? JSON.parse(errorBody) : errorBody);
           if (parsed.success) code = parsed.data.data.code;
-        } catch { /* Only the status is needed for a definitive failure. */ }
+        } catch { /* An unrecognized body leaves the outcome unknown. */ }
         return { ok: false, status: result.response.status, code };
       }
       const diary = diaryResponseSchema.parse(JSON.parse(result.data ?? ''));

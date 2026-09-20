@@ -7,7 +7,7 @@ type Issue = 'storage' | 'validation' | 'connection' | 'conflict' | 'session' | 
 export type QuickState = {
   draft: QuickDraft; ready: boolean; busy: boolean; persistence: 'saved' | 'pending' | 'error';
   lookup: 'checking' | 'exists' | 'none' | 'error'; existingId: string | null;
-  issue: Issue; recovery: 'applied' | 'not-applied' | 'ambiguous' | null; restored: boolean;
+  issue: Issue; recovery: 'applied' | 'pending' | 'ambiguous' | null; restored: boolean;
   confirmedId: string | null;
 };
 export type QuickController = ReturnType<typeof createQuickController>;
@@ -116,11 +116,14 @@ export function createQuickController(options: {
       const result = await api.write(payload);
       if (!current()) return;
       if (result.ok) { await finish(result.diary.id); return; }
+      // Only documented pre-mutation application rejections prove non-application.
+      if (!((result.status === 409 && result.code === 'DIARY_ALREADY_EXISTS')
+        || (result.status === 401 && result.code === 'AUTH_UNAUTHORIZED'))) throw new Error('Unknown write outcome');
       const failed: QuickDraft = { ...state.draft, writeState: 'definitive-error', attempt: null };
       // Retain a durable error before an auth transition can unmount the composer.
       await persist(failed);
       if (!current()) return;
-      emit({ draft: failed, issue: result.code === 'DIARY_ALREADY_EXISTS' ? 'conflict' : result.status === 401 ? 'session' : result.status === 400 ? 'validation' : 'server' });
+      emit({ draft: failed, issue: result.code === 'DIARY_ALREADY_EXISTS' ? 'conflict' : 'session' });
       if (result.status === 401) await api.recoverSession();
     } catch {
       if (!current()) return;
@@ -142,11 +145,6 @@ export function createQuickController(options: {
       const recovery = reconcile(state.draft.attempt!, latest);
       emit({ recovery, existingId: latest?.id ?? null });
       if (recovery === 'applied' && latest) await finish(latest.id);
-      else if (recovery === 'not-applied') {
-        const draft: QuickDraft = { ...state.draft, writeState: 'editing', attempt: null };
-        await persist(draft);
-        if (current()) emit({ draft, persistence: 'saved' });
-      }
     } catch { if (current()) emit({ issue: 'connection' }); }
     finally { busy = false; if (current()) emit({ busy: false }); }
   };
@@ -154,6 +152,14 @@ export function createQuickController(options: {
     getSnapshot: () => state,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     start, flush, save, checkResult, lookup,
+    initializeDate(date: string) {
+      // Calendar intent may initialize only a pristine, newly created draft.
+      if (!current() || !state.ready || state.restored || revision !== 0 || busy || hasDraft(state.draft) || state.confirmedId) return false;
+      if (!calendarDateSchema.safeParse(date).success) return false;
+      ++revision; ++lookupVersion;
+      emit({ draft: { ...state.draft, date, modeChosen: false }, existingId: null });
+      schedule(); void lookup(); return true;
+    },
     edit(patch: Partial<Pick<QuickDraft, 'date' | 'mode' | 'title' | 'content' | 'tags' | 'stockSymbols'>>) {
       if (!current() || !state.ready || busy || state.draft.attempt || state.confirmedId) return;
       ++revision;
