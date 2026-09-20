@@ -34,7 +34,7 @@ Use the existing individual account process. The app offers sign-in, not registr
 
 ## Reproducible candidate build
 
-Use a fresh isolated checkout of the reviewed, committed candidate. Do not copy `.expo`, `expo-env.d.ts`, `node_modules`, or generated `android/` from a developer machine. Record `git rev-parse HEAD` and `git rev-parse HEAD^{tree}`. Keep private signing files outside the checkout.
+Use a fresh isolated checkout of the reviewed, committed candidate. Do not copy `.expo`, `expo-env.d.ts`, `node_modules`, or generated `android/` from a developer machine. Record `git rev-parse HEAD` and `git rev-parse 'HEAD^{tree}'` (quote the tree expression in PowerShell). Keep private signing files outside the checkout.
 
 1. Install Node 24 and dependencies with `npm ci`; run the checks below.
 2. Load approved operator configuration into the process without logging it. Do not put secrets in command arguments, public environment variables, evidence, or shell transcripts.
