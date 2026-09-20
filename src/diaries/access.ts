@@ -1,4 +1,5 @@
 import type { createApiClient } from '@diary/api-client';
+import { diaryReviewResponseSchema } from '@diary/contracts/review';
 import { diaryResponseSchema } from '@diary/contracts';
 import { diarySummaryListResponseSchema } from '@diary/contracts/diary-summary';
 import { diaryListQuerySchema } from '@diary/contracts/diary-list';
@@ -33,6 +34,7 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
     summary(page: number, query?: DiscoveryQuery, signal?: AbortSignal): Promise<SummaryPage>;
     activity(dateFrom: string, dateTo: string, signal?: AbortSignal): Promise<Activity>;
     reviews(page: number, signal?: AbortSignal): Promise<ReviewGroups>;
+    review(id: string, signal?: AbortSignal): Promise<ReturnType<typeof diaryReviewResponseSchema.parse>>;
     detail(id: string): Promise<ReturnType<typeof diaryResponseSchema.parse>>;
   } | null = null;
 
@@ -87,6 +89,14 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
           return result;
         },
       ),
+      review: (id, signal) => {
+        if (!/^[1-9]\d{0,18}$/.test(id) || BigInt(id) > 9223372036854775807n) return Promise.reject(new ReadError('not-found'));
+        return read(() => api.GET('/api/diaries/{id}/review', { signal, params: { path: { id } } }), value => {
+          const review = diaryReviewResponseSchema.parse(value);
+          if (review.id !== id) throw new Error('Unexpected review identity');
+          return review;
+        }, true);
+      },
       detail: id => {
         // Validate the serialized int64 without rounding it through Number.
         if (!/^[1-9]\d{0,18}$/.test(id) || BigInt(id) > 9223372036854775807n) return Promise.reject(new ReadError('not-found'));

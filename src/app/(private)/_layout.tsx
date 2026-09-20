@@ -20,6 +20,7 @@ export default function PrivateLayout() {
   return <Stack key={diaryScope?.ownerId} screenOptions={{ headerShown: false }}>
     <Stack.Screen name="(tabs)" />
     <Stack.Screen name="diaries/quick" options={{ headerShown: true, title: 'Quick Diary', headerStyle: { backgroundColor: authColors.surface }, headerTintColor: authColors.ink }} />
+    <Stack.Screen name="diaries/review" options={{ headerShown: true, title: 'Review', headerStyle: { backgroundColor: authColors.surface }, headerTintColor: authColors.ink }} />
     <Stack.Screen name="diaries/[id]" options={{ headerShown: true, title: 'Diary', headerStyle: { backgroundColor: authColors.surface }, headerTintColor: authColors.ink }} />
   </Stack>;
 }

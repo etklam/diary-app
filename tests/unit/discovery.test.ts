@@ -12,7 +12,7 @@ const id = '9223372036854775806';
 const empty = (): ReviewGroups => ({ counts: { overdue: 0, today: 0, upcoming: 0, unscheduled: 0, completed: 0 }, overdue: [], today: [], upcoming: [], unscheduled: [], completed: [] });
 const summary = (title = 'Synthetic', page = 1): SummaryPage => ({ data: [{ id, title, date: '2024-02-29', excerpt: '', tags: [], stockSymbols: [], createdVia: 'WEB', reviewStatus: 'none', reviewDueAt: null, reviewOutcome: null, transactionCount: 0, alertCount: 0 }], pagination: { page, limit: 20, total: 40, totalPages: 2 } });
 function scope(overrides: Partial<DiaryReadScope> = {}): DiaryReadScope {
-  return { ownerId: '1', isCurrent: () => true, summary: async () => summary(),
+  return { review: vi.fn(), ownerId: '1', isCurrent: () => true, summary: async () => summary(),
     detail: vi.fn(), activity: async (dateFrom, dateTo) => ({ dateFrom, dateTo, data: [] }), reviews: async () => empty(), ...overrides };
 }
 afterEach(() => vi.useRealTimers());

@@ -5,13 +5,21 @@ if (process.env.DIARY_DISPOSABLE_TEST_ENV !== '1') throw new Error('Requires a d
 let mode = 'normal';
 let posts = 0;
 let commits = 0;
+let patches = 0;
+let patchCommits = 0;
+let forwardedPatches = 0;
 const held = new Set();
 const delayed = [];
 const heldReads = new Set();
 const proxy = http.createServer((request, response) => {
+  if (mode === 'detail503' && request.method === 'GET' && /^\/api\/diaries\/[1-9]\d*$/.test(request.url)) { response.writeHead(503).end('Synthetic detail refresh failure'); return; }
   if (mode === 'offline') { request.socket.destroy(); return; }
-  const mutation = request.method === 'POST' && request.url === '/api/diaries';
-  if (mutation) posts++;
+  const post = request.method === 'POST' && request.url === '/api/diaries';
+  const patch = request.method === 'PATCH' && /^\/api\/diaries\/[1-9]\d*\/review$/.test(request.url);
+  const mutation = post || patch;
+  if (post) posts++;
+  if (patch) patches++;
+  const committed = status => { if (post && status === 201) commits++; if (patch && status === 200) patchCommits++; };
   if (mutation && ['http401', 'http503'].includes(mode)) {
     const status = mode === 'http401' ? 401 : 503;
     response.writeHead(status, { 'content-type': 'application/json', ...(status === 503 ? { 'retry-after': '0' } : {}) });
@@ -28,9 +36,10 @@ const proxy = http.createServer((request, response) => {
     request.on('end', () => {
       const body = Buffer.concat(chunks);
       delayed.push(() => {
-        const upstream = http.request({ hostname: '127.0.0.1', port: 3201, method: 'POST', path: request.url,
+        if (patch) forwardedPatches++;
+        const upstream = http.request({ hostname: '127.0.0.1', port: 3201, method: request.method, path: request.url,
           headers: { ...request.headers, host: '127.0.0.1:3201' } }, result => {
-          if (result.statusCode === 201) commits++;
+          committed(result.statusCode);
           result.resume();
         });
         upstream.on('error', () => {}); upstream.end(body);
@@ -39,9 +48,10 @@ const proxy = http.createServer((request, response) => {
     });
     return;
   }
+  if (patch) forwardedPatches++;
   const upstream = http.request({ hostname: '127.0.0.1', port: 3201, method: request.method, path: request.url,
     headers: { ...request.headers, host: '127.0.0.1:3201' } }, result => {
-    if (mutation && result.statusCode === 201) commits++;
+    committed(result.statusCode);
     if (holdRead) {
       const chunks = [];
       result.on('data', chunk => chunks.push(chunk));
@@ -67,7 +77,7 @@ const control = http.createServer((request, response) => {
   const requested = new URL(request.url, 'http://localhost').searchParams.get('mode');
   if (requested) {
     if (requested === 'release') { for (const send of delayed.splice(0)) send(); }
-    else if (!['normal', 'offline', 'drop', 'hold', 'http401', 'http503', 'committed502', 'committed503', 'committed504', 'delayed', 'hold-reads'].includes(requested)) { response.writeHead(400).end(); return; }
+    else if (!['normal', 'offline', 'detail503', 'drop', 'hold', 'http401', 'http503', 'committed502', 'committed503', 'committed504', 'delayed', 'hold-reads'].includes(requested)) { response.writeHead(400).end(); return; }
     mode = requested;
     if (mode === 'normal') {
       for (const pending of held) pending.destroy(); held.clear();
@@ -75,7 +85,7 @@ const control = http.createServer((request, response) => {
     }
   }
   response.setHeader('content-type', 'application/json');
-  response.end(JSON.stringify({ mode, posts, commits, held: held.size, delayed: delayed.length, heldReads: heldReads.size }));
+  response.end(JSON.stringify({ mode, posts, commits, patches, patchCommits, forwardedPatches, held: held.size, delayed: delayed.length, heldReads: heldReads.size }));
 });
 proxy.listen(3101, '127.0.0.1');
 control.listen(3102, '127.0.0.1', () => console.log('Disposable write proxy: API 3101, control 3102; no payload logging.'));

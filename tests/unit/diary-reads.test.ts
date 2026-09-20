@@ -20,7 +20,7 @@ function detail(id = largeId, owner = '1') {
   return diaryResponseSchema.parse({ id, userId: owner, title: 'Synthetic journal', date: '2026-01-01', content: 'Line one\nLine two', tags: [], tagsString: null, stockSymbols: [], createdVia: 'WEB', createdByLabel: null, createdAt: '2026-01-01T00:30:00.000Z', updatedAt: '2026-01-01T00:30:00.000Z' });
 }
 function scope(overrides: Partial<DiaryReadScope> = {}): DiaryReadScope {
-  return { ownerId: '1', isCurrent: () => true, summary: async () => page(), activity: async (dateFrom, dateTo) => ({ data: [], dateFrom, dateTo }), reviews: async () => ({ counts: { overdue: 0, today: 0, upcoming: 0, unscheduled: 0, completed: 0 }, overdue: [], today: [], upcoming: [], unscheduled: [], completed: [] }), detail: async id => detail(id), ...overrides };
+  return { review: vi.fn(), ownerId: '1', isCurrent: () => true, summary: async () => page(), activity: async (dateFrom, dateTo) => ({ data: [], dateFrom, dateTo }), reviews: async () => ({ counts: { overdue: 0, today: 0, upcoming: 0, unscheduled: 0, completed: 0 }, overdue: [], today: [], upcoming: [], unscheduled: [], completed: [] }), detail: async id => detail(id), ...overrides };
 }
 
 describe('Timeline state', () => {
@@ -92,6 +92,16 @@ describe('Timeline state', () => {
 });
 
 describe('detail and date semantics', () => {
+  it('refreshes an already mounted Detail after mutation and keeps saved/read failure distinct', async () => {
+    let fail = false;
+    const read = vi.fn(async () => { if (fail) throw new ReadError('server'); return detail(); });
+    const model = createDetailState(scope({ detail: read }));
+    await model.load(largeId, 0); fail = true; await model.load(largeId, 1);
+    expect(model.getSnapshot()).toMatchObject({ diary: null, issue: 'server', savedRefresh: true });
+    fail = false; await model.load(largeId, 1); expect(model.getSnapshot().diary?.id).toBe(largeId);
+    expect(read).toHaveBeenCalledTimes(3);
+  });
+
   it('clears the previous diary immediately and ignores a stale route response', async () => {
     const pending = deferred<ReturnType<typeof detail>>();
     const model = createDetailState(scope({ detail: vi.fn().mockResolvedValueOnce(detail('1')).mockImplementationOnce(() => pending.promise).mockResolvedValueOnce(detail('3')) }));
@@ -103,7 +113,7 @@ describe('detail and date semantics', () => {
   });
   it('maps a missing diary and retries ordinary failures', async () => {
     const model = createDetailState(scope({ detail: vi.fn().mockRejectedValueOnce(new ReadError('not-found')).mockRejectedValueOnce(new ReadError('network')).mockResolvedValueOnce(detail()) }));
-    await model.load(largeId); expect(model.getSnapshot()).toEqual({ diary: null, loading: false, issue: 'not-found' });
+    await model.load(largeId); expect(model.getSnapshot()).toEqual({ diary: null, loading: false, issue: 'not-found', savedRefresh: false });
     await model.load(largeId); expect(model.getSnapshot().issue).toBe('network');
     await model.load(largeId); expect(model.getSnapshot().diary?.id).toBe(largeId);
   });

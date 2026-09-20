@@ -64,7 +64,8 @@
     "test:network-proxy": "node ./scripts/test-network-proxy.mjs",
     "dependencies:check": "expo install --check",
     "doctor": "npx expo-doctor",
-    "verify": "npm run lint && npm run typecheck && npm run test && npm run android:bundle"
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run android:bundle",
+    "test:api:reviews": "vitest run tests/api/reviews-api.test.ts"
   },
   "private": true
 }

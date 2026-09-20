@@ -2,11 +2,16 @@ import * as SQLite from 'expo-sqlite';
 import * as SecureStore from 'expo-secure-store';
 import { getRandomBytesAsync } from 'expo-crypto';
 import { File } from 'expo-file-system';
+import { openReviewRepository, type ReviewRepository } from '../reviews/repository';
 import { openDraftRepository, unlockDraftDatabase, type DraftRepository } from './repository';
 
+let database: ReturnType<typeof unlockDraftDatabase> | undefined;
 let repository: Promise<DraftRepository> | undefined;
-export function nativeDraftRepository() {
-  if (!repository) repository = (async () => {
+let reviews: Promise<ReviewRepository> | undefined;
+export function nativeDraftRepository() { return repository ??= nativeDraftDatabase().then(openDraftRepository); }
+export function nativeReviewRepository() { return reviews ??= nativeDraftDatabase().then(openReviewRepository); }
+export function nativeDraftDatabase() {
+  if (!database) database = (async () => {
     const name = 'quick-drafts-v1.db';
     const keyName = 'diary.drafts.sqlcipher.v1';
     // SQLite returns an absolute Android path; File requires a file URI.
@@ -24,7 +29,7 @@ export function nativeDraftRepository() {
       // Non-secret native build evidence only. Never log keys, rows or SQL errors.
       console.info(`Encrypted draft storage ready (SQLCipher ${cipher?.cipher_version})`);
     }
-    return openDraftRepository(db);
+    return db;
   })();
-  return repository;
+  return database;
 }

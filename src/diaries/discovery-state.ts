@@ -44,7 +44,7 @@ export function createReviewState(scope: DiaryReadScope) {
     if (!scope.isCurrent() || (phase === 'more' && (state.phase !== 'idle' || !state.more))) return;
     const expected = ++generation; abort?.abort(); abort = new AbortController();
     const page = phase === 'more' ? state.page + 1 : 1;
-    emit({ phase, issue: null });
+    emit({ phase, issue: null, ...(phase === 'initial' ? { groups: null, page: 0, more: false } : {}) });
     try {
       const result = await scope.reviews(page, abort.signal);
       if (expected !== generation || !scope.isCurrent()) return;

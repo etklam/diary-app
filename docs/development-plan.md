@@ -50,9 +50,21 @@ Fresh automated, disposable API and Android VM results are recorded in [P1C-1 ac
 | Read-only diary Review Queue | IMPLEMENTED | `target=diary`, server buckets/counts, shared page cursor, latest-50 completed limit |
 | Native navigation and post-save invalidation | IMPLEMENTED | Existing Detail stack, mounted read state, mutation generation shared across read surfaces |
 
-## P1C-2 — Review authoring and mutation workflows: PLANNED
+## P1C-2A — Review authoring, encrypted drafts, explicit completion/update: IMPLEMENTED
 
-Create/edit review, complete review, reschedule and return to queue. Define write safety for those operations before implementing mutations. P1C-1 does not mark all P1C verified.
+Fresh results and remaining verification limits are recorded in [P1C-2A acceptance](evidence/p1c-2a/acceptance.md). This does not mark all P1C verified or replace historical evidence.
+
+| Scope | Status | Evidence |
+| --- | --- | --- |
+| Queue → Detail → native Review editor → confirmed save → Detail → Queue | IMPLEMENTED | Existing native stack, full review payload, mounted Detail refresh and shared read invalidation |
+| Local-only, diary/owner/environment-scoped Review drafts | IMPLEMENTED | Additive SQLCipher table, shared key/opening, serialized autosave/discard/confirmation, force-stop restoration |
+| Single-attempt dedicated PATCH and durable uncertainty | IMPLEMENTED | Marked shared/native transport, exact pending payload, no matching-text reconciliation or automatic replay |
+| Explicit stale-edit baseline adoption | IMPLEMENTED | Current server/local comparison; preflight GET is not atomic concurrency protection |
+| Logout, expiry and account isolation | IMPLEMENTED | Owner epoch checks, current-owner draft cleanup only, retention on involuntary invalidation |
+
+## P1C-2B — Rescheduling and return-to-queue: PLANNED
+
+Verify each mutation contract and design its write-safety state machine before implementation. No rescheduling or return-to-queue controls are included in P1C-2A. A separate backend follow-up should add an atomic expected-version condition for review updates; operation receipts/idempotency would be needed for stronger outcome recovery. Neither is invented client-side.
 
 ## Remaining diary product work: PLANNED
 

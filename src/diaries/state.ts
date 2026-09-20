@@ -52,9 +52,10 @@ export function createTimelineState(scope: DiaryReadScope) {
   };
 }
 
-export type DetailState = { diary: DiaryResponse | null; loading: boolean; issue: ReadIssue | null };
+export type DetailState = { diary: DiaryResponse | null; loading: boolean; issue: ReadIssue | null; savedRefresh: boolean };
 export function createDetailState(scope: DiaryReadScope) {
-  let state: DetailState = { diary: null, loading: true, issue: null };
+  let state: DetailState = { diary: null, loading: true, issue: null, savedRefresh: false };
+  let initialMutation: number | null = null;
   let version = 0;
   const listeners = new Set<() => void>();
   const emit = (next: DetailState) => { state = next; listeners.forEach(listener => listener()); };
@@ -62,14 +63,16 @@ export function createDetailState(scope: DiaryReadScope) {
     getSnapshot: () => state,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     cancel: () => { ++version; },
-    async load(id: string) {
+    async load(id: string, mutation = 0) {
+      initialMutation ??= mutation;
+      const savedRefresh = mutation > initialMutation;
       const expected = ++version;
-      emit({ diary: null, loading: true, issue: null });
+      emit({ diary: null, loading: true, issue: null, savedRefresh });
       try {
         const diary = await scope.detail(id);
-        if (expected === version && scope.isCurrent()) emit({ diary, loading: false, issue: null });
+        if (expected === version && scope.isCurrent()) emit({ diary, loading: false, issue: null, savedRefresh });
       } catch (error) {
-        if (expected === version && scope.isCurrent()) emit({ diary: null, loading: false, issue: error instanceof ReadError ? error.issue : 'network' });
+        if (expected === version && scope.isCurrent()) emit({ diary: null, loading: false, issue: error instanceof ReadError ? error.issue : 'network', savedRefresh });
       }
     },
   };

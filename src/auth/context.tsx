@@ -9,7 +9,8 @@ import { createAuthRuntime } from './runtime';
 import { createSecureSessionStorage } from './secure-session-storage';
 import { createDiaryAccess, type DiaryReadScope } from '@/diaries/access';
 import { createQuickManager } from '@/quick/manager';
-import { nativeDraftRepository } from '@/quick/native-storage';
+import { createReviewManager, type ReviewManager } from '@/reviews/manager';
+import { nativeReviewRepository, nativeDraftRepository } from '@/quick/native-storage';
 import type { QuickController } from '@/quick/controller';
 
 export type AppAuthState = AuthState | { status: 'configuration-error'; message: string };
@@ -18,6 +19,7 @@ type AuthContextValue = {
   state: AppAuthState;
   diaryScope: DiaryReadScope | null;
   quick: QuickController | null;
+  reviews: ReviewManager | null;
   diaryMutation: number;
   beginQuick(date?: string): Promise<boolean>;
   login(email: string, password: string): Promise<void>;
@@ -39,7 +41,9 @@ function buildRuntime() {
     const diaries = createDiaryAccess(runtime.api, lifecycle);
     const quick = createQuickManager({ api: runtime.api, lifecycle, diaries,
       scope: JSON.stringify([config.appEnvironment, config.baseUrl]), repository: nativeDraftRepository, attemptId: randomUUID });
-    return { lifecycle, diaries, quick };
+    const reviews = createReviewManager({ api: runtime.api, diaries, scope: JSON.stringify([config.appEnvironment, config.baseUrl]),
+      repository: nativeReviewRepository, attemptId: randomUUID });
+    return { lifecycle, diaries, quick, reviews };
   } catch (error) {
     if (error instanceof ApiConfigurationError) return null;
     throw error;
@@ -76,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lifecycle) return;
     const subscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState !== 'active') void application?.quick.getSnapshot()?.flush().catch(() => {});
+      if (nextState !== 'active') { void application?.quick.getSnapshot()?.flush().catch(() => {}); void application?.reviews.flush().catch(() => {}); }
       if (nextState !== 'active') return;
       const current = stateRef.current;
       if (current.status === 'signed-in' || (current.status === 'recoverable-error' && current.user)) {
@@ -91,13 +95,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [lifecycle]);
   const logout = useCallback(async () => {
     try {
-      await application?.quick.logout(() => new Promise<boolean>(resolve => Alert.alert(
+      if (!application) return;
+      const expected = application.diaries.getScope();
+      const hasReviews = await application.reviews.hasAny();
+      let approved = false;
+      const confirm = () => new Promise<boolean>(resolve => Alert.alert(
         'Discard draft and log out?',
-        'Logging out will discard your local unsent Quick Diary draft. If a save is still unconfirmed, it may already be on the server. Check its result before logging out.',
+        'Logging out discards your local Quick Diary and Review drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.',
         [{ text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
           { text: 'Discard draft and log out', style: 'destructive', onPress: () => resolve(true) }],
         { cancelable: false },
-      )));
+      ));
+      if (hasReviews) { approved = await confirm(); if (!approved) return; }
+      if (expected !== application.diaries.getScope()) return;
+      await application.quick.logout(async () => approved || await confirm(), async () => application.reviews.discardOwner());
     } catch {
       Alert.alert('Draft storage unavailable', 'We could not safely remove your encrypted draft. You are still signed in. Please reopen the app and try again.');
     }
@@ -107,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [lifecycle]);
 
   return (
-    <AuthContext.Provider value={{ state, diaryScope, quick, diaryMutation, beginQuick, login, logout, retryVerification }}>
+    <AuthContext.Provider value={{ state, diaryScope, quick, reviews: application?.reviews ?? null, diaryMutation, beginQuick, login, logout, retryVerification }}>
       {children}
     </AuthContext.Provider>
   );

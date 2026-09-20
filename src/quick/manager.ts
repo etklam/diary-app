@@ -39,13 +39,15 @@ export function createQuickManager(options: {
     },
     getSnapshot: () => controller,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
-    async logout(confirm: () => Promise<boolean>) {
+    async logout(confirm: () => Promise<boolean>, discardOtherDrafts?: () => Promise<void>) {
       const expected = controller;
       await loaded;
       if (expected !== controller) return;
       if (expected) {
         if (!expected.getSnapshot().ready || expected.getSnapshot().persistence === 'error') throw new Error('Cannot access the encrypted draft. Logout was stopped so it is not silently discarded.');
         if (expected.hasUnsent() && !await confirm()) return;
+        if (expected !== controller) return;
+        await discardOtherDrafts?.();
         if (expected !== controller) return;
         await expected.discard();
       }

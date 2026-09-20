@@ -17,10 +17,12 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
     const registered: { email: string; password: string }[] = [];
     const clients: ReturnType<typeof createNativeSession>[] = [];
     const cleanupIds = new Set<string>();
+    const scenario = randomUUID();
     let loseResponse = false;
     let postCount = 0;
     const transport: typeof fetch = async (input, init) => {
       const request = new Request(input, init);
+      request.headers.set('x-e2e-test-id', scenario);
       const write = request.method === 'POST' && new URL(request.url).pathname === '/api/diaries';
       if (write) postCount++;
       const response = await fetch(request);
@@ -34,7 +36,7 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
     };
     const register = async (label: string) => {
       const credentials = { email: `p1b-${label}-${randomUUID().slice(0, 8)}@example.test`, password: 'SyntheticP1b2026' };
-      const response = await fetch(`${baseUrl}/api/auth/register`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(credentials) });
+      const response = await fetch(`${baseUrl}/api/auth/register`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-e2e-test-id': scenario }, body: JSON.stringify(credentials) });
       expect(response.status).toBe(200); registered.push(credentials);
       let stored: NativeSession | null = null;
       const storage = { get: () => stored, set: (value: NativeSession) => { stored = value; }, clear: () => { stored = null; } };

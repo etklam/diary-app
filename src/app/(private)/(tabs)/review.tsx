@@ -25,7 +25,7 @@ function Review({ scope }: { scope: DiaryReadScope }) {
       sections={state.groups ? reviewBuckets.map(bucket => ({ key: bucket, title: labels[bucket], total: state.groups!.counts[bucket], data: state.groups![bucket] })) : []}
       keyExtractor={item => item.id} refreshing={state.phase === 'refresh'} onRefresh={() => void model.refresh()}
       ListHeaderComponent={<View style={{ gap: 10 }}><Text style={styles.heading}>Review</Text>
-        <Text style={styles.meta}>Diary reviews · Read only. Groups follow your account timezone. Completed includes the latest 50 reviewed diaries.</Text>
+        <Text style={styles.meta}>Open a diary to write or edit its review. Groups follow your account timezone. Completed includes the latest 50 reviewed diaries.</Text>
         {state.phase === 'initial' && <ReadLoading label="Loading diary reviews…" />}
         {state.issue && state.failed !== 'more' && <ReadFailure issue={state.issue} retry={() => void model.retry()} />}
       </View>}
