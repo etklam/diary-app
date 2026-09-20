@@ -1,3 +1,4 @@
+import { reportMetadata } from '../beta/diagnostics';
 import { NO_AUTOMATIC_SESSION_RETRY_HEADER, type createApiClient } from '@diary/api-client';
 import { apiErrorResponseSchema, diaryByDateResponseSchema, diaryResponseSchema, type DiaryResponse } from '@diary/contracts';
 import type { AuthLifecycle } from '../auth/lifecycle';
@@ -29,6 +30,7 @@ export function createQuickApi(api: ReturnType<typeof createApiClient>, owner: P
     },
     async write(payload) {
       check();
+      reportMetadata.reset('quick');
       // Status is diagnostic only; the controller requires a documented rejection code.
       const result = await api.POST('/api/diaries', { body: payload, parseAs: 'text',
         headers: { [NO_AUTOMATIC_SESSION_RETRY_HEADER]: '1' } });
@@ -38,7 +40,7 @@ export function createQuickApi(api: ReturnType<typeof createApiClient>, owner: P
         try {
           const errorBody: unknown = result.error;
           const parsed = apiErrorResponseSchema.safeParse(typeof errorBody === 'string' ? JSON.parse(errorBody) : errorBody);
-          if (parsed.success) code = parsed.data.data.code;
+          if (parsed.success) { code = parsed.data.data.code; reportMetadata.set('quick', parsed.data.data); }
         } catch { /* An unrecognized body leaves the outcome unknown. */ }
         return { ok: false, status: result.response.status, code };
       }

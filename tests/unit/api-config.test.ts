@@ -27,9 +27,9 @@ describe('resolveApiConfig', () => {
   });
 
   it('isolates secure storage when the environment or origin changes', () => {
-    const first = resolveApiConfig({ baseUrl: 'https://one.example.test', appEnvironment: 'preview', isDevelopmentRuntime: false });
-    const second = resolveApiConfig({ baseUrl: 'https://two.example.test', appEnvironment: 'preview', isDevelopmentRuntime: false });
-    const production = resolveApiConfig({ baseUrl: 'https://one.example.test', appEnvironment: 'production', isDevelopmentRuntime: false });
+    const first = resolveApiConfig({ baseUrl: 'https://one.operator-approved.org', appEnvironment: 'preview', isDevelopmentRuntime: false });
+    const second = resolveApiConfig({ baseUrl: 'https://two.operator-approved.org', appEnvironment: 'preview', isDevelopmentRuntime: false });
+    const production = resolveApiConfig({ baseUrl: 'https://one.operator-approved.org', appEnvironment: 'production', isDevelopmentRuntime: false });
     expect(new Set([first.sessionStorageKey, second.sessionStorageKey, production.sessionStorageKey]).size).toBe(3);
   });
 });

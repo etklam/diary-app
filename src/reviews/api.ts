@@ -1,3 +1,4 @@
+import { reportMetadata } from '../beta/diagnostics';
 import { NO_AUTOMATIC_SESSION_RETRY_HEADER, type createApiClient } from '@diary/api-client';
 import { apiErrorResponseSchema } from '@diary/contracts';
 import { diaryReviewResponseSchema } from '@diary/contracts/review';
@@ -14,6 +15,7 @@ export function createReviewApi(api: ReturnType<typeof createApiClient>, scope: 
   return { ownerId: scope.ownerId, isCurrent: scope.isCurrent, read: signal => scope.review(id, signal), changed,
     async write(payload) {
       check();
+      reportMetadata.reset('review-editor');
       const result = await api.PATCH('/api/diaries/{id}/review', { params: { path: { id } }, body: payload,
         parseAs: 'text', headers: { [NO_AUTOMATIC_SESSION_RETRY_HEADER]: '1' } });
       check();
@@ -22,7 +24,7 @@ export function createReviewApi(api: ReturnType<typeof createApiClient>, scope: 
         try {
           const body: unknown = result.error;
           const parsed = apiErrorResponseSchema.safeParse(typeof body === 'string' ? JSON.parse(body) : body);
-          if (parsed.success) code = parsed.data.data.code;
+          if (parsed.success) { code = parsed.data.data.code; reportMetadata.set('review-editor', parsed.data.data); }
         } catch { /* An unrecognized error is not a rejection receipt. */ }
         return { ok: false, status: result.response.status, code };
       }

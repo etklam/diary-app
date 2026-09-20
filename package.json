@@ -8,6 +8,7 @@
     "@diary/domain": "file:vendor/shared-packages/artifacts/diary-domain-0.0.0-dev.g7e3a39ad5c49.c7c695de05093.tgz",
     "@expo/ui": "~57.0.19",
     "expo": "~57.0.24",
+    "expo-application": "~57.0.3",
     "expo-build-properties": "~57.0.21",
     "expo-constants": "~57.0.19",
     "expo-crypto": "~57.0.3",
@@ -65,7 +66,11 @@
     "dependencies:check": "expo install --check",
     "doctor": "npx expo-doctor",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run android:bundle",
-    "test:api:reviews": "vitest run tests/api/reviews-api.test.ts"
+    "test:api:reviews": "vitest run tests/api/reviews-api.test.ts",
+    "release:validate": "node scripts/validate-release.cjs",
+    "android:preview:local": "node scripts/preview-build.cjs",
+    "android:preview:eas": "node scripts/preview-eas.cjs",
+    "eas-build-post-install": "node scripts/eas-validate.cjs"
   },
   "private": true
 }

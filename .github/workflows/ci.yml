@@ -15,9 +15,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Prove SDK ambient types work before any Expo command generates local types.
+      - run: npm run typecheck
       - run: npm run dependencies:check
       - run: npm run doctor
       - run: npm run lint
-      - run: npm run typecheck
       - run: npm test
       - run: npm run android:bundle

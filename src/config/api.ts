@@ -1,3 +1,5 @@
+import { hostedOrigin } from '../../config/release.cjs';
+
 export type AppEnvironment = 'development' | 'preview' | 'production';
 
 export type ApiConfig = {
@@ -49,6 +51,9 @@ export function resolveApiConfig(input: {
     throw new ApiConfigurationError('HTTPS is required outside an explicit development runtime.');
   }
 
+  if (appEnvironment !== 'development') {
+    try { hostedOrigin(rawBaseUrl); } catch { throw new ApiConfigurationError('A hosted HTTPS API origin is required for release.'); }
+  }
   const baseUrl = url.origin;
   return {
     appEnvironment: appEnvironment as AppEnvironment,

@@ -44,3 +44,7 @@ example
 
 # IDE
 .idea/
+
+# Private release signing inputs
+credentials.json
+*.keystore

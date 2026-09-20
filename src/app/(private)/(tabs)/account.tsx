@@ -1,3 +1,4 @@
+import { HelpButton } from '@/beta/help';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,6 +35,7 @@ export default function AccountScreen() {
           <Text style={styles.label}>Timezone</Text>
           <Text style={styles.value}>{user.timezone}</Text>
         </View>
+        <HelpButton screen="account" />
         <PrimaryButton testID="logout-button" label="Log out" onPress={() => void logout()} />
       </ScrollView>
     </SafeAreaView>

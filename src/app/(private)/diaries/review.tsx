@@ -1,3 +1,4 @@
+import { HelpButton } from '@/beta/help';
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Alert, BackHandler, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
@@ -89,6 +90,7 @@ function Editor({ controller, discard }: { controller: ReviewController; discard
           </View>}
           <PrimaryButton label="Discard local review draft" disabled={state.busy} onPress={discardDraft} />
         </>}
+        {(state.issue || draft?.attempt) && <HelpButton screen="review-editor" code={draft?.attempt ? 'UNKNOWN_WRITE' : undefined} />}
       </ScrollView>
       <View style={styles.footer}>
         <Text accessibilityLiveRegion="polite" style={styles.meta}>{state.persistence === 'error' ? 'Local save failed — retry before leaving' : state.persistence === 'pending' ? 'Saving draft on device…' : draft?.attempt ? 'Unconfirmed attempt saved on device' : state.restored || draft?.revision ? 'Draft saved on device only' : 'No local changes'}</Text>

@@ -1,3 +1,4 @@
+import { HelpButton } from '@/beta/help';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { authColors, PrimaryButton } from './auth-ui';
 import type { ReadIssue } from '@/diaries/access';
@@ -17,6 +18,7 @@ export function ReadFailure({ issue, retry }: { issue: ReadIssue; retry: () => v
   return <View style={diaryStyles.block}>
     <Text accessibilityRole="alert" style={diaryStyles.body}>{messages[issue]}</Text>
     {issue !== 'not-found' && <PrimaryButton label="Retry" onPress={retry} />}
+    <HelpButton screen="diary-read" code={issue} />
   </View>;
 }
 export function Labels({ symbols, tags }: { symbols: string[]; tags: string[] }) {

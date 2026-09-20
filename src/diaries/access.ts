@@ -1,6 +1,7 @@
+import { reportMetadata } from '../beta/diagnostics';
 import type { createApiClient } from '@diary/api-client';
 import { diaryReviewResponseSchema } from '@diary/contracts/review';
-import { diaryResponseSchema } from '@diary/contracts';
+import { apiErrorResponseSchema, diaryResponseSchema } from '@diary/contracts';
 import { diarySummaryListResponseSchema } from '@diary/contracts/diary-summary';
 import { diaryListQuerySchema } from '@diary/contracts/diary-list';
 import { diaryActivityQuerySchema, diaryActivityResponseSchema } from '@diary/contracts/diary-activity';
@@ -47,11 +48,12 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
     if (!next) { scope = null; listeners.forEach(listener => listener()); return; }
     const isCurrent = () => epoch === generation && owner === next;
     const check = () => { if (!isCurrent()) throw new StaleRead(); };
-    const read = async <T>(request: () => Promise<{ response: Response; data?: unknown }>, parse: (value: unknown) => T, detail = false): Promise<T> => {
+    const read = async <T>(request: () => Promise<{ response: Response; data?: unknown; error?: unknown }>, parse: (value: unknown) => T, detail = false): Promise<T> => {
       check();
       try {
         const result = await request();
         check();
+        if (!result.response.ok) { const parsed = apiErrorResponseSchema.safeParse(result.error); if (parsed.success) reportMetadata.set('diary-read', parsed.data.data); }
         if (result.response.status === 401) {
           await lifecycle.retryVerification();
           throw new ReadError('session');

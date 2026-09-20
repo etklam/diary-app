@@ -1,3 +1,4 @@
+import { HelpButton } from '@/beta/help';
 import { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
 import {
@@ -79,6 +80,7 @@ export default function LoginScreen() {
             </View>
           ) : null}
 
+          <HelpButton screen="login" label="取得帳號／登入協助 · Beta／Help" />
           <View style={styles.form}>
             <View style={styles.field}>
               <Text style={styles.label}>Email</Text>

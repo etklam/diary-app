@@ -1,3 +1,4 @@
+import { HelpButton } from '@/beta/help';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { BackHandler, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
@@ -84,6 +85,7 @@ function Composer({ controller }: { controller: QuickController }) {
           </View>}
           {state.recovery === 'pending' && <Text style={styles.meta}>No change is visible yet. The original request may still commit. Your attempt remains locked; check again later.</Text>}
         </>}
+        {(state.issue || draft.attempt) && <HelpButton screen="quick" code={draft.attempt ? 'UNKNOWN_WRITE' : state.issue ?? undefined} />}
       </ScrollView>
       <View style={styles.footer}>
         <Text accessibilityLiveRegion="polite" style={styles.meta}>{state.persistence === 'error' ? 'Draft storage unavailable' : state.persistence === 'pending' ? 'Saving draft on device…' : state.ready ? 'Draft saved on device' : 'Opening draft…'}</Text>

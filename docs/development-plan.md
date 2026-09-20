@@ -62,14 +62,31 @@ Fresh results and remaining verification limits are recorded in [P1C-2A acceptan
 | Explicit stale-edit baseline adoption | IMPLEMENTED | Current server/local comparison; preflight GET is not atomic concurrency protection |
 | Logout, expiry and account isolation | IMPLEMENTED | Owner epoch checks, current-owner draft cleanup only, retention on involuntary invalidation |
 
-## P1C-2B — Rescheduling and return-to-queue: PLANNED
+## Beta-R1 — Standalone Android packaging and tester readiness: IMPLEMENTED, RELEASE BLOCKED
+
+Product scope is frozen at the existing authentication, Quick Diary/encrypted drafts, discovery/Calendar and Review authoring features. [Beta-R1 acceptance](evidence/beta-r1/acceptance.md) records fresh checks separately from the historical phase results above.
+
+| Scope | Status | Evidence |
+| --- | --- | --- |
+| Clean-checkout Expo ambient type initialization | VERIFIED (host) | Original two CSS type errors reproduced without generated Expo state; installed `expo/types` reference fixes them; clean typecheck/tests/export pass |
+| Standalone preview profiles, HTTPS/config validation, stable separate identity and signing guard | IMPLEMENTED | Separate EAS/local Gradle paths; regression tests; missing approved deployment/signing blocks a candidate artifact |
+| First-use guidance, About/Help, explicit privacy-safe reporting and rendering recovery | IMPLEMENTED | Unit tests and limited development-VM Help evidence; actual standalone behavior pending |
+| Signed APK, hosted HTTPS standalone acceptance and invitation readiness | NOT VERIFIED / BLOCKED | No approved API/support/data policy or authorized EAS/release signing configuration; no preview artifact or successful hosted CI observed |
+
+See the [operator runbook](beta/release-runbook.md) and [Traditional Chinese tester guide](beta/tester-guide.md). Beta-R1 is not authorization to invite testers or publish publicly.
+
+## Beta-R2 — Real-device candidate acceptance and blocking fixes: PLANNED
+
+Smallest next phase: supply the missing approved operator settings, build/audit a signed preview candidate, then validate standalone launch without Metro, hosted HTTPS auth/writes, force-stop/session/draft recovery, support, narrow/large-font UI and install-over preservation on real devices. Verify native single-attempt POST/PATCH using release-compatible HTTPS faults. Fix blockers before the first 5–10 individually approved testers. Do not expand features while completing candidate acceptance.
+
+## P1C-2B — Rescheduling and return-to-queue: PLANNED, DEFERRED UNTIL BETA FEEDBACK
 
 Verify each mutation contract and design its write-safety state machine before implementation. No rescheduling or return-to-queue controls are included in P1C-2A. A separate backend follow-up should add an atomic expected-version condition for review updates; operation receipts/idempotency would be needed for stronger outcome recovery. Neither is invented client-side.
 
-## Remaining diary product work: PLANNED
+## Remaining diary product work: PLANNED, DEFERRED UNTIL BETA FEEDBACK
 
 Full diary editing, delete workflows and templates remain unimplemented. No automatic uploads, persistent discovery cache, background synchronization or new idempotency protocol is included in P1C-1.
 
 ## P2 — Broader product/distribution: PLANNED
 
-Watchlist, Portfolio, Tools, Articles, notifications, SSO, EAS/store distribution, iOS acceptance and production deployment remain outside this phase.
+Watchlist, Portfolio, additional Tools, Articles, notifications, SSO, store submission, iOS acceptance and production deployment remain deferred. Private standalone Android packaging belongs to Beta-R1/Beta-R2 above; it does not enable these modules or authorize public distribution.

@@ -1,3 +1,5 @@
+import Constants from 'expo-constants';
+import { reportMetadata } from '@/beta/diagnostics';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Alert, AppState } from 'react-native';
 import { randomUUID } from 'expo-crypto';
@@ -35,10 +37,15 @@ const zeroMutation = () => 0;
 function buildRuntime() {
   try {
     const config = loadApiConfig();
+    const embedded = Constants.expoConfig?.extra;
+    if (embedded?.buildVariant !== config.appEnvironment || (config.appEnvironment !== 'development' && embedded?.apiOrigin !== config.baseUrl)) {
+      throw new ApiConfigurationError('Build/runtime configuration mismatch.');
+    }
     const storage = createSecureSessionStorage(SecureStore, config.sessionStorageKey);
     const runtime = createAuthRuntime(config, storage);
     const lifecycle = createAuthLifecycle({ storage, runtime });
     const diaries = createDiaryAccess(runtime.api, lifecycle);
+    diaries.subscribe(reportMetadata.clear);
     const quick = createQuickManager({ api: runtime.api, lifecycle, diaries,
       scope: JSON.stringify([config.appEnvironment, config.baseUrl]), repository: nativeDraftRepository, attemptId: randomUUID });
     const reviews = createReviewManager({ api: runtime.api, diaries, scope: JSON.stringify([config.appEnvironment, config.baseUrl]),
