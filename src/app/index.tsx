@@ -1,149 +1,60 @@
-import { HelpButton } from '@/beta/help';
-import { useEffect, useState } from 'react';
-import { Redirect } from 'expo-router';
-import {
-  ActivityIndicator,
-  BackHandler,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { useRef, useState } from 'react';
+import { Redirect, router, useLocalSearchParams, type Href } from 'expo-router';
+import { loginRequestSchema, registerRequestSchema } from '@diary/contracts';
 import { useAuth } from '@/auth/context';
-import { authColors, PrimaryButton, StatusMessage } from '@/components/auth-ui';
+import { usePreferences } from '@/preferences/context';
+import { AccountPage, Choice, Copy, Failure, Field, fieldInvalid } from '@/components/account-ui';
+import { PrimaryButton } from '@/components/auth-ui';
+import { registerAccount } from '@/account/service';
+import { safeContinuation, workspacePath } from '@/navigation/continuation';
 
 export default function LoginScreen() {
-  const { state, login, retryVerification } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      Keyboard.dismiss();
-      return true;
-    });
-    return () => subscription.remove();
-  }, []);
-
-  if (state.status === 'signed-in' || (state.status === 'recoverable-error' && state.user)) {
-    return <Redirect href="/timeline" />;
+  const { state, api, login, retryVerification } = useAuth();
+  const ui = usePreferences();
+  const params = useLocalSearchParams<{ returnTo?: string; mode?: string; security?: string }>();
+  const registering = params.mode === 'register';
+  const destination = safeContinuation(params.returnTo);
+  const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
+  const [name, setName] = useState(''); const [confirmation, setConfirmation] = useState('');
+  const [busy, setBusy] = useState(false); const [error, setError] = useState<unknown>(null); const [created, setCreated] = useState(false);
+  const submitting = useRef(false);
+  const authenticated = state.status === 'signed-in' || state.status === 'recoverable-error' && state.user;
+  if (authenticated && ui.ready) return <Redirect href={(destination ?? workspacePath(ui.settings?.defaultWorkspacePage)) as Href} />;
+  const pending = busy || state.status === 'bootstrapping' || !!authenticated;
+  async function submit() {
+    if (pending || submitting.current || !api) return;
+    submitting.current = true;
+    setError(null);
+    try {
+      const input = { email: email.trim(), password, ...(registering && name.trim() ? { name: name.trim() } : {}) };
+      (registering ? registerRequestSchema : loginRequestSchema).parse(input);
+      if (registering && password !== confirmation) { setError(new Error('Passwords do not match.')); return; }
+      setBusy(true);
+      if (registering) { await registerAccount(api, input); setCreated(true); } else await login(input.email, password);
+    } catch (failure) { setError(failure); }
+    finally { submitting.current = false; setBusy(false); setPassword(''); setConfirmation(''); }
   }
-
-  const busy = state.status === 'bootstrapping';
-  const submit = () => {
-    if (!email.trim() || !password || busy) return;
-    void login(email, password);
-  };
-
-  return (
-    <SafeAreaView style={styles.page}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <View style={styles.heading}>
-            <Text style={styles.eyebrow}>TRADE BASIC</Text>
-            <Text style={styles.title}>Sign in</Text>
-            <Text style={styles.subtitle}>Your trading journal, ready when you are.</Text>
-          </View>
-
-          {state.status === 'configuration-error' ? (
-            <StatusMessage tone="error">{state.message}</StatusMessage>
-          ) : null}
-          {state.status === 'session-invalid' ? (
-            <StatusMessage tone="error">
-              {state.issue === 'storage'
-                ? 'Secure session storage failed. Sign-in was stopped to protect the session.'
-                : 'The saved session is no longer valid. Sign in again.'}
-            </StatusMessage>
-          ) : null}
-          {state.status === 'signed-out' && state.issue === 'invalid-credentials' ? (
-            <StatusMessage tone="error">The email or password is incorrect.</StatusMessage>
-          ) : null}
-          {state.status === 'signed-out' && state.issue === 'logout-unconfirmed' ? (
-            <StatusMessage tone="warning">
-              You are signed out on this device. Server revocation could not be confirmed.
-            </StatusMessage>
-          ) : null}
-          {state.status === 'recoverable-error' ? (
-            <View style={styles.recovery}>
-              <StatusMessage tone="warning">
-                The API could not verify the saved session. The encrypted token pair was kept.
-              </StatusMessage>
-              <PrimaryButton testID="retry-session" label="Retry verification" onPress={() => void retryVerification()} />
-            </View>
-          ) : null}
-
-          <HelpButton screen="login" code={'issue' in state ? state.issue : state.status === 'configuration-error' ? 'configuration-error' : undefined} label="取得帳號／登入協助 · Beta／Help" />
-          <View style={styles.form}>
-            <View style={styles.field}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                testID="email-input"
-                accessibilityLabel="Email"
-                autoCapitalize="none"
-                autoComplete="email"
-                keyboardType="email-address"
-                onChangeText={setEmail}
-                returnKeyType="next"
-                style={styles.input}
-                value={email}
-              />
-            </View>
-            <View style={styles.field}>
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                testID="password-input"
-                accessibilityLabel="Password"
-                autoCapitalize="none"
-                autoComplete="current-password"
-                onChangeText={setPassword}
-                onSubmitEditing={submit}
-                returnKeyType="done"
-                secureTextEntry
-                style={styles.input}
-                value={password}
-              />
-            </View>
-            <PrimaryButton
-              testID="login-button"
-              label="Sign in"
-              busy={busy}
-              disabled={!email.trim() || !password || state.status === 'configuration-error'}
-              onPress={submit}
-            />
-          </View>
-          {busy ? (
-            <View testID="auth-status" accessibilityLiveRegion="polite" style={styles.loading}>
-              <ActivityIndicator color={authColors.action} />
-              <Text style={styles.loadingText}>Checking session…</Text>
-            </View>
-          ) : null}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+  return <AccountPage title={registering ? 'Create account' : 'Sign in'}>
+    <Copy>Your trading journal, ready when you are.</Copy>
+    <Choice label="Language" values={[[ 'en', 'English' ], ['zh-TW','繁體中文'],['zh-CN','简体中文']]} value={ui.locale} onChange={v => ui.setLocale(v as typeof ui.locale)} />
+    {params.security === 'done' && <Copy>Security action completed. Sign in again.</Copy>}
+    {params.security === 'uncertain' && <Copy>The result is uncertain. This device is signed out. Check your credentials before trying again; the action was not repeated.</Copy>}
+    {state.status === 'configuration-error' && <Copy>{state.message}</Copy>}
+    {state.status === 'session-invalid' && <Copy>{state.issue === 'storage' ? 'Secure session storage is unavailable. Check this device before signing in again.' : 'The saved session is no longer valid. Sign in again.'}</Copy>}
+    {state.status === 'signed-out' && state.issue === 'invalid-credentials' && <Copy>The email or password is incorrect.</Copy>}
+    {state.status === 'signed-out' && state.issue === 'login-unavailable' && <><Copy>{state.code?.includes('RATE') ? 'Too many requests. Please wait before trying again.' : 'Could not sign in. Check your connection and try again.'}</Copy>{state.code && <Copy>{state.code}</Copy>}</>}
+    {state.status === 'signed-out' && state.issue === 'logout-unconfirmed' && <Copy>This device is signed out. Server revocation could not be confirmed.</Copy>}
+    {state.status === 'recoverable-error' && <PrimaryButton label="Retry verification" onPress={() => void retryVerification()} />}
+    {pending && <Copy>Checking session…</Copy>}
+    {created ? <><Copy>Account created. Sign in to continue.</Copy><PrimaryButton testID="registered-sign-in" label="Sign in" onPress={() => { setCreated(false); router.setParams({ mode: 'login' }); }} /></> : <>
+      {registering && <Field error={fieldInvalid(error, 'name')} label="Name" testID="name-input" value={name} onChangeText={setName} maxLength={100} editable={!pending} />}
+      <Field error={fieldInvalid(error, 'email')} label="Email" testID="email-input" value={email} onChangeText={setEmail} keyboardType="email-address" autoComplete="email" editable={!pending} />
+      <Field error={fieldInvalid(error, 'password')} label="Password" testID="password-input" value={password} onChangeText={setPassword} secureTextEntry autoComplete={registering ? 'new-password' : 'current-password'} editable={!pending} />
+      {registering && <><Copy>Use 8 or more characters, up to 72 UTF-8 bytes.</Copy><Field label="Confirm password" testID="confirm-input" value={confirmation} onChangeText={setConfirmation} secureTextEntry editable={!pending} /></>}
+      {error instanceof Error && error.message === 'Passwords do not match.' ? <Copy>Passwords do not match.</Copy> : <Failure error={error} />}
+      <PrimaryButton testID={registering ? 'register-button' : 'login-button'} label={registering ? 'Create account' : 'Sign in'} busy={pending} disabled={!email.trim() || !password || !api} onPress={() => void submit()} />
+      <PrimaryButton testID="auth-switch" label={registering ? 'Sign in' : 'Create account'} disabled={pending} onPress={() => { setError(null); setPassword(''); setConfirmation(''); router.setParams({ mode: registering ? 'login' : 'register' }); }} />
+    </>}
+    <PrimaryButton label="Continue as guest" disabled={pending} onPress={() => router.push('/start')} />
+  </AccountPage>;
 }
-
-const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: authColors.canvas },
-  flex: { flex: 1 },
-  content: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 32, gap: 24 },
-  heading: { gap: 8 },
-  eyebrow: { color: authColors.action, fontSize: 12, letterSpacing: 2, fontWeight: '800' },
-  title: { color: authColors.ink, fontSize: 42, lineHeight: 49, fontWeight: '700' },
-  subtitle: { color: authColors.muted, fontSize: 16, lineHeight: 24 },
-  form: { gap: 18 },
-  field: { gap: 7 },
-  label: { color: authColors.ink, fontSize: 15, lineHeight: 21, fontWeight: '700' },
-  input: { minHeight: 52, borderWidth: 1, borderColor: authColors.border, borderRadius: 12, backgroundColor: authColors.surface, color: authColors.ink, fontSize: 17, paddingHorizontal: 14, paddingVertical: 12 },
-  recovery: { gap: 12 },
-  loading: { minHeight: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
-  loadingText: { color: authColors.muted, fontSize: 14 },
-});

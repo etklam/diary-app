@@ -6,26 +6,32 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/auth/context';
+import { PreferencesProvider, usePreferences } from '@/preferences/context';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
+        <PreferencesProvider>
         <BetaIntroduction />
-        <StatusBar style="dark" />
+        <AppStatusBar />
         <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(private)" />
         </Stack>
+        </PreferencesProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
 }
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
-  return <SafeAreaProvider><View style={{ flex: 1, paddingTop: 40 }}>
-    <Text accessibilityRole="alert" style={{ padding: 20, fontSize: 18 }}>畫面無法顯示。請保留草稿；重新顯示畫面不會捨棄資料或重新送出寫入。</Text>
-    <PrimaryButton label="重新顯示畫面" onPress={() => void retry()} />
+  const { colors, t } = usePreferences();
+  return <SafeAreaProvider><View style={{ flex: 1, paddingTop: 40, backgroundColor: colors.canvas }}>
+    <Text accessibilityRole="alert" style={{ padding: 20, fontSize: 18, color: colors.ink }}>{t('This screen could not be displayed. Retrying preserves drafts and does not repeat writes.')}</Text>
+    <PrimaryButton label="Retry" onPress={() => void retry()} />
     <HelpContent screen="root" code="RENDER_ERROR" />
   </View></SafeAreaProvider>;
 }
+
+function AppStatusBar() { const { dark } = usePreferences(); return <StatusBar style={dark ? "light" : "dark"} />; }

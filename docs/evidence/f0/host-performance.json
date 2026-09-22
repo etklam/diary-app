@@ -1,0 +1,22 @@
+{
+  "node": "v24.19.0",
+  "platform": "win32",
+  "kind": "Host domain computation only; excludes native chart rendering, editor input and network",
+  "results": {
+    "chartSeries320Points": {
+      "samples": 100,
+      "p50Ms": 0.05089999999999861,
+      "p95Ms": 0.12289999999999779
+    },
+    "fireProjection": {
+      "samples": 100,
+      "p50Ms": 0.010300000000000864,
+      "p95Ms": 0.016799999999996373
+    },
+    "authoringTitle10000Characters": {
+      "samples": 100,
+      "p50Ms": 0.0016999999999995907,
+      "p95Ms": 0.0024999999999977263
+    }
+  }
+}

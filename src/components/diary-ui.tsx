@@ -1,10 +1,13 @@
+import { usePreferences, useAppColors, type Colors } from '@/preferences/context';
 import { HelpButton } from '@/beta/help';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { authColors, PrimaryButton } from './auth-ui';
+import { PrimaryButton } from './auth-ui';
 import type { ReadIssue } from '@/diaries/access';
 
 export function ReadLoading({ label }: { label: string }) {
-  return <View style={diaryStyles.block} accessibilityLiveRegion="polite"><ActivityIndicator color={authColors.action} /><Text style={diaryStyles.meta}>{label}</Text></View>;
+  const { colors: authColors, t } = usePreferences();
+  const diaryStyles = createStyles(authColors);
+  return <View style={diaryStyles.block} accessibilityLiveRegion="polite"><ActivityIndicator color={authColors.action} /><Text style={diaryStyles.meta}>{t(label)}</Text></View>;
 }
 
 const messages: Record<ReadIssue, string> = {
@@ -15,20 +18,24 @@ const messages: Record<ReadIssue, string> = {
   session: 'Your session could not be verified. Retry or open Account to sign in again.',
 };
 export function ReadFailure({ issue, retry }: { issue: ReadIssue; retry: () => void }) {
+  const { colors: authColors, t } = usePreferences();
+  const diaryStyles = createStyles(authColors);
   return <View style={diaryStyles.block}>
-    <Text accessibilityRole="alert" style={diaryStyles.body}>{messages[issue]}</Text>
-    {issue !== 'not-found' && <PrimaryButton label="Retry" onPress={retry} />}
+    <Text accessibilityRole="alert" style={diaryStyles.body}>{t(messages[issue])}</Text>
+    {issue !== 'not-found' && <PrimaryButton label={t("Retry")} onPress={retry} />}
     <HelpButton screen="diary-read" code={issue} />
   </View>;
 }
 export function Labels({ symbols, tags }: { symbols: string[]; tags: string[] }) {
+  const { colors: authColors } = usePreferences();
+  const diaryStyles = createStyles(authColors);
   if (!symbols.length && !tags.length) return null;
   return <View style={diaryStyles.labels}>
     {symbols.map(symbol => <Text key={`symbol:${symbol}`} style={diaryStyles.symbol}>{symbol}</Text>)}
     {tags.map(tag => <Text key={`tag:${tag}`} style={diaryStyles.tag}>#{tag}</Text>)}
   </View>;
 }
-export const diaryStyles = StyleSheet.create({
+const createStyles = (authColors: Colors) => StyleSheet.create({
   page: { flex: 1, backgroundColor: authColors.canvas },
   content: { padding: 16, gap: 14, flexGrow: 1 },
   block: { paddingVertical: 20, gap: 14 },
@@ -41,3 +48,5 @@ export const diaryStyles = StyleSheet.create({
   symbol: { fontSize: 13, lineHeight: 20, fontWeight: '700', color: authColors.ink, backgroundColor: authColors.canvas, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 4 },
   tag: { fontSize: 13, lineHeight: 20, color: authColors.muted, paddingVertical: 3 },
 });
+
+export function useDiaryStyles() { return createStyles(useAppColors()); }

@@ -1,12 +1,10 @@
+import { usePreferences, type Colors } from '@/preferences/context';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type PressableProps } from 'react-native';
 
-export const authColors = {
-  canvas: '#F4F4F5', surface: '#FFFFFF', ink: '#202124', muted: '#60636A', border: '#DADCE0',
-  action: '#343740', actionPressed: '#202228', onAction: '#FFFFFF',
-  warningBackground: '#FFF1D6', warningText: '#76511A', errorBackground: '#FCE8E6', errorText: '#8B2C24',
-} as const;
-
 export function PrimaryButton({ label, busy = false, disabled, ...props }: PressableProps & { label: string; busy?: boolean }) {
+  const { colors: authColors, t } = usePreferences();
+  const styles = createStyles(authColors);
+  label = t(label);
   return (
     <Pressable
       accessibilityRole="button"
@@ -20,14 +18,16 @@ export function PrimaryButton({ label, busy = false, disabled, ...props }: Press
 }
 
 export function StatusMessage({ tone, children }: { tone: 'warning' | 'error'; children: string }) {
+  const { colors: authColors, t } = usePreferences();
+  const styles = createStyles(authColors);
   return (
     <View accessibilityRole="alert" style={[styles.message, tone === 'error' ? styles.errorMessage : styles.warningMessage]}>
-      <Text style={tone === 'error' ? styles.errorText : styles.warningText}>{children}</Text>
+      <Text style={tone === 'error' ? styles.errorText : styles.warningText}>{t(children)}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (authColors: Colors) => StyleSheet.create({
   button: { minHeight: 52, alignItems: 'center', justifyContent: 'center', borderRadius: 12, paddingHorizontal: 20, backgroundColor: authColors.action },
   buttonPressed: { backgroundColor: authColors.actionPressed },
   buttonDisabled: { opacity: 0.55 },

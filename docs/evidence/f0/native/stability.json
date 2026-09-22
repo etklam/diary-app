@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "ordinaryLauncherRestarts": 5,
+  "sessionAndQuickOpenedEachTime": true,
+  "secondaryAccountBackReturnsToMore": true,
+  "newCrashBufferEntries": false,
+  "apkSha256": "503d5e315d03d4159a62ebb61e780d62a2f6cf740e180540c65c1bdc46c01488",
+  "limitation": "Does not prove the earlier development URL restart crash is fixed; signed/physical-device acceptance remains open."
+}

@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "checks": [
+    "native guest guide",
+    "registration then explicit sign-in",
+    "continuation opens Quick without submitting",
+    "exact decimal/zero settings",
+    "locale/theme/default Calendar restart",
+    "wrong current password",
+    "password change and reauthentication",
+    "encrypted draft retained across revocation"
+  ],
+  "apkSha256": "3fac1b52009db2bb251fe4bce4b63b921f494c7333fd3e6f9a205f863d4121cb"
+}

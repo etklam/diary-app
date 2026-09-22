@@ -16,6 +16,13 @@ function memoryStorage(initial: ReturnType<typeof session> | null = session()): 
 }
 
 describe('auth lifecycle', () => {
+  it('retains the canonical login rate-limit code without retrying', async () => {
+    const login = vi.fn().mockRejectedValue(new NativeSessionError(429, 'AUTH_RATE_LIMITED', null));
+    const lifecycle = createAuthLifecycle({ storage: memoryStorage(null), runtime: { login, logout: vi.fn(), verifyCurrentUser: vi.fn() } });
+    await lifecycle.login({ email: 'a@example.test', password: 'synthetic-password' });
+    expect(lifecycle.getState()).toEqual({ status: 'signed-out', issue: 'login-unavailable', code: 'AUTH_RATE_LIMITED' });
+    expect(login).toHaveBeenCalledOnce();
+  });
   it('bootstraps through GET /api/auth/me and preserves storage on a normal network failure', async () => {
     const storage = memoryStorage();
     const runtime: AuthRuntime = {

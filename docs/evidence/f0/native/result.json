@@ -1,0 +1,32 @@
+{
+  "result": "PASS",
+  "serial": "emulator-5554",
+  "androidSdk": "36",
+  "abi": "x86_64",
+  "package": "com.etklam.diaryapp",
+  "buildKind": "development APK plus current Metro JavaScript",
+  "apkSha256": "503d5e315d03d4159a62ebb61e780d62a2f6cf740e180540c65c1bdc46c01488",
+  "authoringProbe": {
+    "characters": 29,
+    "editAndPersistViaAdbMs": 5813.000000000102,
+    "note": "Includes ADB input and UIAutomator polling overhead; not per-frame UI latency"
+  },
+  "checks": [
+    "native login",
+    "encrypted draft persistence",
+    "process-death draft restoration",
+    "session restoration",
+    "explicit Quick save",
+    "Diary Detail",
+    "Back to Timeline",
+    "Quick returns to Research",
+    "same draft reopens from More",
+    "explicit append returns to More"
+  ],
+  "ciphertext": {
+    "bytes": 4096,
+    "sha256": "adf09d56e1e85036cf4343301792cd16fd1edd356600fdeea1fd5d55581e74cb",
+    "sqlitePlaintextHeader": false,
+    "syntheticContentVisible": false
+  }
+}

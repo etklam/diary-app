@@ -48,3 +48,8 @@ example
 # Private release signing inputs
 credentials.json
 *.keystore
+
+# Regenerable F0 packaging and private synthetic acceptance state
+/.scratch/f0-packages/
+/.scratch/f0-runtime/
+__pycache__/

@@ -1,6 +1,18 @@
 # Development plan
 
+**Current delivery target (2026-09-22): complete diary-v3 feature parity in the native app, followed by full-product launch.** See the [full launch roadmap](launch-roadmap.md) and [feature parity matrix](feature-parity.md). The owner superseded the earlier beta-only scope and “deferred until beta feedback” priorities. The P0–Beta-R2 sections below remain implementation/evidence history; beta acceptance is an intermediate release task and does not block unrelated feature development.
+
+Execution planning now lives in the [full-app PRD](../.scratch/diary-app-full-parity/PRD.md), [issue index](../.scratch/diary-app-full-parity/ISSUES.md) and [common delivery rules](../.scratch/diary-app-full-parity/ISSUE-BREAKDOWN.md). Follow ticket dependencies rather than numerical or phase order; no new issue is complete merely because a historical slice passed.
+
 Status values: **IMPLEMENTED** means code and automated checks exist; **VERIFIED** means behavior was observed at the stated evidence layer in this run; **PLANNED** is outside the current implementation.
+
+## F0 — Complete-product foundation: VERIFIED within scope
+
+Tickets 01–04 now deliver the frozen full-product inventory, aligned shared packages and previous-client fixture, five-section navigation/global Quick, and repeatable disposable API/native acceptance. The rebuilt Android development APK passed encrypted draft/session restoration, cross-tab authoring and five cold starts. See [F0 evidence](evidence/f0/acceptance.md) for exact layers, performance limitations and the unresolved development-reload incident. Operator tickets 05/69 and actual write-protocol implementation remain open. F0 evidence remains historical; the next accepted phase is recorded below.
+
+## F1 — Account, preferences and Markdown: VERIFIED within scope
+
+Tickets 06–09 deliver registration/public continuation, password change/logout-all, complete preferences/localization/themes and safe native GFM reading. Acceptance includes 182 host tests, three disposable API cases, two source realtime revocation cases, Android Hermes export and three native tracer suites. Cold/expired continuation, A → B → A draft/settings isolation and committed-response loss all passed. See [F1 evidence](evidence/f1/acceptance.md) and [reproduction](f1-acceptance.md). Work stops after F1; F2 has not started. Physical-device, standalone, iOS and full public release gates remain open.
 
 ## P0 — Android native auth: VERIFIED
 
@@ -64,7 +76,7 @@ Fresh results and remaining verification limits are recorded in [P1C-2A acceptan
 
 ## Beta-R1 — Standalone Android packaging and tester readiness: IMPLEMENTED, RELEASE BLOCKED
 
-Product scope is frozen at the existing authentication, Quick Diary/encrypted drafts, discovery/Calendar and Review authoring features. [Beta-R1 acceptance](evidence/beta-r1/acceptance.md) records fresh checks separately from the historical phase results above.
+For the Beta-R1 candidate, product scope was frozen at the existing authentication, Quick Diary/encrypted drafts, discovery/Calendar and Review authoring features. This historical candidate boundary does not limit the current full-app target. [Beta-R1 acceptance](evidence/beta-r1/acceptance.md) records fresh checks separately from the historical phase results above.
 
 | Scope | Status | Evidence |
 | --- | --- | --- |
@@ -81,14 +93,18 @@ See the [operator runbook](beta/release-runbook.md) and [Traditional Chinese tes
 
 Release validation and the local preview build both exit 1 at missing approved HTTPS configuration. No signed candidate exists. Operator deployment/support/data-policy approval, stable signing/version history, individual-account process, isolated HTTPS fault ingress and delivery route remain missing; device discovery found only an Android 16 x86_64 emulator, no physical devices. Exact input/security instructions and blocked artifact/core-flow/draft/owner/install-over/fault/download gates are in the evidence record. Host results do not satisfy them. No new product phase is introduced; complete these same two phases once their external prerequisites are available. No invitations or public distribution occurred.
 
-## P1C-2B — Rescheduling and return-to-queue: PLANNED, DEFERRED UNTIL BETA FEEDBACK
+## P1C-2B — Rescheduling and return-to-queue: PLANNED, FULL-APP PHASE F2
 
 Verify each mutation contract and design its write-safety state machine before implementation. No rescheduling or return-to-queue controls are included in P1C-2A. A separate backend follow-up should add an atomic expected-version condition for review updates; operation receipts/idempotency would be needed for stronger outcome recovery. Neither is invented client-side.
 
-## Remaining diary product work: PLANNED, DEFERRED UNTIL BETA FEEDBACK
+## Remaining diary product work: PLANNED, FULL-APP PHASE F2
 
 Full diary editing, delete workflows and templates remain unimplemented. No automatic uploads, persistent discovery cache, background synchronization or new idempotency protocol is included in P1C-1.
 
-## P2 — Broader product/distribution: PLANNED
+The full-app roadmap now includes these Diary capabilities together with transaction authoring/corrections, Trade Plans and all source authoring relations. Native push and offline synchronization have separate F6/F9 work packages and backend prerequisites; existing encrypted drafts do not establish synchronization support.
 
-Watchlist, Portfolio, additional Tools, Articles, notifications, SSO, store submission, iOS acceptance and production deployment remain deferred. Private standalone Android packaging belongs to Beta-R1/Beta-R2 above; it does not enable these modules or authorize public distribution.
+## P2 — Broader product/distribution: PLANNED, REQUIRED FOR FULL PARITY
+
+Company/Watchlist/Thesis/Evidence, Portfolio/performance, every existing research tool, reminders/Discipline, Partners/Agent API, Articles, administration, complete settings/localization and final production delivery are required in phases F1–F10 of the full roadmap. They are not deferred until after a small Diary launch. The roadmap includes an explicit iOS delivery milestone under the provisional Android-first platform sequence. SSO is not identified as a current diary-v3 parity requirement and is not added merely because it appeared in an older broad backlog.
+
+Private standalone packaging and acceptance from Beta-R1/Beta-R2 remain reusable release work. Missing hosting/signing/device inputs block the relevant external acceptance, not independently implementable product modules. Full completion is judged by the parity matrix and current evidence, not by beta readiness alone.

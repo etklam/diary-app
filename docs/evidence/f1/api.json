@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "checks": [
+    "registration and duplicate rejection",
+    "exact money and zero settings",
+    "locale/timezone/workspace/holiday round trip",
+    "wrong password preserves sessions",
+    "password change revokes two native access/refresh pairs and Web cookie",
+    "old password denied",
+    "logout-all revokes other device and fresh Web cookie",
+    "different-owner settings isolation"
+  ]
+}

@@ -6,11 +6,16 @@ const { withMainApplication } = require('expo/config-plugins');
 const marker = '// diary-single-attempt-writes';
 const install = `${marker}
     com.facebook.react.modules.network.OkHttpClientProvider.setOkHttpClientFactory {
+      val diaryConnections = okhttp3.ConnectionPool()
       com.facebook.react.modules.network.OkHttpClientProvider.createClientBuilder()
+        .connectionPool(diaryConnections)
         .addInterceptor { chain ->
           val request = chain.request()
           val body = request.body
           if (request.header("x-diary-no-automatic-session-retry") == "1" && body != null) {
+            // A one-shot write cannot recover by replaying on an expired idle connection.
+            // Evict idle connections before sending; active reads remain untouched.
+            diaryConnections.evictAll()
             val singleUseBody = object : okhttp3.RequestBody() {
               override fun contentType() = body.contentType()
               override fun contentLength() = body.contentLength()
@@ -28,7 +33,12 @@ module.exports = function withSingleAttemptWrites(config) {
   return withMainApplication(config, config => {
     if (config.modResults.language !== 'kt') throw new Error('Single-attempt writes require the audited Kotlin application template.');
     const contents = config.modResults.contents;
-    if (contents.includes(marker)) return config;
+    if (contents.includes(marker)) {
+      const previous = /\/\/ diary-single-attempt-writes\r?\n[\s\S]*?\}\.build\(\)\r?\n    \}/g;
+      if ([...contents.matchAll(previous)].length !== 1) throw new Error('Cannot safely update the single-attempt transport block.');
+      config.modResults.contents = contents.replace(previous, install);
+      return config;
+    }
     const anchor = 'super.onCreate()';
     if (!contents.includes(anchor)) throw new Error('Cannot install single-attempt transport before React Native initialization.');
     config.modResults.contents = contents.replace(anchor, `${anchor}\n    ${install}`);

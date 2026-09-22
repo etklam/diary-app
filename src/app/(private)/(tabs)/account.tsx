@@ -1,12 +1,15 @@
+import { usePreferences, type Colors } from '@/preferences/context';
 import { HelpButton } from '@/beta/help';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/context';
-import { authColors, PrimaryButton, StatusMessage } from '@/components/auth-ui';
+import { PrimaryButton, StatusMessage } from '@/components/auth-ui';
 
 export default function AccountScreen() {
+  const { colors: authColors, t, error: preferenceError, refresh } = usePreferences();
+  const styles = createStyles(authColors);
   const { state, logout, retryVerification } = useAuth();
   const user = state.status === 'signed-in' ? state.user : state.status === 'recoverable-error' ? state.user : null;
   if (!user) return <Redirect href="/" />;
@@ -15,34 +18,37 @@ export default function AccountScreen() {
     <SafeAreaView edges={['left', 'right']} style={styles.page}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.heading}>
-          <Text style={styles.eyebrow}>TRADE BASIC</Text>
-          <Text style={styles.title}>Account</Text>
-          <Text testID="auth-status" style={styles.subtitle}>Your account and session</Text>
+          <Text style={styles.eyebrow}>{t("TRADE BASIC")}</Text>
+          <Text style={styles.title}>{t("Account")}</Text>
+          <Text testID="auth-status" style={styles.subtitle}>{t("Your account and session")}</Text>
         </View>
         {state.status === 'recoverable-error' ? (
           <View style={styles.warningBlock}>
-            <StatusMessage tone="warning">We could not check your connection. Your account is still signed in on this device.</StatusMessage>
-            <PrimaryButton testID="retry-session" label="Retry verification" onPress={() => void retryVerification()} />
+            <StatusMessage tone="warning">{t("We could not check your connection. Your account is still signed in on this device.")}</StatusMessage>
+            <PrimaryButton testID="retry-session" label={t("Retry verification")} onPress={() => void retryVerification()} />
           </View>
         ) : null}
+        {preferenceError && <><StatusMessage tone="warning">Could not load preferences. Retry or continue with device defaults.</StatusMessage><PrimaryButton label="Retry" onPress={() => void refresh()} /></>}
         <View style={styles.card}>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>{t("Email")}</Text>
           <Text testID="verified-email" selectable style={styles.value}>{user.email}</Text>
           <View style={styles.rule} />
-          <Text style={styles.label}>Account role</Text>
+          <Text style={styles.label}>{t("Account role")}</Text>
           <Text style={styles.value}>{user.role}</Text>
           <View style={styles.rule} />
-          <Text style={styles.label}>Timezone</Text>
+          <Text style={styles.label}>{t("Timezone")}</Text>
           <Text style={styles.value}>{user.timezone}</Text>
         </View>
         <HelpButton screen="account" code={state.status === 'recoverable-error' ? state.issue : undefined} />
-        <PrimaryButton testID="logout-button" label="Log out" onPress={() => void logout()} />
+        <PrimaryButton testID="account-preferences" label={t("Preferences")} onPress={() => router.push('/preferences')} />
+        <PrimaryButton testID="account-security" label={t("Account security")} onPress={() => router.push('/security')} />
+        <PrimaryButton testID="logout-button" label={t("Log out")} onPress={() => void logout(t)} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (authColors: Colors) => StyleSheet.create({
   page: { flex: 1, backgroundColor: authColors.canvas },
   content: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 32, gap: 24 },
   heading: { gap: 8 },

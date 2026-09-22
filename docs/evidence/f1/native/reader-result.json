@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "checks": [
+    "native GFM headings/emphasis/tasks/table/code",
+    "stored Markdown unchanged",
+    "raw HTML hidden",
+    "executable link inert",
+    "valid native image without auth headers",
+    "missing-image alt retained",
+    "dark/light",
+    "2x font and 360dp scrolling",
+    "zh-CN preference save",
+    "native logout-all denies second client"
+  ],
+  "markdownCharacters": 13161
+}

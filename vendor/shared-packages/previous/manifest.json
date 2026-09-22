@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7e3a39ad5c4900f88d9d8193b7077610d48f9418",
+  "sourceDirty": true,
+  "openApiSha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0",
+  "license": {
+    "declared": null,
+    "files": []
+  },
+  "packages": [
+    {
+      "name": "@diary/contracts",
+      "version": "0.0.0-dev.g7e3a39ad5c49.c5dac3e3a66e9",
+      "tarball": "artifacts\\diary-contracts-0.0.0-dev.g7e3a39ad5c49.c5dac3e3a66e9.tgz",
+      "sha256": "b04957410eaa814936b275188f4bb920ae241b8d8665f0981d06e83c51436b82",
+      "exports": [
+        ".",
+        "./openapi",
+        "./settings",
+        "./market",
+        "./diary-list",
+        "./diary-summary",
+        "./diary-activity",
+        "./ledger",
+        "./calendar",
+        "./review",
+        "./trade-plan",
+        "./portfolio",
+        "./watchlist",
+        "./evidence",
+        "./stock-note",
+        "./investment-thesis",
+        "./review-queue",
+        "./company-hub",
+        "./portfolio-exposure",
+        "./portfolio-attention",
+        "./portfolio-overview",
+        "./performance",
+        "./alerts",
+        "./price-alerts",
+        "./discipline",
+        "./discipline-share",
+        "./partners",
+        "./api-keys",
+        "./etf",
+        "./etf-profile",
+        "./rotation",
+        "./rotation-monitor",
+        "./market-state",
+        "./stock-timeline-source",
+        "./sec-filings",
+        "./post",
+        "./admin-users"
+      ],
+      "provenance": {
+        "schemaVersion": 1,
+        "package": "@diary/contracts",
+        "version": "0.0.0-dev.g7e3a39ad5c49.c5dac3e3a66e9",
+        "source": {
+          "repository": "diary-v3",
+          "commit": "7e3a39ad5c4900f88d9d8193b7077610d48f9418",
+          "dirty": true,
+          "treeSha256": "c381bfafb4d0c7cbc81f30ca06a587e65b573aef3a3608aac861eab7be418b5c",
+          "packerSha256": "d51c734c439c735756a679d21ca43b11c61d8da0fc69830053cac440853a9fc7",
+          "artifactInputSha256": "5dac3e3a66e907bff4bdd725a32ef1b64ec69f1f1fc934e69f2e2fb4b7bb7dae"
+        },
+        "openApi": {
+          "path": "openapi/openapi.json",
+          "sha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0"
+        },
+        "license": {
+          "declared": null,
+          "files": []
+        },
+        "build": {
+          "sourceDateEpoch": 1789581220,
+          "node": "v24.19.0",
+          "npm": "11.17.0",
+          "typescript": "5.9.3",
+          "esbuild": "0.28.2"
+        }
+      }
+    },
+    {
+      "name": "@diary/api-client",
+      "version": "0.0.0-dev.g7e3a39ad5c49.c79912c20cec7",
+      "tarball": "artifacts\\diary-api-client-0.0.0-dev.g7e3a39ad5c49.c79912c20cec7.tgz",
+      "sha256": "d6f374ada725ef8fd276ca705ade9f4db2323b6b1556409172f0640ac567c4d6",
+      "exports": [
+        "."
+      ],
+      "provenance": {
+        "schemaVersion": 1,
+        "package": "@diary/api-client",
+        "version": "0.0.0-dev.g7e3a39ad5c49.c79912c20cec7",
+        "source": {
+          "repository": "diary-v3",
+          "commit": "7e3a39ad5c4900f88d9d8193b7077610d48f9418",
+          "dirty": true,
+          "treeSha256": "4b52cf70168334702956171f8cc85d4967bbe0b57951fcac2188d351bb70b119",
+          "packerSha256": "d51c734c439c735756a679d21ca43b11c61d8da0fc69830053cac440853a9fc7",
+          "artifactInputSha256": "79912c20cec7c715308862b7712bd2a5b95518ebe24656cf84b04f6a19cf8252"
+        },
+        "openApi": {
+          "path": "openapi/openapi.json",
+          "sha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0"
+        },
+        "license": {
+          "declared": null,
+          "files": []
+        },
+        "build": {
+          "sourceDateEpoch": 1789581220,
+          "node": "v24.19.0",
+          "npm": "11.17.0",
+          "typescript": "5.9.3",
+          "esbuild": "0.28.2"
+        }
+      }
+    },
+    {
+      "name": "@diary/domain",
+      "version": "0.0.0-dev.g7e3a39ad5c49.c7c695de05093",
+      "tarball": "artifacts\\diary-domain-0.0.0-dev.g7e3a39ad5c49.c7c695de05093.tgz",
+      "sha256": "bfc579d1ccc3efb4bcdc93dbae70514078c566d3153168f9c04fa31256e0ebe0",
+      "exports": [
+        ".",
+        "./ledger",
+        "./calendar",
+        "./portfolio",
+        "./investment-thesis",
+        "./portfolio-exposure",
+        "./beta-buckets",
+        "./beta-allocation",
+        "./portfolio-attention",
+        "./performance-stats",
+        "./trade-analytics",
+        "./recurring-alerts",
+        "./etf-risk",
+        "./market-rotation/snapshot-builder",
+        "./market-rotation/indicators",
+        "./market-rotation/calculations",
+        "./market-rotation/signal",
+        "./market-rotation/pipeline",
+        "./market-rotation/universe",
+        "./market-rotation/types",
+        "./market-rotation/state",
+        "./market-rotation/qualified-date",
+        "./market-rotation/monitor",
+        "./market-rotation/summary",
+        "./market-rotation/trend-series",
+        "./market-rotation/view",
+        "./relative-value",
+        "./seasonality",
+        "./market-state/breadth",
+        "./market-state/regime",
+        "./market-state/update-breadth-utils",
+        "./market-state/seed-universe-utils",
+        "./position-sizing"
+      ],
+      "provenance": {
+        "schemaVersion": 1,
+        "package": "@diary/domain",
+        "version": "0.0.0-dev.g7e3a39ad5c49.c7c695de05093",
+        "source": {
+          "repository": "diary-v3",
+          "commit": "7e3a39ad5c4900f88d9d8193b7077610d48f9418",
+          "dirty": true,
+          "treeSha256": "bb268705138880a102776e78d4927b19d847a248ad79bacba11ee0473246e813",
+          "packerSha256": "d51c734c439c735756a679d21ca43b11c61d8da0fc69830053cac440853a9fc7",
+          "artifactInputSha256": "7c695de05093614307be0faf1d73595c29b23b7df00fb82d16c34e9e895decd2"
+        },
+        "openApi": {
+          "path": "openapi/openapi.json",
+          "sha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0"
+        },
+        "license": {
+          "declared": null,
+          "files": []
+        },
+        "build": {
+          "sourceDateEpoch": 1789581220,
+          "node": "v24.19.0",
+          "npm": "11.17.0",
+          "typescript": "5.9.3",
+          "esbuild": "0.28.2"
+        }
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import type { createDiaryAccess } from '../diaries/access';
 import { createQuickApi } from './api';
 import { createQuickController, type QuickController } from './controller';
 import type { DraftRepository } from './repository';
+import { calendarDateInTimezone } from '@diary/domain';
 
 export function createQuickManager(options: {
   api: ReturnType<typeof createApiClient>; lifecycle: AuthLifecycle; diaries: ReturnType<typeof createDiaryAccess>;
@@ -35,7 +36,11 @@ export function createQuickManager(options: {
       const expected = controller;
       await loaded;
       if (!expected || expected !== controller) return false;
-      return date ? expected.initializeDate(date) : true;
+      if (date) return expected.initializeDate(date);
+      const auth = options.lifecycle.getState();
+      const user = auth.status === 'signed-in' || auth.status === 'recoverable-error' ? auth.user : null;
+      if (user && !expected.hasUnsent()) expected.initializeDate(calendarDateInTimezone(new Date(), user.timezone));
+      return true;
     },
     getSnapshot: () => controller,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },

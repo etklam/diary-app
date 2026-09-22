@@ -18,6 +18,8 @@ import type { QuickController } from '@/quick/controller';
 export type AppAuthState = AuthState | { status: 'configuration-error'; message: string };
 
 type AuthContextValue = {
+  api: ReturnType<typeof createAuthRuntime>['api'] | null;
+  environmentKey: string;
   state: AppAuthState;
   diaryScope: DiaryReadScope | null;
   quick: QuickController | null;
@@ -25,8 +27,10 @@ type AuthContextValue = {
   diaryMutation: number;
   beginQuick(date?: string): Promise<boolean>;
   login(email: string, password: string): Promise<void>;
-  logout(): Promise<void>;
+  logout(t?: (value: string) => string): Promise<void>;
   retryVerification(): Promise<void>;
+  finishSecurity(): Promise<void>;
+  flushDrafts(): Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -50,7 +54,7 @@ function buildRuntime() {
       scope: JSON.stringify([config.appEnvironment, config.baseUrl]), repository: nativeDraftRepository, attemptId: randomUUID });
     const reviews = createReviewManager({ api: runtime.api, diaries, scope: JSON.stringify([config.appEnvironment, config.baseUrl]),
       repository: nativeReviewRepository, attemptId: randomUUID });
-    return { lifecycle, diaries, quick, reviews };
+    return { lifecycle, diaries, quick, reviews, api: runtime.api, environmentKey: config.sessionStorageKey };
   } catch (error) {
     if (error instanceof ApiConfigurationError) return null;
     throw error;
@@ -68,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ? lifecycle.getState()
     : { status: 'configuration-error', message: 'The API origin is missing or unsafe for this build.' });
   const stateRef = useRef(state);
-  const started = useRef(false);
+  const started = useRef<AuthLifecycle | undefined>(undefined);
 
   useEffect(() => {
     stateRef.current = state;
@@ -77,8 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lifecycle) return;
     const unsubscribe = lifecycle.subscribe(setState);
-    if (!started.current) {
-      started.current = true;
+    if (started.current !== lifecycle) {
+      started.current = lifecycle;
       void lifecycle.bootstrap();
     }
     return () => { unsubscribe(); };
@@ -100,24 +104,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     await lifecycle?.login({ email: email.trim(), password });
   }, [lifecycle]);
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (t: (value: string) => string = value => value) => {
     try {
       if (!application) return;
       const expected = application.diaries.getScope();
       const hasReviews = await application.reviews.hasAny();
       let approved = false;
       const confirm = () => new Promise<boolean>(resolve => Alert.alert(
-        'Discard draft and log out?',
-        'Logging out discards your local Quick Diary and Review drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.',
-        [{ text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
-          { text: 'Discard draft and log out', style: 'destructive', onPress: () => resolve(true) }],
+        t('Discard draft and log out?'),
+        t('Logging out discards your local Quick Diary and Review drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.'),
+        [{ text: t('Cancel'), style: 'cancel', onPress: () => resolve(false) },
+          { text: t('Discard draft and log out'), style: 'destructive', onPress: () => resolve(true) }],
         { cancelable: false },
       ));
       if (hasReviews) { approved = await confirm(); if (!approved) return; }
       if (expected !== application.diaries.getScope()) return;
       await application.quick.logout(async () => approved || await confirm(), async () => application.reviews.discardOwner());
     } catch {
-      Alert.alert('Draft storage unavailable', 'We could not safely remove your encrypted draft. You are still signed in. Please reopen the app and try again.');
+      Alert.alert(t('Draft storage unavailable'), t('We could not safely remove your encrypted draft. You are still signed in. Please reopen the app and try again.'));
     }
   }, [application]);
   const retryVerification = useCallback(async () => {
@@ -125,7 +129,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [lifecycle]);
 
   return (
-    <AuthContext.Provider value={{ state, diaryScope, quick, reviews: application?.reviews ?? null, diaryMutation, beginQuick, login, logout, retryVerification }}>
+    <AuthContext.Provider value={{ state, diaryScope, quick, reviews: application?.reviews ?? null, diaryMutation, beginQuick, login, logout, retryVerification,
+      api: application?.api ?? null, environmentKey: application?.environmentKey ?? 'unconfigured',
+      flushDrafts: async () => { await application?.quick.getSnapshot()?.flush(); await application?.reviews.flush(); },
+      finishSecurity: async () => { await lifecycle?.logout(); },
+    }}>
       {children}
     </AuthContext.Provider>
   );

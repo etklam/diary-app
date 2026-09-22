@@ -1,0 +1,55 @@
+[
+  {
+    "client": "current",
+    "result": "PASS",
+    "checks": [
+      "login",
+      "session restore",
+      "create",
+      "append",
+      "review",
+      "detail",
+      "USER admin denial"
+    ],
+    "listTiming": {
+      "samples": 20,
+      "records": 1,
+      "p50Ms": 15.90449999999987,
+      "p95Ms": 29.80029999999988,
+      "environment": "local synthetic API; warm one-record smoke, not a load benchmark"
+    }
+  },
+  {
+    "client": "previous",
+    "result": "PASS",
+    "checks": [
+      "login",
+      "session restore",
+      "create",
+      "append",
+      "review",
+      "detail",
+      "USER admin denial"
+    ],
+    "listTiming": {
+      "samples": 20,
+      "records": 1,
+      "p50Ms": 17.03189999999995,
+      "p95Ms": 35.626199999999926,
+      "environment": "local synthetic API; warm one-record smoke, not a load benchmark"
+    }
+  },
+  {
+    "client": "current synthetic roles/providers",
+    "result": "PASS",
+    "checks": [
+      "ADMIN allow",
+      "Partner invite",
+      "wrong-side accept denied",
+      "accept",
+      "directional sharing",
+      "unlink",
+      "public synthetic quote"
+    ]
+  }
+]

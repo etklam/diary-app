@@ -3,9 +3,9 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
-    "@diary/api-client": "file:vendor/shared-packages/artifacts/diary-api-client-0.0.0-dev.g7e3a39ad5c49.c79912c20cec7.tgz",
-    "@diary/contracts": "file:vendor/shared-packages/artifacts/diary-contracts-0.0.0-dev.g7e3a39ad5c49.c5dac3e3a66e9.tgz",
-    "@diary/domain": "file:vendor/shared-packages/artifacts/diary-domain-0.0.0-dev.g7e3a39ad5c49.c7c695de05093.tgz",
+    "@diary/api-client": "file:vendor/shared-packages/artifacts/diary-api-client-0.0.0-dev.gce2962f597ef.c1fa41733b80a.tgz",
+    "@diary/contracts": "file:vendor/shared-packages/artifacts/diary-contracts-0.0.0-dev.gce2962f597ef.c4432072b759f.tgz",
+    "@diary/domain": "file:vendor/shared-packages/artifacts/diary-domain-0.0.0-dev.gce2962f597ef.cd45dfbb5046d.tgz",
     "@expo/ui": "~57.0.19",
     "expo": "~57.0.24",
     "expo-application": "~57.0.3",
@@ -27,6 +27,9 @@
     "expo-symbols": "~57.0.3",
     "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~57.0.3",
+    "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-gfm": "^3.1.0",
+    "micromark-extension-gfm": "^3.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -70,7 +73,12 @@
     "release:validate": "node scripts/validate-release.cjs",
     "android:preview:local": "node scripts/preview-build.cjs",
     "android:preview:eas": "node scripts/preview-eas.cjs",
-    "eas-build-post-install": "node scripts/eas-validate.cjs"
+    "eas-build-post-install": "node scripts/eas-validate.cjs",
+    "shared:check": "node scripts/check-shared-packages.mjs",
+    "parity:check": "node scripts/freeze-parity-baseline.mjs --check",
+    "test:api:compatibility": "node scripts/f0-client-compatibility.mjs",
+    "test:native:tracer": "python scripts/f0-native-tracer.py",
+    "test:api:server": "node scripts/f0-api-server.mjs"
   },
   "private": true
 }

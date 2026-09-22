@@ -1,0 +1,10 @@
+{
+  "name": "diary-previous-client-fixture",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@diary/contracts": "file:../../vendor/shared-packages/artifacts/diary-contracts-0.0.0-dev.g7e3a39ad5c49.c5dac3e3a66e9.tgz",
+    "@diary/api-client": "file:../../vendor/shared-packages/artifacts/diary-api-client-0.0.0-dev.g7e3a39ad5c49.c79912c20cec7.tgz",
+    "@diary/domain": "file:../../vendor/shared-packages/artifacts/diary-domain-0.0.0-dev.g7e3a39ad5c49.c7c695de05093.tgz"
+  }
+}

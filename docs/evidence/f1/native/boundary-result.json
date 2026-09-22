@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "checks": [
+    "cold protected link retains date without mutation",
+    "native Markdown internal link opens public guide",
+    "remote expiry continuation",
+    "A-B-A native draft/settings isolation",
+    "current-client logout preserves peer session",
+    "committed lost response stays uncertain without retry",
+    "peer token denied"
+  ],
+  "lostResponse": {
+    "requests": 1,
+    "committed": 1,
+    "dropped": 1
+  }
+}

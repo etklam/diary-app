@@ -14,7 +14,7 @@ export type AuthIssue =
 
 export type AuthState =
   | { status: 'bootstrapping' }
-  | { status: 'signed-out'; issue?: 'invalid-credentials' | 'logout-unconfirmed'; revocationConfirmed?: boolean }
+  | { status: 'signed-out'; issue?: 'invalid-credentials' | 'logout-unconfirmed' | 'login-unavailable'; code?: string; revocationConfirmed?: boolean }
   | { status: 'signed-in'; user: AuthUser }
   | { status: 'recoverable-error'; issue: 'network' | 'server'; user: AuthUser | null }
   | { status: 'session-invalid'; issue: 'session-invalid' | 'storage' };
@@ -163,7 +163,7 @@ export function createAuthLifecycle(options: {
           status: 'signed-out',
           ...(error instanceof NativeSessionError && error.code === 'AUTH_LOGIN_INVALID_CREDENTIALS'
             ? { issue: 'invalid-credentials' as const }
-            : {}),
+            : { issue: 'login-unavailable' as const, ...(error instanceof NativeSessionError && error.code ? { code: error.code } : {}) }),
         });
         return;
       }

@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "date": "2026-09-23",
+  "hostTests": 182,
+  "optInApiTests": 3,
+  "sourceRealtimeTests": 2,
+  "checks": [
+    "lint",
+    "TypeScript",
+    "Android Hermes export",
+    "shared package provenance",
+    "unchanged parity baseline",
+    "Expo dependency compatibility",
+    "JDK 17 x86_64 development APK build"
+  ],
+  "apk": {
+    "path": "android/app/build/outputs/apk/debug/app-debug.apk",
+    "sha256": "3fac1b52009db2bb251fe4bce4b63b921f494c7333fd3e6f9a205f863d4121cb"
+  },
+  "bundle": {
+    "path": "dist/android/_expo/static/js/android/entry-d80290b7455ad53a5840e168a422b03d.hbc",
+    "sha256": "565e954439741008abb23ffd76d5b44a8a13e5610d90da0f3fd918b9a0696c3c"
+  },
+  "nativeAcceptance": "Recorded separately by native tracers; build success alone does not establish runtime behavior"
+}

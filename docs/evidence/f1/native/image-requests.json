@@ -1,0 +1,22 @@
+[
+  {
+    "image": "missing",
+    "authorization": false,
+    "cookie": false
+  },
+  {
+    "image": "valid",
+    "authorization": false,
+    "cookie": false
+  },
+  {
+    "image": "missing",
+    "authorization": false,
+    "cookie": false
+  },
+  {
+    "image": "missing",
+    "authorization": false,
+    "cookie": false
+  }
+]
