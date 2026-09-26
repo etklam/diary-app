@@ -1,7 +1,7 @@
 # [12] Complete Library, Timeline and Calendar navigation parity
 
 Status: ready-for-agent
-Execution: not-started
+Execution: complete (live API, controller tests and Android 16/API 36 acceptance passed; see [F2 Library/Timeline/Calendar acceptance](../../../docs/evidence/f2/library-timeline-calendar-acceptance.md))
 Type: AFK
 Phase: F2
 Work area: diary-app
@@ -20,12 +20,12 @@ Native app implementation; inspect referenced service contracts before changing 
 
 ## Acceptance criteria
 
-- [ ] Provide source Library/Timeline filters, sort/pagination and date navigation with canonical server totals.
-- [ ] Return from Detail/edit/Review without losing filters, scroll or selected date; successful writes invalidate relevant reads.
-- [ ] Handle empty dates, existing drafts, invalid ranges, failed pages and stale request generations correctly.
-- [ ] Test Chinese/English search and account civil-date/month boundaries; never imply unqueried data is absent.
-- [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] Provide source Library/Timeline filters, sort/pagination and date navigation with canonical server totals.
+- [x] Return from Detail/edit/Review without losing filters, scroll or selected date; successful writes invalidate relevant reads.
+- [x] Handle empty dates, existing drafts, invalid ranges, failed pages and stale request generations correctly.
+- [x] Test Chinese/English search and account civil-date/month boundaries; never imply unqueried data is absent.
+- [x] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
+- [x] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
 
 ## Blocked by
 
@@ -47,8 +47,10 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+See [F2 Library/Timeline/Calendar acceptance](../../../docs/evidence/f2/library-timeline-calendar-acceptance.md) for the live API and emulator scenarios, cleanup, verification results, bundle hash, limits and captured artifacts.
 
 ## Comments
 
 Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+
+2026-09-27: Added the Library route with the source summary filters, four sorts, bounded page sizes and canonical page totals; Timeline now renders localized month groups and retains loaded pages across refresh. Live API, unit/controller and AVD acceptance passed. A real edit refreshed Library page 2 in place; Calendar retained its selected day through Detail/Review/Edit, showed an empty date accurately, and prompted before reopening the device's existing encrypted draft. Synthetic API and emulator Diaries were removed; no physical Android device or spoken TalkBack test was available. See the evidence report for exact commands and artifacts.

@@ -1,7 +1,7 @@
 import { reportMetadata } from '../beta/diagnostics';
 import type { createApiClient } from '@diary/api-client';
 import { diaryReviewResponseSchema } from '@diary/contracts/review';
-import { apiErrorResponseSchema, diaryResponseSchema } from '@diary/contracts';
+import { apiErrorResponseSchema, diaryByDateResponseSchema, diaryResponseSchema } from '@diary/contracts';
 import { diarySummaryListResponseSchema } from '@diary/contracts/diary-summary';
 import { diaryListQuerySchema } from '@diary/contracts/diary-list';
 import { diaryActivityQuerySchema, diaryActivityResponseSchema } from '@diary/contracts/diary-activity';
@@ -37,6 +37,7 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
     reviews(page: number, signal?: AbortSignal): Promise<ReviewGroups>;
     review(id: string, signal?: AbortSignal): Promise<ReturnType<typeof diaryReviewResponseSchema.parse>>;
     detail(id: string): Promise<ReturnType<typeof diaryResponseSchema.parse>>;
+    byDate(date: string): Promise<ReturnType<typeof diaryByDateResponseSchema.parse>>;
   } | null = null;
 
   const update = () => {
@@ -70,8 +71,8 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
     scope = {
       ownerId: next,
       isCurrent,
-      summary: (page, query = { sortBy: 'date-desc' }, signal) => read(
-        () => api.GET('/api/diaries/summary', { signal, params: { query: diaryListQuerySchema.parse({ ...query, page, limit: 20 }) } }),
+      summary: (page, query = { sortBy: 'date-desc', limit: 20 }, signal) => read(
+        () => api.GET('/api/diaries/summary', { signal, params: { query: diaryListQuerySchema.parse({ ...query, page, limit: query.limit ?? 20 }) } }),
         value => diarySummaryListResponseSchema.parse(value),
       ),
       activity: (dateFrom, dateTo, signal) => read(
@@ -108,6 +109,14 @@ export function createDiaryAccess(api: ReturnType<typeof createApiClient>, lifec
           return diary;
         }, true);
       },
+      byDate: date => read(
+        () => api.GET('/api/diaries/by-date', { params: { query: { date } } }),
+        value => {
+          const diary = diaryByDateResponseSchema.parse(value);
+          if (diary && (diary.userId !== next || diary.date !== date)) throw new Error('Unexpected diary identity');
+          return diary;
+        },
+      ),
     };
     listeners.forEach(listener => listener());
   };

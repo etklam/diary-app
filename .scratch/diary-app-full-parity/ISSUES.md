@@ -3,7 +3,7 @@
 Feature: diary-app-full-parity
 Date: 2026-09-22
 Tracker: local Markdown
-Execution state: F0 foundation and F1 account/preferences/reader complete at recorded evidence layers; later phases not started
+Execution state: F0 foundation and F1 account/preferences/reader are complete at their recorded evidence layers. In F2, #10–#13 have passed their recorded API and Android 16/API 36 scenario acceptance; #14 has API and native partial/full/oversell evidence, with native no-holding and integrated verification still open. Later F2 tickets remain open. #19, #31, #42, #49, #51, #57 and #58 have recorded implementation completion; #20, #32, #33, #37, #40, #43 and #53 have implementation/API/emulator evidence with remaining native/operator acceptance open. Operator inputs #05 and #69 remain in progress.
 
 [PRD](PRD.md) · [Common rules](ISSUE-BREAKDOWN.md) · [Roadmap](../../docs/launch-roadmap.md) · [Parity matrix](../../docs/feature-parity.md)
 
@@ -19,7 +19,7 @@ The target is the complete diary-v3 native product. There are **70 tickets: 66 A
 - Operator inputs [05](issues/05-operator-release-inputs.md) and platform/release decisions [69](issues/69-platform-release-decision.md) run alongside implementation. Missing credentials do not block independent modules.
 - [65](issues/65-full-android-parity-acceptance.md) is the full Android acceptance gate; [66](issues/66-android-public-launch.md) is owner-controlled Android publication. iOS foundation/acceptance/publication are [67](issues/67-ios-native-foundation.md), [68](issues/68-ios-full-parity-acceptance.md) and [70](issues/70-ios-public-launch.md).
 
-Triage `ready-for-agent` means specified sufficiently for an agent once predecessors are accepted. It does not mean dependencies are already finished. Execution status is recorded per ticket; 01–04 and 06–09 are complete within their recorded F0/F1 scopes. F2 implementation has not started. See [F1 acceptance](../../docs/evidence/f1/acceptance.md).
+Triage `ready-for-agent` means specified sufficiently once predecessors are accepted. It does not mean dependencies are already finished. Execution status is recorded per ticket; 01–04 and 06–09 are complete within their recorded F0/F1 scopes. F2 #10–#13 have current acceptance evidence; #14 has API and partial native evidence with two checks remaining. See [F1 acceptance](../../docs/evidence/f1/acceptance.md), [F2 editor acceptance](../../docs/evidence/f2/full-diary-editor-acceptance.md), [F2 Quick acceptance](../../docs/evidence/f2/quick-templates-context-acceptance.md), [F2 Library/Timeline/Calendar acceptance](../../docs/evidence/f2/library-timeline-calendar-acceptance.md), [F2 BUY transaction acceptance](../../docs/evidence/f2/buy-transactions-acceptance.md) and [F2 SELL transaction acceptance](../../docs/evidence/f2/sell-transactions-acceptance.md).
 
 ## Ticket index
 
@@ -285,4 +285,4 @@ Admin APIs, Agent ingestion, ledger correction, import/export, scheduler/realtim
 
 Update the individual ticket's `Execution:` and append findings/results to its Evidence/Comments. Keep this index consistent when splitting scope or changing dependencies. Do not mark a ticket complete because a predecessor is complete or an earlier beta test passed.
 
-Current validation: planning coverage/dependency audits plus recorded F0/F1 implementation acceptance. Tickets 01–04 and 06–09 have fresh evidence; remaining tickets retain their individual open execution states.
+Current validation: planning coverage/dependency audits plus recorded F0/F1 acceptance and F2 #10–#13 API/Android acceptance. #14 API and selected Android scenarios passed; native no-holding and integrated verification are pending. All other tickets retain their individual recorded execution states.

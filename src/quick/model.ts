@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { calendarDateSchema, createDiaryRequestSchema, diaryResponseSchema, serializedIdSchema, type DiaryResponse } from '@diary/contracts';
-import { calendarDateInTimezone, deriveQuickTitle } from '@diary/domain';
+import { recentClosedTradeSchema } from '@diary/contracts/ledger';
+import { calendarDateInTimezone, deriveQuickTitle, type QuickNoteTemplateKind } from '@diary/domain';
 
 export const quickPayloadSchema = createDiaryRequestSchema.pick({ title: true, content: true, date: true, tags: true, stockSymbols: true, appendToToday: true });
 export type QuickPayload = z.infer<typeof quickPayloadSchema>;
@@ -8,11 +9,22 @@ export const attemptSchema = z.object({
   id: z.string().min(1), at: z.string(), payload: quickPayloadSchema,
   baseline: diaryResponseSchema.nullable(),
 }).strict();
+const templateDataSchema = z.object({
+  tradingType: z.string().max(20).optional(), symbols: z.string().max(1000).optional(), marketMood: z.string().max(20).optional(),
+  note: z.string().max(10000).optional(), marketCondition: z.string().max(100).optional(), rating: z.number().int().min(0).max(5),
+  noRashTrading: z.boolean(), goodPoints: z.string().max(10000).optional(), improvePoints: z.string().max(10000).optional(),
+  topic: z.string().max(500).optional(), observationType: z.string().max(100).optional(), observationContent: z.string().max(10000).optional(),
+  action: z.string().max(10000).optional(), relatedTrades: z.array(recentClosedTradeSchema).max(100),
+}).strict();
 export const draftSchema = z.object({
   schemaVersion: z.literal(1), scope: z.string().min(1), ownerId: serializedIdSchema,
   date: z.string().max(32), mode: z.enum(['create', 'append']), modeChosen: z.boolean(),
   title: z.string().max(500), content: z.string().max(500000),
   tags: z.string().max(6000), stockSymbols: z.string().max(1000), updatedAt: z.string(),
+  templateKind: z.enum(['blank', 'trading', 'reflection', 'observation']).default('blank'),
+  templateData: templateDataSchema.default({ rating: 0, noRashTrading: false, relatedTrades: [] }),
+  appliedTemplate: z.string().max(500000).default(''),
+  titleTouched: z.boolean().default(false),
   writeState: z.enum(['editing', 'saving', 'definitive-error', 'uncertain', 'confirmed']),
   attempt: attemptSchema.nullable(), confirmedId: serializedIdSchema.nullable(),
 }).strict().superRefine((draft, ctx) => {
@@ -26,9 +38,14 @@ export const draftSchema = z.object({
 });
 export type QuickDraft = z.infer<typeof draftSchema>;
 export type WriteAttempt = z.infer<typeof attemptSchema>;
+export type { QuickNoteTemplateKind };
 export function newDraft(scope: string, ownerId: string, timezone: string, now = new Date()): QuickDraft {
   return { schemaVersion: 1, scope, ownerId, date: calendarDateInTimezone(now, timezone), mode: 'create', modeChosen: false,
-    title: '', content: '', tags: '', stockSymbols: '', updatedAt: now.toISOString(), writeState: 'editing', attempt: null, confirmedId: null };
+    title: '', content: '', tags: '', stockSymbols: '', updatedAt: now.toISOString(), templateKind: 'blank',
+    templateData: { tradingType: '', symbols: '', marketMood: '', note: '', marketCondition: '', rating: 0, noRashTrading: false,
+      goodPoints: '', improvePoints: '', topic: '', observationType: '', observationContent: '', action: '', relatedTrades: [] },
+    appliedTemplate: '', titleTouched: false,
+    writeState: 'editing', attempt: null, confirmedId: null };
 }
 export function payloadFor(draft: QuickDraft): QuickPayload {
   if (!draft.content.trim()) throw new Error('Content required');
@@ -38,7 +55,8 @@ export function payloadFor(draft: QuickDraft): QuickPayload {
     stockSymbols: draft.stockSymbols.split(',').map(value => value.trim()).filter(Boolean) });
 }
 export function hasDraft(draft: QuickDraft) {
-  return !!(draft.content || draft.title || draft.tags || draft.stockSymbols || draft.attempt);
+  return !!(draft.content || draft.title || draft.tags || draft.stockSymbols || draft.attempt || draft.templateKind !== 'blank'
+    || draft.templateData.relatedTrades.length || Object.entries(draft.templateData).some(([key, value]) => key !== 'relatedTrades' && value !== '' && value !== false && value !== 0));
 }
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const symbols = (values: string[]) => [...values].sort();

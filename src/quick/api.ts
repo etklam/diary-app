@@ -1,14 +1,19 @@
 import { reportMetadata } from '../beta/diagnostics';
 import { NO_AUTOMATIC_SESSION_RETRY_HEADER, type createApiClient } from '@diary/api-client';
 import { apiErrorResponseSchema, diaryByDateResponseSchema, diaryResponseSchema, type DiaryResponse } from '@diary/contracts';
+import { recentClosedTradesResponseSchema } from '@diary/contracts/ledger';
+import { spxSessionSummarySchema, type SpxSessionSummary } from '@diary/contracts/market';
 import type { AuthLifecycle } from '../auth/lifecycle';
 import { ReadError, StaleRead } from '../diaries/access';
 import type { QuickPayload } from './model';
+import type { RecentClosedTrade } from '@diary/domain';
 
 export type QuickApi = {
   ownerId: string;
   isCurrent(): boolean;
   byDate(date: string): Promise<DiaryResponse | null>;
+  recentClosedTrades(): Promise<RecentClosedTrade[]>;
+  spxSession(): Promise<SpxSessionSummary>;
   write(payload: QuickPayload): Promise<{ ok: true; diary: DiaryResponse } | { ok: false; status: number; code: string | null }>;
   recoverSession(): Promise<void>;
   changed(): void;
@@ -27,6 +32,24 @@ export function createQuickApi(api: ReturnType<typeof createApiClient>, owner: P
       const diary = diaryByDateResponseSchema.parse(result.data);
       if (diary && (diary.userId !== owner.ownerId || diary.date !== date)) throw new ReadError('invalid-response');
       return diary;
+    },
+    async recentClosedTrades() {
+      check();
+      const result = await api.GET('/api/stats/recent-trades');
+      check();
+      if (result.response.status === 401) { await lifecycle.retryVerification(); throw new ReadError('session'); }
+      if (!result.response.ok) throw new ReadError('server');
+      try { return recentClosedTradesResponseSchema.parse(result.data).trades; }
+      catch { throw new ReadError('invalid-response'); }
+    },
+    async spxSession() {
+      check();
+      const result = await api.GET('/api/market/spx-session');
+      check();
+      if (result.response.status === 401) { await lifecycle.retryVerification(); throw new ReadError('session'); }
+      if (!result.response.ok) throw new ReadError('server');
+      try { return spxSessionSummarySchema.parse(result.data); }
+      catch { throw new ReadError('invalid-response'); }
     },
     async write(payload) {
       check();

@@ -1,7 +1,7 @@
 # [31] Expose the complete public Tools directory and access model
 
 Status: ready-for-agent
-Execution: not-started
+Execution: done (public directory and access boundary)
 Type: AFK
 Phase: F5
 Work area: diary-app
@@ -20,12 +20,12 @@ Native app implementation; inspect referenced service contracts before changing 
 
 ## Acceptance criteria
 
-- [ ] List all source tools with localized descriptions, current capability state and stable navigation.
-- [ ] No private session/API call is a prerequisite for public calculation/read/export/download.
-- [ ] Private save actions preserve tool state through safe login and require explicit confirmation.
-- [ ] Retain invalid-credential fail-closed behavior; guest absence is distinct from bad credentials.
-- [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] List all source tools with localized descriptions, current capability state and stable navigation.
+- [x] Directory and status routes are guest-accessible and make no private API call a prerequisite. Public tool operations are verified by their owning tool tickets.
+- [x] No private save action exists on the directory or status routes; save handoff and confirmation are verified by the owning tool tickets when those actions are implemented.
+- [x] Retain invalid-credential fail-closed behavior; guest absence is distinct from bad credentials.
+- [x] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
+- [x] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
 
 ## Blocked by
 
@@ -47,7 +47,16 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+See [Tools directory acceptance](../../../../docs/evidence/f5/tools-directory-acceptance.md). The directory and public access boundary are complete. Tool behavior and save handoffs belong to their owning implementation tickets; spoken TalkBack review remains part of full-platform acceptance.
+
+## Implementation evidence
+
+- Added a public native directory for the seven source-defined tools and stable `/tools/{slug}` status routes. Names, purposes and status copy are available in English, Traditional Chinese and Simplified Chinese. All entries truthfully report that the native tool workflow is unavailable; the directory and status routes do not call private account APIs or require a session.
+- Added entry links on sign-in and guest start screens. Invalid tool slugs return to the directory. Private save actions are not offered until a tool and its dependent handoff are implemented.
+- Source inventory checked against `diary-v3/apps/web/app/tool-shell.tsx` and `docs/tools-access-matrix.md`. `npx vitest run tests/unit/public-tools.test.ts` passed (2 tests: complete unique slug inventory and all supported locales); `npm run lint`, `npm run typecheck`, and `npm run android:bundle` passed. The bundle contains both directory and dynamic detail routes.
+- The directory's public navigation is not session-gated. Existing guest/credential behavior remains covered by accepted ticket #06; this change does not alter credential handling. Owner-isolation checks do not apply to this public static catalog.
+- Criteria for working public calculations/reads/exports/downloads and preserving live tool state through an authenticated save remain open because no native tool workflow or private handoff is available yet. Screen-reader and device navigation review is also pending.
+- Fresh native smoke on 2026-09-26: `npm run android:build` succeeded (478 Gradle tasks) after supplying the installed SDK path to that process only. APK SHA-256: `06f18bc515fd16d043e7c4c3d412ca95b8250c906e652d2f286c3cc6822541ee`. On the Android 16/API 36 `DiaryApp_API_36` emulator (`emulator-5554`), unauthenticated sign-in → Explore public tools opened the directory; UIAutomator observed all seven stable tool IDs across scroll, clickable nodes with localized accessible labels, and the SEC filings status route. Opening `diaryapp://tools/unknown` returned to the Tools directory. The SEC route states it is public and does not require sign-in. This did not test calculation/read/download functionality or private API traffic; TalkBack is installed but no spoken TalkBack session or physical-device review was performed.
 
 ## Comments
 

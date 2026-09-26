@@ -12,9 +12,14 @@ if (process.env.DIARY_DISPOSABLE_TEST_ENV !== '1' || !baseUrl || !['localhost', 
 }
 const results = [];
 const scenario = randomUUID();
+const testClientAddress = (id) => {
+  const clientId = id.replaceAll('-', '');
+  return `fd00:${clientId.slice(0, 4)}:${clientId.slice(4, 8)}:${clientId.slice(8, 12)}::1`;
+};
 const transport = (input, init) => {
   const request = new Request(input, init);
   request.headers.set('x-e2e-test-id', scenario);
+  request.headers.set('x-forwarded-for', testClientAddress(scenario));
   return fetch(request);
 };
 for (const [label, packageRoot] of [['current', '.'], ['previous', 'tests/compatibility']]) {
@@ -69,6 +74,7 @@ async function fixtureAccount(label, admin = false) {
   const transport = (input, init) => {
     const request = new Request(input, init);
     request.headers.set('x-e2e-test-id', fixtureScenario);
+    request.headers.set('x-forwarded-for', testClientAddress(fixtureScenario));
     return fetch(request);
   };
   const credentials = admin ? { email: 'etf-admin@example.test', password: 'synthetic-etf-admin-password' } :

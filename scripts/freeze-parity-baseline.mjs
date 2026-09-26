@@ -9,10 +9,18 @@ const output = 'docs/evidence/f0/source-baseline.json';
 const git = (...args) => execFileSync('git', ['-c', `safe.directory=${source.replaceAll('\\', '/')}`, '-C', source, ...args], { encoding: 'utf8' }).trim();
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = path => readFile(resolve(source, path), 'utf8');
-const paths = git('ls-files').split('\n').filter(path =>
+const inSourceScope = path =>
   /^(apps\/(api|web)\/|packages\/(contracts|api-client|domain|db)\/|tests\/|scripts\/|openapi\/|docs\/|PRODUCT\.md$|PLAN\.md$|package(-lock)?\.json$)/.test(path)
   && !/(^|\/)(\.env[^/]*|node_modules|dist|build)(\/|$)/.test(path)
-  && /\.(ts|tsx|js|mjs|cjs|json|md|sql|yaml|yml|sh)$/.test(path));
+  && /\.(ts|tsx|js|mjs|cjs|json|md|sql|yaml|yml|sh)$/.test(path);
+const statusEntries = execFileSync('git', ['-c', `safe.directory=${source.replaceAll('\\', '/')}`, '-C', source,
+  'status', '--porcelain=v1', '-z', '--untracked-files=all'], { encoding: 'utf8' }).split('\0').filter(Boolean)
+  .map(entry => ({ status: entry.slice(0, 2), path: entry.slice(3) }))
+  .filter(entry => inSourceScope(entry.path));
+const paths = [...new Set([
+  ...git('ls-files').split('\n').filter(inSourceScope),
+  ...statusEntries.filter(entry => entry.status === '??').map(entry => entry.path),
+])].sort();
 const files = [];
 const tests = [];
 for (const path of paths) {
@@ -67,8 +75,8 @@ assert.equal(routes.length, 52);
 for (const route of routes) assert(matrix.includes(route.path === '/' ? 'home' : route.path), `Unmapped route ${route.path}`);
 const manifest = {
   schemaVersion: 1, sourceCommit: git('rev-parse', 'HEAD'),
-  sourceChanges: git('status', '--short', '--untracked-files=no').split('\n').filter(Boolean),
-  sourceScope: 'Tracked product, contracts, domain, database, behavioral tests and operational source; no environment files, dependencies or user data.',
+  sourceChanges: statusEntries.map(entry => `${entry.status} ${entry.path}`),
+  sourceScope: 'Tracked and relevant untracked product, contracts, domain, database, behavioral tests and operational source; no environment files, dependencies or user data.',
   openApiSha256: hash(await read('openapi/openapi.json')),
   routeRegistrySha256: hash(registry), capabilities, stories, routes, files, operations,
   reviewNotes: [

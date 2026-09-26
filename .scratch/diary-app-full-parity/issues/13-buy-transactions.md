@@ -1,7 +1,7 @@
 # [13] Record BUY transactions through full Diary authoring
 
 Status: ready-for-agent
-Execution: not-started
+Execution: complete (live disposable API, unit tests, Android 16/API 36 AVD acceptance and Android export passed; see [BUY transaction acceptance](../../../docs/evidence/f2/buy-transactions-acceptance.md))
 Type: AFK
 Phase: F2
 Work area: diary-app
@@ -20,12 +20,12 @@ Native app implementation; inspect referenced service contracts before changing 
 
 ## Acceptance criteria
 
-- [ ] Support source quantity/price/strategy/emotion/notes fields and correct normalization.
-- [ ] Send decimal strings and exact instants, including explicit DST occurrence choices and untouched sub-minute precision.
-- [ ] Diary plus transaction save is atomic; a rejected transaction leaves no partial Diary/ledger residue.
-- [ ] Read the saved transaction and resulting canonical holding, showing uncertainty without automatic replay.
-- [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] Support source quantity/price/strategy/emotion/notes fields and correct normalization.
+- [x] Send decimal strings and exact instants, including explicit DST occurrence choices and untouched sub-minute precision.
+- [x] Diary plus transaction save is atomic; a rejected transaction leaves no partial Diary/ledger residue.
+- [x] Read the saved transaction and resulting canonical holding, showing uncertainty without automatic replay.
+- [x] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
+- [x] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
 
 ## Blocked by
 
@@ -48,8 +48,10 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+[BUY transaction acceptance](../../../docs/evidence/f2/buy-transactions-acceptance.md) records commands, API and AVD scenarios, source/build hash, cleanup and device-layer limits.
 
 ## Comments
 
 Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+
+Implementation complete: BUY authoring now persists as part of the Diary aggregate, preserves exact instants and existing ledger rows, reads back the canonical transaction and holdings, and keeps uncertain writes single-attempt. The live disposable API, unit suite, Android 16/API 36 AVD flow and SDK 57 Android export passed. The AVD's synthetic transaction and DST draft were removed after testing; its timezone was restored to GMT. See the linked acceptance report for repeatable commands and remaining physical-device/TalkBack limits.

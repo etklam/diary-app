@@ -12,7 +12,13 @@ describe.skipIf(!enabled)('F1 disposable account/security/preferences acceptance
     if (!baseUrl || !['localhost', '127.0.0.1', '[::1]'].includes(new URL(baseUrl).hostname)) throw new Error('Local disposable API required');
     const scenario = randomUUID();
     let rateScenario = scenario;
-    const transport: typeof fetch = (input, init) => { const request = new Request(input, init); request.headers.set('x-e2e-test-id', rateScenario); return fetch(request); };
+    const transport: typeof fetch = (input, init) => {
+      const request = new Request(input, init);
+      const clientId = rateScenario.replaceAll('-', '');
+      request.headers.set('x-e2e-test-id', rateScenario);
+      request.headers.set('x-forwarded-for', `fd00:${clientId.slice(0, 4)}:${clientId.slice(4, 8)}:${clientId.slice(8, 12)}::1`);
+      return fetch(request);
+    };
     const publicApi = createApiClient({ baseUrl, fetch: transport });
     const credentials = { email: `f1-${scenario}@example.test`, password: 'SyntheticF1Original' };
     await registerAccount(publicApi, credentials);

@@ -6,6 +6,7 @@ import { createCalendarState, createReviewState } from '../../src/diaries/discov
 import { createTimelineState } from '../../src/diaries/state';
 import { normalizeQuery } from '../../src/diaries/query';
 import { firstWeekday, monthRange, shiftMonth } from '../../src/diaries/dates';
+import { calendarDateInTimezone, groupTimelineEntries } from '@diary/domain';
 import { deferred, session, user } from './fixtures';
 
 const id = '9223372036854775806';
@@ -13,16 +14,17 @@ const empty = (): ReviewGroups => ({ counts: { overdue: 0, today: 0, upcoming: 0
 const summary = (title = 'Synthetic', page = 1): SummaryPage => ({ data: [{ id, title, date: '2024-02-29', excerpt: '', tags: [], stockSymbols: [], createdVia: 'WEB', reviewStatus: 'none', reviewDueAt: null, reviewOutcome: null, transactionCount: 0, alertCount: 0 }], pagination: { page, limit: 20, total: 40, totalPages: 2 } });
 function scope(overrides: Partial<DiaryReadScope> = {}): DiaryReadScope {
   return { review: vi.fn(), ownerId: '1', isCurrent: () => true, summary: async () => summary(),
-    detail: vi.fn(), activity: async (dateFrom, dateTo) => ({ dateFrom, dateTo, data: [] }), reviews: async () => empty(), ...overrides };
+    detail: vi.fn(), byDate: async () => null, activity: async (dateFrom, dateTo) => ({ dateFrom, dateTo, data: [] }), reviews: async () => empty(), ...overrides };
 }
 afterEach(() => vi.useRealTimers());
 describe('discovery queries and Timeline controller', () => {
   it('normalizes blank fields and symbols through the shared contract; rejects invalid ranges and unsupported filters', () => {
-    expect(normalizeQuery({ search: '  ', symbol: ' syn ', dateFrom: '' })).toEqual({ symbol: 'SYN', sortBy: 'date-desc' });
+    expect(normalizeQuery({ search: '  ', symbol: ' syn ', dateFrom: '' })).toEqual({ symbol: 'SYN', sortBy: 'date-desc', limit: 20 });
     expect(() => normalizeQuery({ dateFrom: '2023-02-29' })).toThrow();
     expect(() => normalizeQuery({ dateFrom: '2024-03-01', dateTo: '2024-02-29' })).toThrow();
     expect(() => normalizeQuery({ reviewStatus: 'completed' })).toThrow();
     expect(() => normalizeQuery({ tag: 'unsupported' } as never)).toThrow();
+    expect(normalizeQuery({ sortBy: 'title-asc', limit: '50' })).toMatchObject({ sortBy: 'title-asc', limit: 50 });
   });
   it('debounces search, immediately invalidates old results, and clear/reset/filter edits cancel the timer', async () => {
     vi.useFakeTimers(); const read = vi.fn(async () => summary());
@@ -31,11 +33,11 @@ describe('discovery queries and Timeline controller', () => {
     expect(model.getSnapshot().rows).toEqual([]);
     await vi.advanceTimersByTimeAsync(299); expect(read).toHaveBeenCalledTimes(1);
     await vi.advanceTimersByTimeAsync(1); expect(read).toHaveBeenCalledTimes(2);
-    expect(read.mock.calls.at(-1)).toEqual([1, { search: 'ab', sortBy: 'date-desc' }, expect.any(AbortSignal)]);
+    expect(read.mock.calls.at(-1)).toEqual([1, { search: 'ab', sortBy: 'date-desc', limit: 20 }, expect.any(AbortSignal)]);
     model.setQuery({ search: 'late' }, true); model.setQuery({ search: '', symbol: 'syn' });
     await vi.advanceTimersByTimeAsync(300); expect(read).toHaveBeenCalledTimes(3);
     model.setQuery({}); await vi.advanceTimersByTimeAsync(1);
-    expect(read.mock.calls.at(-1)).toEqual([1, { sortBy: 'date-desc' }, expect.any(AbortSignal)]);
+    expect(read.mock.calls.at(-1)).toEqual([1, { sortBy: 'date-desc', limit: 20 }, expect.any(AbortSignal)]);
     model.setQuery({ dateFrom: 'invalid' }); expect(model.getSnapshot()).toMatchObject({ invalid: true, rows: [], total: null });
     await model.refresh(); expect(read).toHaveBeenCalledTimes(4); model.cancel();
   });
@@ -51,7 +53,66 @@ describe('discovery queries and Timeline controller', () => {
     expect(model.getSnapshot().rows[0].id).toBe(id);
   });
 });
+describe('paged Library controller', () => {
+  const rowFor = (value: string): SummaryPage['data'][number] => ({ ...summary().data[0]!, id: value, title: `Synthetic ${value}` });
+  const pageOf = (ids: string[], page: number, totalPages: number, total = totalPages * 20, limit = 20): SummaryPage => ({
+    data: ids.map(rowFor), pagination: { page, limit, total, totalPages },
+  });
+  it('paginates with the selected page size, retries the failed page and adopts a canonical last page after deletes', async () => {
+    const read = vi.fn()
+      .mockResolvedValueOnce(pageOf(['1'], 1, 3, 41, 20))
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(pageOf(['21'], 2, 3, 41, 20))
+      .mockResolvedValueOnce(pageOf([], 3, 2, 21, 20))
+      .mockResolvedValueOnce(pageOf(['21'], 2, 2, 21, 20))
+      .mockResolvedValueOnce(pageOf(['101'], 1, 3, 101, 50));
+    const model = createTimelineState(scope({ summary: read }), { mode: 'library' });
+    await model.load(); model.goToPage(2);
+    await vi.waitFor(() => expect(model.getSnapshot()).toMatchObject({ page: 1, failed: 'refresh', issue: 'network' }));
+    await model.retry(); await vi.waitFor(() => expect(model.getSnapshot().page).toBe(2));
+    model.goToPage(3); await vi.waitFor(() => expect(model.getSnapshot()).toMatchObject({ page: 2, total: 21, totalPages: 2 }));
+    expect(model.getSnapshot().rows.map(row => row.id)).toEqual(['21']);
+    model.setQuery({ search: '中文', sortBy: 'title-asc', limit: '50' });
+    await vi.waitFor(() => expect(model.getSnapshot().totalPages).toBe(3));
+    expect(read.mock.calls.at(-1)?.[1]).toMatchObject({ search: '中文', sortBy: 'title-asc', limit: 50 });
+    expect(read.mock.calls.map(args => args[0])).toEqual([1, 2, 2, 3, 2, 1]);
+    model.cancel();
+  });
+  it('does not advance on a failed page or merge a stale response after a new search', async () => {
+    const stale = deferred<SummaryPage>();
+    const read = vi.fn().mockResolvedValueOnce(pageOf(['1'], 1, 2)).mockImplementationOnce(() => stale.promise)
+      .mockResolvedValueOnce(pageOf(['3'], 1, 1));
+    const model = createTimelineState(scope({ summary: read }), { mode: 'library' });
+    await model.load(); model.goToPage(2); model.setQuery({ search: 'English' });
+    await vi.waitFor(() => expect(model.getSnapshot().rows.map(row => row.id)).toEqual(['3']));
+    stale.resolve(pageOf(['2'], 2, 2)); await vi.waitFor(() => expect(read).toHaveBeenCalledTimes(3));
+    expect(model.getSnapshot()).toMatchObject({ page: 1, total: 20 });
+    expect(model.getSnapshot().rows.map(row => row.id)).toEqual(['3']);
+    model.cancel();
+  });
+  it('returns to page one when the server confirms the Library became empty', async () => {
+    const read = vi.fn().mockResolvedValueOnce(pageOf(['1'], 1, 2, 21))
+      .mockResolvedValueOnce(pageOf([], 2, 0, 0));
+    const model = createTimelineState(scope({ summary: read }), { mode: 'library' });
+    await model.load(); model.goToPage(2);
+    await vi.waitFor(() => expect(model.getSnapshot()).toMatchObject({ page: 1, total: 0, totalPages: 0, rows: [] }));
+    model.goToPage(1);
+    expect(read).toHaveBeenCalledTimes(2);
+    model.cancel();
+  });
+});
 describe('monthly civil Calendar', () => {
+  it('keeps account-local dates across UTC month and year rollover and groups Timeline by civil month', () => {
+    const instant = new Date('2024-02-29T16:30:00.000Z');
+    expect(calendarDateInTimezone(instant, 'Asia/Taipei')).toBe('2024-03-01');
+    expect(calendarDateInTimezone(instant, 'America/Los_Angeles')).toBe('2024-02-29');
+    const entries = groupTimelineEntries([
+      { id: '2', date: '2024-02-29' }, { id: '10', date: '2024-02-29' }, { id: '1', date: '2024-03-01' },
+    ]);
+    expect(entries.map(group => [group.period, group.entries.map(entry => entry.id)])).toEqual([
+      ['2024-03', ['1']], ['2024-02', ['10', '2']],
+    ]);
+  });
   it('handles leap years, century rules, weekdays and month/year boundaries without timezone round trips', () => {
     expect(monthRange('2024-02').dateTo).toBe('2024-02-29'); expect(monthRange('2100-02').days).toBe(28);
     expect(monthRange('2000-02').days).toBe(29); expect(firstWeekday('2024-02')).toBe(4);
@@ -121,10 +182,12 @@ describe('actual owner-bound discovery access', () => {
       return Response.json(url.pathname.endsWith('activity') ? { dateFrom: '2024-02-01', dateTo: '2024-02-28', data: [] } : url.pathname.endsWith('reviews') ? empty() : summary());
     });
     const reads = app.access.getScope()!;
-    await reads.summary(1, normalizeQuery({ search: 'needle', symbol: 'syn' })); await reads.reviews(2);
+    await reads.summary(1, normalizeQuery({ search: 'needle', symbol: 'syn' }));
+    await reads.summary(4, normalizeQuery({ limit: '50', sortBy: 'title-desc' })); await reads.reviews(2);
     await expect(reads.activity('2024-02-01', '2024-02-29')).rejects.toMatchObject({ issue: 'invalid-response' });
     expect(requests[0].searchParams.get('search')).toBe('needle'); expect(requests[0].pathname).toBe('/api/diaries/summary');
-    expect(requests[1].searchParams.get('target')).toBe('diary'); expect(requests[1].searchParams.get('limit')).toBe('20');
+    expect(requests[1].searchParams.get('sortBy')).toBe('title-desc'); expect(requests[1].searchParams.get('limit')).toBe('50');
+    expect(requests[2].searchParams.get('target')).toBe('diary'); expect(requests[2].searchParams.get('limit')).toBe('20');
   });
   it.each(['search', 'calendar', 'review'])('owner switch invalidates pending %s reads synchronously', async surface => {
     const pending = deferred<Response>(); const app = await application(() => pending.promise); const old = app.access.getScope()!;
@@ -139,16 +202,20 @@ describe('actual owner-bound discovery access', () => {
     let reads = 0;
     const app = await application(async input => {
       reads++;
-      const path = new URL((input as Request).url).pathname;
-      return Response.json(path.endsWith('activity') ? { data: [], dateFrom: '2024-02-01', dateTo: '2024-02-29' } : path.endsWith('reviews') ? empty() : summary());
+      const request = new URL((input as Request).url);
+      return Response.json(request.pathname.endsWith('activity') ? { data: [], dateFrom: '2024-02-01', dateTo: '2024-02-29' }
+        : request.pathname.endsWith('reviews') ? empty() : summary('Synthetic', Number(request.searchParams.get('page') ?? '1')));
     });
     const current = app.access.getScope()!;
-    const timeline = createTimelineState(current), calendar = createCalendarState(current, '2024-02-29'), review = createReviewState(current);
-    await Promise.all([timeline.load(), calendar.load(), review.load()]);
-    const stop = app.access.subscribeMutations(() => { void timeline.refresh(); void calendar.load(); void review.refresh(); });
+    const timeline = createTimelineState(current), library = createTimelineState(current, { mode: 'library' });
+    const calendar = createCalendarState(current, '2024-02-29'), review = createReviewState(current);
+    await Promise.all([timeline.load(), library.load(), calendar.load(), review.load()]);
+    library.goToPage(2); await vi.waitFor(() => expect(library.getSnapshot().page).toBe(2));
+    const stop = app.access.subscribeMutations(() => { void timeline.refresh(); void library.refresh(); void calendar.load(); void review.refresh(); });
     app.access.changed(current);
-    await vi.waitFor(() => expect(reads).toBe(6));
+    await vi.waitFor(() => expect(reads).toBe(9));
     expect(calendar.getSnapshot().selected).toBe('2024-02-29');
-    stop(); timeline.cancel(); calendar.cancel(); review.cancel();
+    expect(library.getSnapshot()).toMatchObject({ page: 2, total: 40 });
+    stop(); timeline.cancel(); library.cancel(); calendar.cancel(); review.cancel();
   });
 });

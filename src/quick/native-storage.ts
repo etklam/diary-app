@@ -2,14 +2,17 @@ import * as SQLite from 'expo-sqlite';
 import * as SecureStore from 'expo-secure-store';
 import { getRandomBytesAsync } from 'expo-crypto';
 import { File } from 'expo-file-system';
+import { openAuthoringDraftRepository, type AuthoringDraftRepository } from '../drafts/repository';
 import { openReviewRepository, type ReviewRepository } from '../reviews/repository';
 import { openDraftRepository, unlockDraftDatabase, type DraftRepository } from './repository';
 
 let database: ReturnType<typeof unlockDraftDatabase> | undefined;
 let repository: Promise<DraftRepository> | undefined;
 let reviews: Promise<ReviewRepository> | undefined;
+let authoring: Promise<AuthoringDraftRepository> | undefined;
 export function nativeDraftRepository() { return repository ??= nativeDraftDatabase().then(openDraftRepository); }
 export function nativeReviewRepository() { return reviews ??= nativeDraftDatabase().then(openReviewRepository); }
+export function nativeAuthoringDraftRepository() { return authoring ??= nativeDraftDatabase().then(openAuthoringDraftRepository); }
 export function nativeDraftDatabase() {
   if (!database) database = (async () => {
     const name = 'quick-drafts-v1.db';

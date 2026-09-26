@@ -1,7 +1,7 @@
 # [43] Import, export and publicly share selected Discipline
 
 Status: ready-for-agent
-Execution: not-started
+Execution: in-progress (shared-contract/API acceptance and Android bundle complete; native file/share/continuation acceptance and canonical web origin pending)
 Type: AFK
 Phase: F6
 Work area: diary-app
@@ -25,7 +25,7 @@ Native app implementation; inspect referenced service contracts before changing 
 - [ ] Open/share public links safely and preserve guest login continuation before import.
 - [ ] Clipboard/file denial or uncertain import retains a usable selection and avoids duplicating content.
 - [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
 
 ## Blocked by
 
@@ -47,8 +47,10 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+See [Discipline transfer acceptance evidence](../../../docs/evidence/f6/discipline-transfer-acceptance.md). Unit validation, source API round-trip, owner isolation, lint/typecheck, Expo dependency validation, and Android static export passed. Native file/share/clipboard/runtime acceptance and a canonical public website origin remain open.
 
 ## Comments
 
 Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+
+2026-09-26: Implemented the native JSON/file preview, selected-row export, optional attribution, OS JSON-file/link sharing, public native preview route, guest login continuation, explicit append/replacement, and uncertain-import reconciliation. Disposable PostgreSQL API acceptance passed for export, append, replacement and owner isolation. Native permission/share/accessibility flows were not run because the available AVD development client still waits for Metro and no physical device is available. #05 does not yet record a canonical web origin, so only the native app preview link is emitted pending that release input. Exact commands and bundle hash are in the evidence document.

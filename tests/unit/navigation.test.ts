@@ -18,6 +18,8 @@ describe('navigation access and readiness', () => {
   it('restricts administration to ADMIN and keeps unfinished routes non-actionable', () => {
     expect(visibleDestinations('more', 'USER').some(item => item.id === 'admin')).toBe(false);
     expect(visibleDestinations('more', 'ADMIN').find(item => item.id === 'admin')).toMatchObject({ audience: 'ADMIN' });
-    expect(destinations.filter(item => item.href).map(item => item.id)).toEqual(['timeline', 'calendar', 'review', 'account', 'more-review']);
+    expect(destinations.filter(item => item.href).map(item => item.id)).toEqual(['timeline', 'library', 'calendar', 'review', 'plans', 'watchlist', 'account', 'more-review', 'more-plans', 'alerts', 'discipline', 'partners', 'articles']);
+    expect(destinations.find(item => item.id === 'articles')).toMatchObject({ audience: 'guest', href: '/articles' });
   });
 });
+

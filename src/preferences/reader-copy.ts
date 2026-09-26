@@ -788,9 +788,9 @@ export const readerCopy: Record<string, [string, string]> = {
     "現有草稿或未確認的儲存已保留原日期與內容。",
     "现有草稿或未确认的保存已保留原日期与内容。"
   ],
-  "Logging out discards your local Quick Diary and Review drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.": [
-    "登出會捨棄此帳戶的本機快速日記與複盤草稿。捨棄未確認送出，不會取消或還原可能已發生的伺服器寫入。",
-    "退出会放弃此账户的本地快速日记与复盘草稿。放弃未确认提交，不会取消或还原可能已发生的服务器写入。"
+  "Logging out discards your local Quick Diary, Review and authoring drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.": [
+    "登出會捨棄此帳戶的本機快速日記、複盤及編寫草稿。捨棄未確認送出，不會取消或還原可能已發生的伺服器寫入。",
+    "退出会放弃此账户的本地快速日记、复盘和编写草稿。放弃未确认提交，不会取消或还原可能已发生的服务器写入。"
   ],
   "We could not safely remove your encrypted draft. You are still signed in. Please reopen the app and try again.": [
     "無法安全移除加密草稿，登入仍保留。請重新開啟 app 重試。",

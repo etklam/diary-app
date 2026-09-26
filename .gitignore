@@ -53,3 +53,10 @@ credentials.json
 /.scratch/f0-packages/
 /.scratch/f0-runtime/
 __pycache__/
+
+# Local AVD UI dumps and build scratch (regenerable, never tracked)
+/.scratch/diary-app-full-parity/ui-*
+/.scratch/diary-app-full-parity/draft-probe-*
+/.scratch/diary-app-full-parity/devlauncher-*
+/.scratch/diary-app-full-parity/f2-library-before.xml
+/.scratch/trade-plans/

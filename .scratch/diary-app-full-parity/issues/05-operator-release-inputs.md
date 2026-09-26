@@ -1,7 +1,7 @@
 # [05] Supply release, hosting, provider and device inputs
 
 Status: ready-for-human
-Execution: not-started
+Execution: in-progress
 Type: HITL
 Phase: F0–F10
 Work area: operator
@@ -47,7 +47,16 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+Repository and local-environment inventory is recorded below. Operator inputs and release acceptance remain open.
+
+## Repository evidence (operator inputs still outstanding)
+
+- Confirmed from `config/release.cjs`, `eas.json`, and `docs/beta/release-runbook.md`: the configured preview identity is `Trade Basic Beta`, package `com.etklam.diaryapp.preview`, scheme `tradebasicbeta`; EAS preview is internal APK with `developmentClient: false`. These are repository settings, not proof of EAS/store/project ownership or an authorized signing identity.
+- The release validator requires explicit preview API origin and matching approval, a real support destination, confirmed server/data-retention notice, monotonically increasing Android version code, operator approval flag, and existing authorized EAS project or signing material. No real approved origin, support/data policy, project ownership, signing fingerprint, or previous preview build ledger is recorded in the repository/runbook.
+- The runbook describes individual tester accounts and an isolated HTTPS fault ingress, but no named account provisioning/recovery owner, fault-ingress owner, hosting/backup operator, or verified delivery route is recorded. It explicitly forbids using credentials in tickets/commands and says not to invite testers before the gates pass.
+- The Android SDK includes `adb` under `%LOCALAPPDATA%\Android\Sdk\platform-tools`, although that directory is not on PATH. On 2026-09-26, `adb devices -l` showed only the `DiaryApp_API_36` emulator and no physical Android device. The emulator supports development checks but does not satisfy the runbook's two-device/device/upgrade/standalone acceptance. iOS hardware/build access is requested only when that target is scheduled.
+- `npm run verify` passed for the current source, but that is host/build evidence only and does not supply operator approvals, credentials, devices, hosted CI evidence, a signed preview artifact, or tested private delivery.
+- Do not infer missing values from environment fallbacks or create credentials/projects. This ticket remains open for the release owner to record individually through the protected operator process; no secrets should be added to this issue.
 
 ## Comments
 

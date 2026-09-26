@@ -15,7 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: buildVariant === 'preview' ? 'tradebasicbeta' : 'diaryapp',
-  extra: { buildVariant, apiOrigin: release?.apiOrigin ?? null, supportUrl: release?.supportUrl ?? process.env.EXPO_PUBLIC_BETA_SUPPORT_URL ?? null, dataNotice: release?.dataNotice ?? process.env.EXPO_PUBLIC_BETA_DATA_NOTICE ?? null, ...(process.env.EAS_PROJECT_ID ? { eas: { projectId: process.env.EAS_PROJECT_ID } } : {}) },
+  extra: { buildVariant, apiOrigin: release?.apiOrigin ?? null, publicWebOrigin: process.env.EXPO_PUBLIC_WEB_ORIGIN ?? null, supportUrl: release?.supportUrl ?? process.env.EXPO_PUBLIC_BETA_SUPPORT_URL ?? null, dataNotice: release?.dataNotice ?? process.env.EXPO_PUBLIC_BETA_DATA_NOTICE ?? null, ...(process.env.EAS_PROJECT_ID ? { eas: { projectId: process.env.EAS_PROJECT_ID } } : {}) },
   userInterfaceStyle: 'automatic',
   ios: {
     icon: './assets/expo.icon',
@@ -38,6 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     'expo-router',
+    'expo-sharing',
     ['expo-dev-client', { addGeneratedScheme: isDevelopmentBuild }],
     [
       'expo-splash-screen',

@@ -1,7 +1,7 @@
 # [69] Record platform order and release-owner product decisions
 
 Status: ready-for-human
-Execution: not-started
+Execution: in-progress
 Type: HITL
 Phase: F0
 Work area: operator
@@ -46,7 +46,22 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+Repository assumptions have been reviewed; the release-owner decision and acceptance remain open.
+
+## Repository evidence at the decision prompt
+
+- `docs/launch-roadmap.md` currently describes Android-first followed by full iOS parity as a planning assumption. It is not a release-owner approval; this ticket's acceptance criteria explicitly require owner input.
+- `Trade Basic Beta` is the configured preview identity, not the confirmed final product name. The repository does not record final identity, initial supported markets, launch budget, Android/iOS release owners, or resource availability.
+- The unresolved choice directly affects #62/#65/#66 (Android candidate, full acceptance and launch) and #67/#68/#70 (iOS foundation, acceptance and launch). API/common feature implementation continues independently of this decision.
+- No prior unanswered platform question is recorded as approval. The platform order and owners remain unconfirmed and require an explicit release-owner decision.
+- On 2026-09-26, the release owner was asked to choose Android-first, simultaneous Android/iOS, or undecided, and to identify platform owners/resources. No response is recorded; this request is not approval.
+
+## Latest release-owner input (2026-09-26)
+
+- The release owner explicitly approved **Android-first**. Record the delivery order as Android candidate/launch first, followed by full iOS parity; this resolves the platform-order question only.
+- Android and iOS release owners, committed device/QA resources, final product identity, initial supported markets, launch budget and operational owner remain unspecified and are still required for this ticket.
+- Runtime inventory on this date found no physical Android handset attached to ADB. The local `DiaryApp_API_36` Android 16 emulator (`emulator-5554`) is online; this is development test capacity, not an owner commitment for release validation.
+- The earlier “no response” evidence above reflects the state before this input and is superseded for the platform-order decision only.
 
 ## Comments
 

@@ -18,6 +18,15 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(private)" />
+          <Stack.Screen name="stocks/[symbol]" options={{ headerShown: true, title: 'Company' }} />
+          <Stack.Screen name="tools/sec-filings/[cik]/[accession]" options={{ headerShown: false }} />
+          <Stack.Screen name="discipline/share" options={{ headerShown: false }} />
+          <Stack.Screen name="articles/index" options={{ headerShown: false }} />
+          <Stack.Screen name="articles/[slug]" options={{ headerShown: false }} />
+          <Stack.Screen name="blog/index" options={{ headerShown: false }} />
+          <Stack.Screen name="blog/[slug]" options={{ headerShown: false }} />
+          <Stack.Screen name="guide" options={{ headerShown: false }} />
+          <Stack.Screen name="about" options={{ headerShown: false }} />
         </Stack>
         </PreferencesProvider>
       </AuthProvider>

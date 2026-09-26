@@ -18,11 +18,14 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
     const clients: ReturnType<typeof createNativeSession>[] = [];
     const cleanupIds = new Set<string>();
     const scenario = randomUUID();
+    const clientId = scenario.replaceAll('-', '');
+    const testClientIp = `fd00:${clientId.slice(0, 4)}:${clientId.slice(4, 8)}:${clientId.slice(8, 12)}::1`;
     let loseResponse = false;
     let postCount = 0;
     const transport: typeof fetch = async (input, init) => {
       const request = new Request(input, init);
       request.headers.set('x-e2e-test-id', scenario);
+      request.headers.set('x-forwarded-for', testClientIp);
       const write = request.method === 'POST' && new URL(request.url).pathname === '/api/diaries';
       if (write) postCount++;
       const response = await fetch(request);
@@ -36,7 +39,7 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
     };
     const register = async (label: string) => {
       const credentials = { email: `p1b-${label}-${randomUUID().slice(0, 8)}@example.test`, password: 'SyntheticP1b2026' };
-      const response = await fetch(`${baseUrl}/api/auth/register`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-e2e-test-id': scenario }, body: JSON.stringify(credentials) });
+      const response = await fetch(`${baseUrl}/api/auth/register`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-e2e-test-id': scenario, 'x-forwarded-for': testClientIp }, body: JSON.stringify(credentials) });
       expect(response.status).toBe(200); registered.push(credentials);
       let stored: NativeSession | null = null;
       const storage = { get: () => stored, set: (value: NativeSession) => { stored = value; }, clear: () => { stored = null; } };
@@ -58,17 +61,50 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
     const body = { title: 'Synthetic quick title', content: 'Synthetic original\nExact second line  ', date: '2020-02-01', tags: ['first'], stockSymbols: ['SYN'] };
     try {
       expect(await a.quick.byDate(body.date)).toBeNull();
-      const created = await a.api.POST('/api/diaries', { body });
+      const created = await a.api.POST('/api/diaries', { body: { ...body, transactions: [
+        { symbol: 'SYN', type: 'BUY', quantity: '0.25', price: '10.1', tradeDate: '2020-02-01T12:00:00.000Z' },
+      ] } });
       expect(created.response.status).toBe(201);
       const original = diaryResponseSchema.parse(created.data); cleanupIds.add(original.id);
       expect(typeof original.id).toBe('string'); expect(original).toMatchObject(body);
+      expect(original.transactions).toHaveLength(1);
       expect((await a.quick.byDate(body.date))?.id).toBe(original.id);
       const appended = await a.api.POST('/api/diaries', { body: { ...body, title: 'Ignored append title', content: 'Synthetic append', tags: ['second', 'first'], stockSymbols: ['NEW', 'SYN'], appendToToday: true } });
       expect(appended.response.status).toBe(201);
       const result = diaryResponseSchema.parse(appended.data);
       expect(result.id).toBe(original.id); expect(result.title).toBe(body.title);
       expect(result.content).toBe(`${body.content}\n\n---\n\nSynthetic append`);
+      expect(result.transactions).toEqual(original.transactions);
       expect(result.tags).toEqual(['first', 'second']); expect([...result.stockSymbols].sort()).toEqual(['NEW', 'SYN']);
+
+      const concurrent = await Promise.all((['A', 'B'] as const).map(suffix => a.api.POST('/api/diaries', { body: {
+        ...body, title: `Ignored concurrent title ${suffix}`, content: `Concurrent append ${suffix}`,
+        tags: [`concurrent-${suffix.toLowerCase()}`], stockSymbols: [`SYM${suffix}`], appendToToday: true,
+      } })));
+      expect(concurrent.map(item => item.response.status)).toEqual([201, 201]);
+      expect(concurrent.map(item => diaryResponseSchema.parse(item.data).id)).toEqual([original.id, original.id]);
+      const concurrentRead = await a.quick.byDate(body.date);
+      expect(concurrentRead?.content).toContain('Synthetic original');
+      expect(concurrentRead?.content).toContain('Synthetic append');
+      expect(concurrentRead?.content).toContain('Concurrent append A');
+      expect(concurrentRead?.content).toContain('Concurrent append B');
+      expect(concurrentRead?.tags).toEqual(expect.arrayContaining(['first', 'second', 'concurrent-a', 'concurrent-b']));
+      expect(concurrentRead?.stockSymbols).toEqual(expect.arrayContaining(['SYN', 'NEW', 'SYMA', 'SYMB']));
+      expect(concurrentRead?.transactions).toEqual(original.transactions);
+
+      for (const [type, daysAgo, price] of [['BUY', 3, '10.1'], ['SELL', 2, '20.2']] as const) {
+        const tradeDate = new Date(Date.now() - daysAgo * 86_400_000).toISOString();
+        const response = await a.api.POST('/api/diaries', { body: {
+          date: tradeDate.slice(0, 10), title: `Synthetic ${type} source`, content: 'Controlled transaction.',
+          transactions: [{ symbol: 'SYN', type, quantity: '0.1', price, tradeDate }],
+        } });
+        expect(response.response.status).toBe(201);
+        cleanupIds.add(diaryResponseSchema.parse(response.data).id);
+      }
+      expect(await a.quick.recentClosedTrades()).toEqual(expect.arrayContaining([
+        expect.objectContaining({ symbol: 'SYN', sellQuantity: '0.1', realizedPnL: '1.01', realizedPnLPct: '100' }),
+      ]));
+
       const conflict = await a.quick.write(body);
       expect(conflict).toMatchObject({ ok: false, status: 409, code: 'DIARY_ALREADY_EXISTS' });
       const other = await b.api.GET('/api/diaries/by-date', { params: { query: { date: body.date } } });
@@ -126,9 +162,10 @@ describe.runIf(enabled)('P1B real API acceptance', () => {
         await mkdir('.expo', { recursive: true });
         await writeFile('.expo/p1b-fixtures.json', JSON.stringify({ a: registered[0], b: registered[1], ownerA: a.ownerId, ownerB: b.ownerId }));
       }
-      console.log('P1B API: create 201, exact append 201, conflict 409, owner isolation, committed create/append response loss, read-only reconciliation and zero duplicate POST: PASS');
+      console.log('P1B API: create, sequential/concurrent append with transaction/tag/symbol preservation, recent closed trade, owner isolation, response-loss reconciliation and zero duplicate POST: PASS');
     } finally {
-      for (const id of cleanupIds) expect((await a.api.DELETE('/api/diaries/{id}', { params: { path: { id } } })).response.ok).toBe(true);
+      // Remove later sales before their buys so the ledger remains valid at each delete.
+      for (const id of [...cleanupIds].reverse()) expect((await a.api.DELETE('/api/diaries/{id}', { params: { path: { id } } })).response.ok).toBe(true);
       for (const native of clients) await native.logout(); db.close();
     }
   }, 30000);

@@ -55,3 +55,7 @@ Operator inputs/platform/signing (05/69), backend receipts/generalized drafts/ou
 ## Reproduction and cleanup
 
 Follow the [runbook](../../f0-acceptance.md). Both uniquely provisioned disposable databases were stopped through the source cleanup handler. A final `pg_database` query for their exact recorded names returned count 0. The synthetic native account was logged out normally and Metro stopped; app storage was not cleared. Unrelated Docker services and source work remain intact.
+
+## Subsequent source inventory refresh
+
+On 2026-09-26, after the separate ticket 57 backend implementation began, the reproducible source manifest was refreshed. It now records 725 scoped files and 127 API operations, alongside the same 51 capabilities, 114 stories and 52 routes. `node scripts/freeze-parity-baseline.mjs` followed by `npm run parity:check` passes against `../diary-v3`; the current manifest SHA-256 is `209b85e5893bbafd49cd4664fe10193b94326aabb14c2c450d62173073d41f19`. The original 720-file/124-operation figures above describe the 2026-09-22 F0 run. The refreshed inventory includes ticket 57's relevant untracked files and is not PostgreSQL runtime acceptance.

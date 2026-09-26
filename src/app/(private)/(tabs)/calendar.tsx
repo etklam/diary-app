@@ -1,7 +1,7 @@
 import { usePreferences } from '@/preferences/context';
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { calendarDateInTimezone } from '@diary/domain';
 import { useAuth } from '@/auth/context';
@@ -65,7 +65,8 @@ function Calendar({ scope, timezone }: { scope: DiaryReadScope; timezone: string
       <Text style={styles.title}>{state.selected}</Text>
       {day ? <><Text style={styles.meta}>{day.transactionCount} {t("transactions ·")}{' '}{day.alertCount} {t("alerts")}</Text>
         <SmallButton label={t("Open diary")} onPress={() => router.push({ pathname: '/diaries/[id]', params: { id: day.diaryId } })} /></>
-        : <><Text style={styles.body}>{t("No diary for this date.")}</Text><SmallButton label={t("Write for this date")} onPress={() => void write()} /></>}
+        : <><Text style={styles.body}>{t("No diary for this date.")}</Text><SmallButton label={t("Write for this date")} onPress={() => void write()} />
+          <SmallButton label={t('Write complete diary for this date')} onPress={() => router.push({ pathname: '/diaries/editor', params: { date: state.selected } } as unknown as Href)} /></>}
       <SmallButton label={t("Refresh activity")} onPress={() => void model.load()} />
     </>}
   </ScrollView></SafeAreaView>;

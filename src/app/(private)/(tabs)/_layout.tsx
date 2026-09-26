@@ -41,6 +41,7 @@ export default function ProductTabs() {
     <Tabs.Screen name="research" options={{ title: t('Research'), tabBarIcon: ({ color }) => <Text allowFontScaling={false} accessible={false} style={{ color, fontSize: 22 }}>⌕</Text> }} />
     <Tabs.Screen name="more" options={{ title: t('More'), tabBarIcon: ({ color }) => <Text allowFontScaling={false} accessible={false} style={{ color, fontSize: 22 }}>···</Text> }} />
     <Tabs.Screen name="calendar" options={{ title: t('Calendar'), href: null }} />
+    <Tabs.Screen name="library" options={{ title: t('Library'), href: null }} />
     <Tabs.Screen name="review" options={{ title: t('Review'), href: null }} />
     <Tabs.Screen name="account" options={{ title: t('Account'), href: null }} />
   </Tabs></>;

@@ -53,8 +53,9 @@ export default function LoginScreen() {
       {registering && <><Copy>Use 8 or more characters, up to 72 UTF-8 bytes.</Copy><Field label="Confirm password" testID="confirm-input" value={confirmation} onChangeText={setConfirmation} secureTextEntry editable={!pending} /></>}
       {error instanceof Error && error.message === 'Passwords do not match.' ? <Copy>Passwords do not match.</Copy> : <Failure error={error} />}
       <PrimaryButton testID={registering ? 'register-button' : 'login-button'} label={registering ? 'Create account' : 'Sign in'} busy={pending} disabled={!email.trim() || !password || !api} onPress={() => void submit()} />
-      <PrimaryButton testID="auth-switch" label={registering ? 'Sign in' : 'Create account'} disabled={pending} onPress={() => { setError(null); setPassword(''); setConfirmation(''); router.setParams({ mode: registering ? 'login' : 'register' }); }} />
+    <PrimaryButton testID="auth-switch" label={registering ? 'Sign in' : 'Create account'} disabled={pending} onPress={() => { setError(null); setPassword(''); setConfirmation(''); router.setParams({ mode: registering ? 'login' : 'register' }); }} />
     </>}
+    <PrimaryButton label="Explore public tools" disabled={pending} onPress={() => router.push('/tools' as Href)} />
     <PrimaryButton label="Continue as guest" disabled={pending} onPress={() => router.push('/start')} />
   </AccountPage>;
 }

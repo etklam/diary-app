@@ -1,7 +1,7 @@
 import { calendarDateSchema } from '@diary/contracts';
 import type { QuickApi } from './api';
 import { hasDraft, newDraft, payloadFor, reconcile, type QuickDraft } from './model';
-import type { DraftRepository } from './repository';
+import type { DraftRepository, QuickSnippetRecord } from './repository';
 
 type Issue = 'storage' | 'validation' | 'connection' | 'conflict' | 'session' | 'server' | null;
 export type QuickState = {
@@ -9,6 +9,7 @@ export type QuickState = {
   lookup: 'checking' | 'exists' | 'none' | 'error'; existingId: string | null;
   issue: Issue; recovery: 'applied' | 'pending' | 'ambiguous' | null; restored: boolean;
   confirmedId: string | null;
+  localData: { ready: boolean; error: boolean; snippets: QuickSnippetRecord[]; recentTags: string[] };
 };
 export type QuickController = ReturnType<typeof createQuickController>;
 export function createQuickController(options: {
@@ -18,7 +19,8 @@ export function createQuickController(options: {
   const { api } = options;
   const now = options.now ?? (() => new Date());
   let state: QuickState = { draft: newDraft(options.scope, api.ownerId, options.timezone, now()), ready: false,
-    busy: false, persistence: 'saved', lookup: 'checking', existingId: null, issue: null, recovery: null, restored: false, confirmedId: null };
+    busy: false, persistence: 'saved', lookup: 'checking', existingId: null, issue: null, recovery: null, restored: false, confirmedId: null,
+    localData: { ready: false, error: false, snippets: [], recentTags: [] } };
   let closed = false;
   let busy = false;
   let revision = 0;
@@ -78,16 +80,32 @@ export function createQuickController(options: {
     if (!current()) return;
     await (await options.repository).remove(draft.scope, draft.ownerId);
     if (!current()) return;
+    if (draft.tags.trim()) {
+      try {
+        const recentTags = await (await options.repository).rememberRecentTags(options.scope, api.ownerId,
+          draft.tags.split(',').map(value => value.trim()).filter(Boolean));
+        if (current()) emit({ localData: { ...state.localData, recentTags } });
+      } catch { if (current()) emit({ localData: { ...state.localData, error: true } }); }
+    }
+    if (!current()) return;
     if (state.confirmedId !== id) api.changed();
     emit({ confirmedId: id, recovery: 'applied', persistence: 'saved', issue: null });
   };
   const start = async () => {
     try {
-      const saved = await (await options.repository).load(options.scope, api.ownerId);
+      const repository = await options.repository;
+      const saved = await repository.load(options.scope, api.ownerId);
       if (!current()) return;
       const draft = saved ?? state.draft;
       if (draft.writeState === 'saving') draft.writeState = 'uncertain';
       emit({ ready: true, draft, restored: !!saved, lookup: draft.attempt ? 'error' : 'checking', issue: null });
+      try {
+        const [snippets, recentTags] = await Promise.all([
+          repository.loadSnippets(options.scope, api.ownerId), repository.loadRecentTags(options.scope, api.ownerId),
+        ]);
+        if (current()) emit({ localData: { ready: true, error: false, snippets, recentTags } });
+      } catch { if (current()) emit({ localData: { ...state.localData, ready: true, error: true } }); }
+      if (!current()) return;
       if (draft.writeState === 'confirmed' && draft.confirmedId) { await finish(draft.confirmedId); return; }
       if (draft.attempt) await persist(draft);
     } catch { if (current()) emit({ issue: 'storage', persistence: 'error' }); }
@@ -160,7 +178,8 @@ export function createQuickController(options: {
       emit({ draft: { ...state.draft, date, modeChosen: false }, existingId: null });
       schedule(); void lookup(); return true;
     },
-    edit(patch: Partial<Pick<QuickDraft, 'date' | 'mode' | 'title' | 'content' | 'tags' | 'stockSymbols'>>) {
+    edit(patch: Partial<Pick<QuickDraft, 'date' | 'mode' | 'title' | 'content' | 'tags' | 'stockSymbols'
+      | 'templateKind' | 'templateData' | 'appliedTemplate' | 'titleTouched'>>) {
       if (!current() || !state.ready || busy || state.draft.attempt || state.confirmedId) return;
       ++revision;
       const dateChanged = patch.date !== undefined && patch.date !== state.draft.date;
@@ -170,6 +189,20 @@ export function createQuickController(options: {
       schedule();
       if (dateChanged) void lookup();
     },
+    async saveSnippet(snippet: QuickSnippetRecord) {
+      if (!current() || !state.ready) throw new Error('Quick editor is not available');
+      const snippets = [...state.localData.snippets.filter(item => item.id !== snippet.id), snippet];
+      await (await options.repository).saveSnippets(options.scope, api.ownerId, snippets);
+      if (current()) emit({ localData: { ...state.localData, ready: true, error: false, snippets } });
+    },
+    async deleteSnippet(id: string) {
+      if (!current() || !state.ready) throw new Error('Quick editor is not available');
+      const snippets = state.localData.snippets.filter(item => item.id !== id);
+      await (await options.repository).saveSnippets(options.scope, api.ownerId, snippets);
+      if (current()) emit({ localData: { ...state.localData, ready: true, error: false, snippets } });
+    },
+    recentClosedTrades: () => api.recentClosedTrades(),
+    spxSession: () => api.spxSession(),
     hasUnsent: () => !state.confirmedId && hasDraft(state.draft),
     async discard() {
       clearTimer(); closed = true; ++lookupVersion;

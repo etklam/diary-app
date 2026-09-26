@@ -1,7 +1,7 @@
 import { usePreferences, type Colors } from '@/preferences/context';
 import { HelpButton } from '@/beta/help';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect, router } from 'expo-router';
+import { Redirect, router, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/context';
@@ -40,6 +40,9 @@ export default function AccountScreen() {
           <Text style={styles.value}>{user.timezone}</Text>
         </View>
         <HelpButton screen="account" code={state.status === 'recoverable-error' ? state.issue : undefined} />
+        <PrimaryButton label={t("Read the guide")} onPress={() => router.push('/guide')} />
+        <PrimaryButton label={t("Browse articles")} onPress={() => router.push('/articles' as Href)} />
+        <PrimaryButton label={t("About and support")} onPress={() => router.push('/about' as Href)} />
         <PrimaryButton testID="account-preferences" label={t("Preferences")} onPress={() => router.push('/preferences')} />
         <PrimaryButton testID="account-security" label={t("Account security")} onPress={() => router.push('/security')} />
         <PrimaryButton testID="logout-button" label={t("Log out")} onPress={() => void logout(t)} />

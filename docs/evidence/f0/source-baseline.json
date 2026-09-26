@@ -2,11 +2,27 @@
   "schemaVersion": 1,
   "sourceCommit": "ce2962f597ef56dc4e4cb8966c1ca1860369e006",
   "sourceChanges": [
-    "M tests/unit/native-package-scripts.test.ts",
-    "M  tests/unit/pwa.test.ts"
+    " M apps/api/src/app.ts",
+    " M apps/api/src/diary-read.ts",
+    " M apps/api/src/diary-review.ts",
+    " M apps/api/src/diary.ts",
+    " M apps/api/src/stock-notes.ts",
+    " M openapi/openapi.json",
+    " M packages/api-client/src/generated.ts",
+    " M packages/contracts/src/index.ts",
+    " M packages/contracts/src/openapi.ts",
+    " M packages/db/migrations/meta/_journal.json",
+    " M packages/db/src/schema.ts",
+    " M tests/unit/native-package-scripts.test.ts",
+    "M  tests/unit/pwa.test.ts",
+    "?? apps/api/src/operation-receipts.ts",
+    "?? packages/contracts/src/operations.ts",
+    "?? packages/db/migrations/0023_spicy_raider.sql",
+    "?? packages/db/migrations/meta/0023_snapshot.json",
+    "?? tests/integration/operation-receipts.test.ts"
   ],
-  "sourceScope": "Tracked product, contracts, domain, database, behavioral tests and operational source; no environment files, dependencies or user data.",
-  "openApiSha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0",
+  "sourceScope": "Tracked and relevant untracked product, contracts, domain, database, behavioral tests and operational source; no environment files, dependencies or user data.",
+  "openApiSha256": "a1717101caddeb52b6f12d1d9d04a3f46c00b490f2e01fa4572b1b3d4789eb69",
   "routeRegistrySha256": "c96bcf47821aefc9af5259c5ab5623ad2475843fd584a3e4086b2f20c159247e",
   "capabilities": [
     "A01",
@@ -422,7 +438,7 @@
     },
     {
       "path": "apps/api/src/app.ts",
-      "sha256": "60d8fda7a1f742473868a034930c4026c9e46dedf9b8b7e9dd39634d3b327899"
+      "sha256": "568e53db4c0dbc796609dadae1e5c3e3829705decfb7b7ed13f9adb4e97d666a"
     },
     {
       "path": "apps/api/src/auth-session.ts",
@@ -442,11 +458,11 @@
     },
     {
       "path": "apps/api/src/diary-read.ts",
-      "sha256": "a24d80138e4b852a14eb60a3055e74c2985bf85d831c5478805a592d59a9397d"
+      "sha256": "188d604195bda38e9f37d15453ce11258181ce0779b34b554474d5b63c4ac9dc"
     },
     {
       "path": "apps/api/src/diary-review.ts",
-      "sha256": "9f7b5dcc2ff08d2ce20be7e23a201ed9c6e75214fe65e75d8462d0d104b0d38b"
+      "sha256": "1be34956bd0324437296aaa86ba08342f5bd1db11f41c9dd0ca006413cd24991"
     },
     {
       "path": "apps/api/src/diary-stocks.ts",
@@ -454,7 +470,7 @@
     },
     {
       "path": "apps/api/src/diary.ts",
-      "sha256": "43e450d8def2d32583b16638cca57be555af27b6b93a260e37fffdaf896d08fc"
+      "sha256": "0a19b11a80f8ac0a867544d0eeae6c241a906dfe89df15d5b577fc865607c2b9"
     },
     {
       "path": "apps/api/src/discipline-og.ts",
@@ -559,6 +575,10 @@
     {
       "path": "apps/api/src/market-state-universe.ts",
       "sha256": "c544b4c062c2fb3676d0e8c3b83c93cee5227801928e72c3765ec43416163fb4"
+    },
+    {
+      "path": "apps/api/src/operation-receipts.ts",
+      "sha256": "7c69ea98025b7b00a65e8d813caf7ca1acd36a4a6fbd592a749d4469551a8967"
     },
     {
       "path": "apps/api/src/partners.ts",
@@ -690,7 +710,7 @@
     },
     {
       "path": "apps/api/src/stock-notes.ts",
-      "sha256": "4e027de2325582893e898c4a80bbc6a4247a9369bd8db57f3cd9e316b3583e65"
+      "sha256": "e67c80a2d5db755d28c868d05d9647658c237391be4011e31482f2900e00d765"
     },
     {
       "path": "apps/api/src/stock-timeline-capture.ts",
@@ -1706,7 +1726,7 @@
     },
     {
       "path": "openapi/openapi.json",
-      "sha256": "677a8123be01ef09256cf9b42bfd4b3717a965f2d76bf911e7d4344517917df0"
+      "sha256": "a1717101caddeb52b6f12d1d9d04a3f46c00b490f2e01fa4572b1b3d4789eb69"
     },
     {
       "path": "package-lock.json",
@@ -1722,7 +1742,7 @@
     },
     {
       "path": "packages/api-client/src/generated.ts",
-      "sha256": "df9ec5db6ae9dd38c650c8dba8683e4c5cd75dbdcc51c7ddbd6384271898d091"
+      "sha256": "daaba07c63b7dbf8794c301d59f0f7f8f1754ad3a5ad02255f3a263430e0ad97"
     },
     {
       "path": "packages/api-client/src/index.ts",
@@ -1802,7 +1822,7 @@
     },
     {
       "path": "packages/contracts/src/index.ts",
-      "sha256": "cc444b327b9141f6036482a566a87882e65c13d70ea3e8131399893e8bf82f2b"
+      "sha256": "5ed9e230ccb19bc7db7682331db16eafaf02eeea5fdc8cfbb95f2c307d6ac9d8"
     },
     {
       "path": "packages/contracts/src/investment-thesis.ts",
@@ -1822,7 +1842,11 @@
     },
     {
       "path": "packages/contracts/src/openapi.ts",
-      "sha256": "fa910339cce383b7f69f2ee4b2cfbea8cc7c09a9f8d6f4072de323f6a362a9f0"
+      "sha256": "7b0b031fb22b335fca339bcc94c8d837e268480d25069d8c39916f01f40332e7"
+    },
+    {
+      "path": "packages/contracts/src/operations.ts",
+      "sha256": "7735a32f702d88f7c4fafe0601f9a699bfbac4d522701c02f591acee078de571"
     },
     {
       "path": "packages/contracts/src/partners.ts",
@@ -1989,6 +2013,10 @@
       "sha256": "92ec9330edf67d76492a83a46c7814d3b8a3df29c58b13e6176a8d97e1055df7"
     },
     {
+      "path": "packages/db/migrations/0023_spicy_raider.sql",
+      "sha256": "7bf602124bab019f4fdd40f5d6f703c6ad3f94f2edb0b1125188c1ea7c402de4"
+    },
+    {
       "path": "packages/db/migrations/meta/0000_snapshot.json",
       "sha256": "4808076b2919f6624e03d16caed4c89a5996f7582930eace9e457079012a71ec"
     },
@@ -2073,8 +2101,12 @@
       "sha256": "6bc4e7c3e408b579da6f6c3fc4dea2071d55ff752351feeaec75d4c140bc81be"
     },
     {
+      "path": "packages/db/migrations/meta/0023_snapshot.json",
+      "sha256": "362e81ed082524a160df68f86a975351440bfbafb4880370080c6ef11f8553c0"
+    },
+    {
       "path": "packages/db/migrations/meta/_journal.json",
-      "sha256": "0c7a7e0d991fd6301fa66286e2f970e6ee1ae291bbc1bfe93a7112fe21a8b4c5"
+      "sha256": "681db9d01f57ba10d0cc21973db5488e63b5c54a772884842334cd0351efd20d"
     },
     {
       "path": "packages/db/package.json",
@@ -2090,7 +2122,7 @@
     },
     {
       "path": "packages/db/src/schema.ts",
-      "sha256": "79be5be304d4d8df98bf7eb9eba2d2c1c052e72ff39982f5509c7ed0c4f20504"
+      "sha256": "dd52bb34ea51505b7cc0b4ffabe20e591629bc3816da802ff80a797261ff40fa"
     },
     {
       "path": "packages/domain/package.json",
@@ -2785,6 +2817,10 @@
       "sha256": "8b9f2f4174e5b009dcb1cbffd27f49a18ad748bb2cc3eb88cb68b0793232b230"
     },
     {
+      "path": "tests/integration/operation-receipts.test.ts",
+      "sha256": "5860e6a635fff312c42ad819053587fcf7c674b086e697ad67b27f7f2e9d6cf6"
+    },
+    {
       "path": "tests/integration/partner-http.test.ts",
       "sha256": "f215fb7796697ae5cff9747334385b86f978e18f2e67ce77fc5677474868d064"
     },
@@ -3425,6 +3461,7 @@
         "tests/integration/market-http.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -3449,7 +3486,7 @@
         "tests/integration/web-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/market-http.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/market-http.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -3558,6 +3595,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/market-http.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -3582,7 +3620,7 @@
         "tests/integration/web-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/market-http.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/market-http.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -4159,6 +4197,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -4183,7 +4222,7 @@
         "tests/integration/web-session.test.ts",
         "tests/unit/native-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-review.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/account-security.test.ts tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-review.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/discipline-http.test.ts tests/integration/discipline-share-http.test.ts tests/integration/etf-admin-http.test.ts tests/integration/etf-watchlist-http.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/holidays-http.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/posts.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/rotation-admin-http.test.ts tests/integration/rotation-execution-http.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/user-settings.test.ts tests/integration/watchlist.test.ts tests/integration/web-session.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -4412,9 +4451,9 @@
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
-      "method": "POST",
-      "path": "/api/diaries",
-      "operationId": "diariesCreate",
+      "method": "GET",
+      "path": "/api/operations/protocol",
+      "operationId": "operationProtocolGet",
       "summary": null,
       "description": null,
       "security": [
@@ -4426,9 +4465,341 @@
         }
       ],
       "role": "Authenticated USER or ADMIN; owner/sharing checks remain mandatory",
+      "nativeHome": "Research / Company, Watchlist and tools",
+      "dataEffect": "Read/projection/download; see response contract",
+      "parameters": [],
+      "requestBody": null,
+      "responses": {
+        "200": {
+          "description": "Opt-in receipt and aggregate-version capabilities",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "protocolVersion": {
+                    "type": "number",
+                    "enum": [
+                      1
+                    ]
+                  },
+                  "operationIdHeader": {
+                    "type": "string",
+                    "enum": [
+                      "Idempotency-Key"
+                    ]
+                  },
+                  "expectedVersionHeader": {
+                    "type": "string",
+                    "enum": [
+                      "If-Match"
+                    ]
+                  },
+                  "receiptPath": {
+                    "type": "string",
+                    "enum": [
+                      "/api/operations/{id}"
+                    ]
+                  },
+                  "operations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "enum": [
+                            "diary.create-content",
+                            "diary.update-content",
+                            "diary.review",
+                            "stock-note.create",
+                            "stock-note.update"
+                          ]
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": [
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                          ]
+                        },
+                        "path": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "requiresVersion": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "method",
+                        "path",
+                        "requiresVersion"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "protocolVersion",
+                  "operationIdHeader",
+                  "expectedVersionHeader",
+                  "receiptPath",
+                  "operations"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "HTTP 401 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "syntheticTestCandidates": [
+        "tests/integration/operation-receipts.test.ts"
+      ],
+      "syntheticTestCommand": "npm test -- tests/integration/operation-receipts.test.ts",
+      "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
+    },
+    {
+      "method": "GET",
+      "path": "/api/operations/{id}",
+      "operationId": "operationReceiptGet",
+      "summary": null,
+      "description": null,
+      "security": [
+        {
+          "accessTokenCookie": []
+        },
+        {
+          "bearerAuth": []
+        }
+      ],
+      "role": "Authenticated USER or ADMIN; owner/sharing checks remain mandatory",
+      "nativeHome": "Research / Company, Watchlist and tools",
+      "dataEffect": "Read/projection/download; see response contract",
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": true,
+          "name": "id",
+          "in": "path"
+        }
+      ],
+      "requestBody": null,
+      "responses": {
+        "200": {
+          "description": "Owner-authorized immutable operation result",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "ownerId": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "pattern": "^[1-9]\\d*$"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "COMMITTED",
+                      "EXPIRED"
+                    ]
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "POST",
+                      "PUT",
+                      "PATCH"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "payloadHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "responseStatus": {
+                    "type": "integer",
+                    "minimum": 200,
+                    "maximum": 299
+                  },
+                  "aggregateType": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "diary",
+                      "stock-note",
+                      null
+                    ]
+                  },
+                  "aggregateId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 19,
+                    "pattern": "^[1-9]\\d*$"
+                  },
+                  "resultingVersion": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 19,
+                    "pattern": "^[1-9]\\d*$"
+                  },
+                  "result": {},
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "operationId",
+                  "ownerId",
+                  "state",
+                  "method",
+                  "target",
+                  "payloadHash",
+                  "responseStatus",
+                  "aggregateType",
+                  "aggregateId",
+                  "resultingVersion",
+                  "createdAt"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "HTTP 400 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "HTTP 401 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "HTTP 404 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "syntheticTestCandidates": [
+        "tests/integration/operation-receipts.test.ts"
+      ],
+      "syntheticTestCommand": "npm test -- tests/integration/operation-receipts.test.ts",
+      "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
+    },
+    {
+      "method": "POST",
+      "path": "/api/diaries",
+      "operationId": "diariesCreate",
+      "summary": null,
+      "description": "Existing clients may omit protocol headers. Receipt-enabled content-only creates use Idempotency-Key; ledger/reminder aggregate writes are not eligible.",
+      "security": [
+        {
+          "accessTokenCookie": []
+        },
+        {
+          "bearerAuth": []
+        }
+      ],
+      "role": "Authenticated USER or ADMIN; owner/sharing checks remain mandatory",
       "nativeHome": "Diary / Library, Calendar, Review and Plans",
       "dataEffect": "Server-authorized mutation; see request and linked behavioral fixtures",
-      "parameters": [],
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": false,
+          "name": "Idempotency-Key",
+          "in": "header"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^\"[1-9]\\d*\"$"
+          },
+          "required": false,
+          "name": "If-Match",
+          "in": "header"
+        }
+      ],
       "requestBody": {
         "content": {
           "application/json": {
@@ -4441,6 +4812,15 @@
       "responses": {
         "201": {
           "description": "Diary created or appended",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -4489,8 +4869,28 @@
             }
           }
         },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
         "500": {
           "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "HTTP 503 error",
           "content": {
             "application/json": {
               "schema": {
@@ -4562,6 +4962,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -4578,7 +4979,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -4792,6 +5193,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -4808,7 +5210,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -4927,6 +5329,15 @@
       "responses": {
         "200": {
           "description": "Diary detail",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -5038,6 +5449,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -5054,7 +5466,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -5062,7 +5474,7 @@
       "path": "/api/diaries/{id}",
       "operationId": "diariesUpdate",
       "summary": null,
-      "description": null,
+      "description": "Receipt-enabled content-only updates supply both Idempotency-Key and If-Match. Existing clients may omit both.",
       "security": [
         {
           "accessTokenCookie": []
@@ -5084,6 +5496,24 @@
           "required": true,
           "name": "id",
           "in": "path"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": false,
+          "name": "Idempotency-Key",
+          "in": "header"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^\"[1-9]\\d*\"$"
+          },
+          "required": false,
+          "name": "If-Match",
+          "in": "header"
         }
       ],
       "requestBody": {
@@ -5098,6 +5528,15 @@
       "responses": {
         "200": {
           "description": "Diary updated",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -5156,8 +5595,48 @@
             }
           }
         },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "412": {
+          "description": "HTTP 412 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "428": {
+          "description": "HTTP 428 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
         "500": {
           "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "HTTP 503 error",
           "content": {
             "application/json": {
               "schema": {
@@ -5229,6 +5708,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -5245,7 +5725,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -5402,6 +5882,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -5418,7 +5899,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -6253,6 +6734,15 @@
       "responses": {
         "200": {
           "description": "Owner review with original reasoning",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -6364,6 +6854,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -6380,7 +6871,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -6410,6 +6901,24 @@
           "required": true,
           "name": "id",
           "in": "path"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": false,
+          "name": "Idempotency-Key",
+          "in": "header"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^\"[1-9]\\d*\"$"
+          },
+          "required": false,
+          "name": "If-Match",
+          "in": "header"
         }
       ],
       "requestBody": {
@@ -6424,6 +6933,15 @@
       "responses": {
         "200": {
           "description": "Structured review saved using server time",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -6472,8 +6990,48 @@
             }
           }
         },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "412": {
+          "description": "HTTP 412 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "428": {
+          "description": "HTTP 428 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
         "500": {
           "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "HTTP 503 error",
           "content": {
             "application/json": {
               "schema": {
@@ -6545,6 +7103,7 @@
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
         "tests/integration/native-session.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/performance.test.ts",
         "tests/integration/portfolio-attention.test.ts",
@@ -6561,7 +7120,7 @@
         "tests/unit/native-session.test.ts",
         "tests/unit/web-session.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/admin-users-http.test.ts tests/integration/alerts.test.ts tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/diary-activity.test.ts tests/integration/diary-editor.test.ts tests/integration/diary-list.test.ts tests/integration/diary-review.test.ts tests/integration/diary-search-plan.test.ts tests/integration/diary-stocks.test.ts tests/integration/diary-summary.test.ts tests/integration/evidence.test.ts tests/integration/first-diary.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/native-session.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/performance.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio-overview.test.ts tests/integration/portfolio.test.ts tests/integration/quick-diary-http.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/trade-export.test.ts tests/integration/trade-plans.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -8036,6 +8595,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -8049,7 +8609,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -8328,6 +8888,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -8341,7 +8902,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -8827,6 +9388,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -8840,7 +9402,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -8871,6 +9433,24 @@
           "required": true,
           "name": "symbol",
           "in": "path"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": false,
+          "name": "Idempotency-Key",
+          "in": "header"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^\"[1-9]\\d*\"$"
+          },
+          "required": false,
+          "name": "If-Match",
+          "in": "header"
         }
       ],
       "requestBody": {
@@ -8906,6 +9486,15 @@
       "responses": {
         "200": {
           "description": "Created owner note",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -8944,8 +9533,28 @@
             }
           }
         },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
         "500": {
           "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "HTTP 503 error",
           "content": {
             "application/json": {
               "schema": {
@@ -8983,6 +9592,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -8996,13 +9606,13 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
-      "method": "PUT",
+      "method": "GET",
       "path": "/api/stocks/{symbol}/notes/{id}",
-      "operationId": "stockNoteUpdate",
+      "operationId": "stockNoteGet",
       "summary": null,
       "description": null,
       "security": [
@@ -9015,7 +9625,7 @@
       ],
       "role": "Authenticated USER or ADMIN; owner/sharing checks remain mandatory",
       "nativeHome": "Research / Company, Watchlist and tools",
-      "dataEffect": "Server-authorized mutation; see request and linked behavioral fixtures",
+      "dataEffect": "Read/projection/download; see response contract",
       "parameters": [
         {
           "schema": {
@@ -9039,35 +9649,19 @@
           "in": "path"
         }
       ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 255
-                },
-                "content": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 50000
-                },
-                "date": {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        }
-      },
+      "requestBody": null,
       "responses": {
         "200": {
-          "description": "Updated user-created note",
+          "description": "Owner-authorized note with its aggregate version in ETag",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
           "content": {
             "application/json": {
               "schema": {
@@ -9088,16 +9682,6 @@
         },
         "401": {
           "description": "HTTP 401 error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApiErrorResponse"
-              }
-            }
-          }
-        },
-        "403": {
-          "description": "HTTP 403 error",
           "content": {
             "application/json": {
               "schema": {
@@ -9155,6 +9739,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -9168,7 +9753,247 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/stocks/{symbol}/notes/{id}",
+      "operationId": "stockNoteUpdate",
+      "summary": null,
+      "description": null,
+      "security": [
+        {
+          "accessTokenCookie": []
+        },
+        {
+          "bearerAuth": []
+        }
+      ],
+      "role": "Authenticated USER or ADMIN; owner/sharing checks remain mandatory",
+      "nativeHome": "Research / Company, Watchlist and tools",
+      "dataEffect": "Server-authorized mutation; see request and linked behavioral fixtures",
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "pattern": "^[A-Za-z0-9.]+$"
+          },
+          "required": true,
+          "name": "symbol",
+          "in": "path"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "maxLength": 19,
+            "pattern": "^[1-9]\\d*$"
+          },
+          "required": true,
+          "name": "id",
+          "in": "path"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": false,
+          "name": "Idempotency-Key",
+          "in": "header"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^\"[1-9]\\d*\"$"
+          },
+          "required": false,
+          "name": "If-Match",
+          "in": "header"
+        }
+      ],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "content": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50000
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Updated user-created note",
+          "headers": {
+            "ETag": {
+              "description": "Quoted decimal-string aggregate version for an If-Match write.",
+              "schema": {
+                "type": "string",
+                "pattern": "^\"[1-9][0-9]*\"$"
+              }
+            }
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockNoteResponse"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "HTTP 400 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "HTTP 401 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "HTTP 403 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "HTTP 404 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "410": {
+          "description": "HTTP 410 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "412": {
+          "description": "HTTP 412 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "428": {
+          "description": "HTTP 428 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "HTTP 500 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "HTTP 503 error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "syntheticTestCandidates": [
+        "tests/e2e/buy-ledger.spec.ts",
+        "tests/e2e/company-hub.spec.ts",
+        "tests/e2e/evidence.spec.ts",
+        "tests/e2e/foreground-reminders.spec.ts",
+        "tests/e2e/ledger-corrections.spec.ts",
+        "tests/e2e/overview.spec.ts",
+        "tests/e2e/portfolio-attention.spec.ts",
+        "tests/e2e/portfolio-exposure.spec.ts",
+        "tests/e2e/portfolio.spec.ts",
+        "tests/e2e/price-alerts.spec.ts",
+        "tests/e2e/public-tools.spec.ts",
+        "tests/e2e/relative-value-seasonality.spec.ts",
+        "tests/e2e/release-artifacts.spec.ts",
+        "tests/e2e/review-queue.spec.ts",
+        "tests/e2e/sell-ledger.spec.ts",
+        "tests/e2e/stock-note-sharing.spec.ts",
+        "tests/e2e/stock-notes.spec.ts",
+        "tests/e2e/thesis.spec.ts",
+        "tests/e2e/transaction-instant.spec.ts",
+        "tests/e2e/watchlist.spec.ts",
+        "tests/integration/api-key-http.test.ts",
+        "tests/integration/buy-ledger.test.ts",
+        "tests/integration/company-hub.test.ts",
+        "tests/integration/evidence.test.ts",
+        "tests/integration/investment-thesis.test.ts",
+        "tests/integration/ledger-corrections.test.ts",
+        "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
+        "tests/integration/partner-http.test.ts",
+        "tests/integration/portfolio-attention.test.ts",
+        "tests/integration/portfolio-exposure.test.ts",
+        "tests/integration/portfolio.test.ts",
+        "tests/integration/price-alert-http.test.ts",
+        "tests/integration/price-alert-runtime.test.ts",
+        "tests/integration/review-queue.test.ts",
+        "tests/integration/sell-ledger.test.ts",
+        "tests/integration/socket-auth-session.test.ts",
+        "tests/integration/stock-notes.test.ts",
+        "tests/integration/stock-timeline-capture.test.ts",
+        "tests/integration/watchlist.test.ts"
+      ],
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -9314,6 +10139,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -9327,7 +10153,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -9757,6 +10583,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -9770,7 +10597,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -10109,6 +10936,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -10122,7 +10950,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -10622,6 +11450,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -10635,7 +11464,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {
@@ -12673,6 +13502,7 @@
         "tests/integration/investment-thesis.test.ts",
         "tests/integration/ledger-corrections.test.ts",
         "tests/integration/native-api-acceptance.test.ts",
+        "tests/integration/operation-receipts.test.ts",
         "tests/integration/partner-http.test.ts",
         "tests/integration/portfolio-attention.test.ts",
         "tests/integration/portfolio-exposure.test.ts",
@@ -12686,7 +13516,7 @@
         "tests/integration/stock-timeline-capture.test.ts",
         "tests/integration/watchlist.test.ts"
       ],
-      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
+      "syntheticTestCommand": "npm test -- tests/integration/api-key-http.test.ts tests/integration/buy-ledger.test.ts tests/integration/company-hub.test.ts tests/integration/evidence.test.ts tests/integration/investment-thesis.test.ts tests/integration/ledger-corrections.test.ts tests/integration/native-api-acceptance.test.ts tests/integration/operation-receipts.test.ts tests/integration/partner-http.test.ts tests/integration/portfolio-attention.test.ts tests/integration/portfolio-exposure.test.ts tests/integration/portfolio.test.ts tests/integration/price-alert-http.test.ts tests/integration/price-alert-runtime.test.ts tests/integration/review-queue.test.ts tests/integration/sell-ledger.test.ts tests/integration/socket-auth-session.test.ts tests/integration/stock-notes.test.ts tests/integration/stock-timeline-capture.test.ts tests/integration/watchlist.test.ts",
       "authorizationReview": "Read linked source tests and handler; OpenAPI security does not encode all owner/role/scope checks."
     },
     {

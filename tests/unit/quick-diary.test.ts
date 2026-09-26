@@ -5,13 +5,14 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { diaryResponseSchema, type DiaryResponse } from '@diary/contracts';
 import { createApiClient } from '@diary/api-client';
+import { createEmptyQuickNoteTemplateData, generateTemplateDraft, mergeQuickTemplate } from '@diary/domain';
 import { createAuthLifecycle } from '../../src/auth/lifecycle';
 import { createAuthRuntime } from '../../src/auth/runtime';
 import { createDiaryAccess } from '../../src/diaries/access';
 import { createQuickApi, type QuickApi } from '../../src/quick/api';
 import { createQuickController, type QuickController } from '../../src/quick/controller';
 import { createQuickManager } from '../../src/quick/manager';
-import { newDraft, payloadFor, reconcile, type QuickDraft, type WriteAttempt } from '../../src/quick/model';
+import { draftSchema, newDraft, payloadFor, reconcile, type QuickDraft, type WriteAttempt } from '../../src/quick/model';
 import { DraftStorageError, openDraftRepository, unlockDraftDatabase, type DraftDatabase } from '../../src/quick/repository';
 import { deferred, session, user } from './fixtures';
 
@@ -37,6 +38,8 @@ async function setup(overrides: Partial<QuickApi> = {}, saved?: QuickDraft, pris
   const repo = await openDraftRepository(sql(db));
   if (saved) await repo.save(saved);
   const api: QuickApi = { ownerId: '1', isCurrent: () => true, byDate: vi.fn(async () => null),
+    recentClosedTrades: vi.fn(async () => []), spxSession: vi.fn(async () => ({ symbol: 'SPX' as const, sourceSymbol: '^GSPC', condition: 'rangeBound' as const,
+      price: 100, previousClose: 100, open: 100, high: null, low: null, change: 0, changePercent: 0, intradayMovePercent: 0, openGapPercent: 0, asOf: '2026-09-26T00:00:00.000Z' })),
     write: vi.fn(async () => ({ ok: true as const, diary: diary() })), recoverSession: vi.fn(async () => {}), changed: vi.fn(), ...overrides };
   const model = createQuickController({ scope: draft().scope, timezone: 'Asia/Taipei', api, repository: Promise.resolve(repo),
     now: () => new Date('2025-12-31T23:00:00Z'), attemptId: () => 'local-attempt' });
@@ -81,6 +84,86 @@ describe('durable scoped repository', () => {
     const saved = repo.save({ ...draft(), content: "synthetic '); DROP TABLE quick_drafts; --" });
     const deleted = repo.remove(draft().scope, '1'); await Promise.all([saved, deleted]);
     expect(await repo.load(draft().scope, '1')).toBeNull(); db.close();
+  });
+  it('migrates earlier free-writing drafts to non-destructive template defaults', async () => {
+    const db = new DatabaseSync(':memory:'); const repo = await openDraftRepository(sql(db));
+    const current = draft();
+    const { templateKind: _kind, templateData: _data, appliedTemplate: _applied, titleTouched: _titleTouched, ...legacy } = current;
+    db.prepare('INSERT INTO quick_drafts(scope, owner_id, record) VALUES (?, ?, ?)').run(current.scope, current.ownerId, JSON.stringify(legacy));
+    const restored = await repo.load(current.scope, current.ownerId);
+    expect(restored).toMatchObject({ date: current.date, title: current.title, content: current.content, stockSymbols: current.stockSymbols,
+      templateKind: 'blank', appliedTemplate: '', titleTouched: false, templateData: { rating: 0, relatedTrades: [] } });
+    db.close();
+  });
+  it('keeps encrypted snippets and recent tags private to their scope and owner', async () => {
+    const db = new DatabaseSync(':memory:'); const repo = await openDraftRepository(sql(db));
+    const snippets = [{ id: 'custom-one', name: 'Private prompt', content: 'Synthetic private snippet' }];
+    await repo.saveSnippets('scope-a', '1', snippets);
+    expect(await repo.loadSnippets('scope-a', '1')).toEqual(snippets);
+    expect(await repo.loadSnippets('scope-a', '2')).toEqual([]);
+    expect(await repo.loadSnippets('scope-b', '1')).toEqual([]);
+    expect(await repo.rememberRecentTags('scope-a', '1', [' one ', 'two'])).toEqual(['one', 'two']);
+    expect(await repo.rememberRecentTags('scope-a', '1', ['two', 'three'])).toEqual(['two', 'three', 'one']);
+    expect(await repo.loadRecentTags('scope-a', '2')).toEqual([]);
+    expect(await repo.loadRecentTags('scope-b', '1')).toEqual([]);
+    const eight = await repo.rememberRecentTags('scope-a', '1', ['four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+    expect(eight).toHaveLength(8); expect(eight[0]).toBe('four');
+    db.close();
+  });
+});
+
+describe('Quick templates and context', () => {
+  it('merges localized templates without losing free writing, selected date or symbols', () => {
+    const templateData: QuickDraft['templateData'] = { ...createEmptyQuickNoteTemplateData(), rating: 0, noRashTrading: false, relatedTrades: [],
+      tradingType: 'buy', symbols: 'MSFT', marketMood: 'bullish', note: 'Watch the open.' };
+    const suggested = generateTemplateDraft({ templateKind: 'trading', date: '2026-09-26', locale: 'zh-TW', templateData });
+    const original = { ...draft(), date: '2026-09-26', title: 'My own title', content: 'My original reasoning.', stockSymbols: 'AAPL' };
+    const merged = mergeQuickTemplate(original.content, suggested.content, original.appliedTemplate);
+    const payload = payloadFor({ ...original, content: merged, templateKind: 'trading', templateData });
+    expect(suggested.content).toContain('今日操作');
+    expect(merged).toContain('My original reasoning.'); expect(merged).toContain('今日操作');
+    expect(payload).toMatchObject({ date: '2026-09-26', title: 'My own title', stockSymbols: ['AAPL'], content: merged });
+  });
+  it('retains exact decimal trade context in an encrypted reflection draft', () => {
+    const trade = { id: '77', symbol: 'SYN', sellDate: '2026-09-25T16:00:00.000Z', sellQuantity: '0.0001', realizedPnL: '-0.00001', realizedPnLPct: '-0.01' };
+    const record = { ...draft(), templateKind: 'reflection' as const, templateData: { ...createEmptyQuickNoteTemplateData(), rating: 0, noRashTrading: false, relatedTrades: [
+      trade,
+    ] } };
+    const parsed = draftSchema.parse(record);
+    expect(parsed.templateData.relatedTrades[0]).toEqual(trade);
+  });
+});
+
+describe('Quick context API', () => {
+  it('loads only validated recent closed trades and preserves decimal strings', async () => {
+    const requests: Request[] = [];
+    const trade = { id: '77', symbol: 'SYN', sellDate: '2026-09-25T16:00:00.000Z', sellQuantity: '0.0001', realizedPnL: '-0.00001', realizedPnLPct: '-0.01' };
+    const client = createApiClient({ baseUrl: 'https://synthetic.example', fetch: async (input, init) => {
+      requests.push(new Request(input, init)); return Response.json({ trades: [trade] });
+    } });
+    let current = true;
+    const api = createQuickApi(client, { ownerId: '101', isCurrent: () => current, changed: vi.fn() }, {} as ReturnType<typeof createAuthLifecycle>);
+    expect(await api.recentClosedTrades()).toEqual([trade]);
+    expect(requests).toHaveLength(1); expect(requests[0]!.url).toBe('https://synthetic.example/api/stats/recent-trades');
+    current = false;
+    await expect(api.recentClosedTrades()).rejects.toThrow();
+    expect(requests).toHaveLength(1);
+  });
+  it('loads validated SPX context and feeds its source condition into the localized reflection template', async () => {
+    const requests: Request[] = [];
+    const summary = { symbol: 'SPX' as const, sourceSymbol: '^GSPC', condition: 'strongUp' as const,
+      price: 101.5, previousClose: 100, open: 100, high: 102, low: 99, change: 1.5,
+      changePercent: 1.5, intradayMovePercent: 1.5, openGapPercent: 0, asOf: '2026-09-26T12:00:00.000Z' };
+    const client = createApiClient({ baseUrl: 'https://synthetic.example', fetch: async (input, init) => {
+      requests.push(new Request(input, init)); return Response.json(summary);
+    } });
+    const api = createQuickApi(client, { ownerId: '101', isCurrent: () => true, changed: vi.fn() }, {} as ReturnType<typeof createAuthLifecycle>);
+    const context = await api.spxSession();
+    expect(context).toEqual(summary);
+    expect(requests[0]!.url).toBe('https://synthetic.example/api/market/spx-session');
+    const reflection = generateTemplateDraft({ templateKind: 'reflection', date: '2026-09-26', locale: 'en',
+      templateData: { ...createEmptyQuickNoteTemplateData(), rating: 0, noRashTrading: false, relatedTrades: [], marketCondition: context.condition } });
+    expect(reflection.content).toContain('Strong rally');
   });
 });
 
@@ -157,6 +240,13 @@ describe('Quick Diary write state machine', () => {
     expect(newDraft('scope', '1', 'America/Los_Angeles', instant).date).toBe('2025-12-31');
     expect(newDraft('scope', '1', 'Asia/Taipei', instant).date).toBe('2026-01-01');
     expect(payloadFor({ ...draft(), title: '', content: '# Synthetic heading\nnext', stockSymbols: 'syn, SYN', tags: ' one,one ' })).toMatchObject({ title: 'Synthetic heading — 2026-01-01', date: '2026-01-01', stockSymbols: ['SYN'], tags: ['one'] });
+  });
+  it('records recent tags only after the server confirms the diary save', async () => {
+    const { model, repo } = await setup();
+    expect(await repo.loadRecentTags(draft().scope, '1')).toEqual([]);
+    await model.save();
+    expect(model.getSnapshot().confirmedId).toBe(id);
+    expect(await repo.loadRecentTags(draft().scope, '1')).toEqual(['one']);
   });
   it('debounces autosave, flushes exact edits, and restores them after reopening the controller', async () => {
     vi.useFakeTimers(); const { model, repo } = await setup();

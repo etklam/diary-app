@@ -1,7 +1,7 @@
 import { usePreferences, type Colors } from '@/preferences/context';
 import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/auth/context';
 import { visibleDestinations, type Section } from './destinations';
@@ -41,7 +41,7 @@ export function Workspace({ section, title, description }: { section: Section; t
       <Text accessibilityRole="header" style={[styles.heading, { color: colors.ink }]}>{t(title)}</Text>
       <Text style={[styles.body, { color: colors.muted }]}>{t(description)}</Text>
       {[...shortcuts, ...items].map(item => <View key={item.id} style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        {item.href ? <Pressable testID={`destination-${item.id}`} accessibilityRole="button" onPress={() => router.push(item.href!)} style={styles.link}>
+        {item.href ? <Pressable testID={`destination-${item.id}`} accessibilityRole="button" onPress={() => router.push(item.href! as Href)} style={styles.link}>
           <Text style={[styles.title, { color: colors.ink }]}>{t(item.title)} →</Text>
         </Pressable> : <>
           <Text style={[styles.title, { color: colors.ink }]}>{t(item.title)}</Text>

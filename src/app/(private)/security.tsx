@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Alert } from 'react-native';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { changePasswordRequestSchema } from '@diary/contracts';
 import { useAuth } from '@/auth/context';
 import { AccountFailure, accountService } from '@/account/service';
@@ -38,6 +38,8 @@ export default function SecurityScreen() {
     } finally { setCurrent(''); setNext(''); setConfirmation(''); latch.current = false; setBusy(false); }
   }
   return <AccountPage title="Account security"><Copy>Every device will be signed out. Encrypted drafts stay with this account for your next sign-in.</Copy>
+    <Copy>External integrations use separate, limited API keys.</Copy>
+    <PrimaryButton label="Manage API keys" onPress={() => router.push('/api-keys' as Href)} />
     <Copy>Use 8 or more characters, up to 72 UTF-8 bytes.</Copy>
     <Field error={fieldInvalid(error, 'currentPassword')} label="Current password" testID="security-current" value={currentPassword} onChangeText={setCurrent} secureTextEntry editable={!busy} autoComplete="current-password" />
     <Field error={fieldInvalid(error, 'newPassword')} label="New password" testID="security-new" value={newPassword} onChangeText={setNext} secureTextEntry editable={!busy} autoComplete="new-password" />

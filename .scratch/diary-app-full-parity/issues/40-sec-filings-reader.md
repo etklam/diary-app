@@ -1,7 +1,7 @@
 # [40] Search SEC companies and read filings and document lists
 
 Status: ready-for-agent
-Execution: not-started
+Execution: in-progress (SEC contract/routes, fixture API acceptance and Android bundle complete; native search/browser/detail acceptance pending)
 Type: AFK
 Phase: F5
 Work area: diary-app
@@ -48,8 +48,10 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+See [SEC filing acceptance evidence](../../../docs/evidence/f5/sec-filings-acceptance.md). Identifier/filter tests, source fixture API integration, full app verification and Android static export passed. Native search, filtering, detail routing and external document opening remain untested on-device.
 
 ## Comments
 
 Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+
+2026-09-26: Added guest company search, contract-validated filing filters and cursor pagination, cache freshness states, canonical detail navigation, and safe links to official SEC documents. The source SEC HTTP integration passed against its synthetic provider. The running API on port 3101 returned HTTP 500 SYS_INTERNAL_ERROR for SEC company search; this is recorded as an environment/server observation and is not counted as provider success. AVD browser handoff, route restoration and TalkBack checks remain pending because its development client is waiting for Metro and there is no physical device. Bundle hash and commands are in the evidence document.

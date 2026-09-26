@@ -1,7 +1,7 @@
 # [32] Deliver ETF research and the personal ETF Watchlist
 
 Status: ready-for-agent
-Execution: not-started
+Execution: in-progress (API/model coverage and Android bundle complete; native screen acceptance pending)
 Type: AFK
 Phase: F5
 Work area: diary-app
@@ -22,15 +22,14 @@ Native app implementation; inspect referenced service contracts before changing 
 
 - [ ] Show profile, quote, risk, valuation and relative-return data with correct source timestamps/status.
 - [ ] Support authenticated ETF Watchlist add/read/remove without altering stock ledger holdings.
-- [ ] Keep guest research functional and preserve unavailable catalog/quote recovery.
+- [x] Keep guest research functional and preserve unavailable quote and catalog recovery.
 - [ ] Render wide/long research data accessibly with precise numeric labels.
 - [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] Record actual commands/scenarios, source/build and results. Native screen acceptance is explicitly still open.
 
 ## Blocked by
 
-- [31: Expose the complete public Tools directory and access model](31-public-tools-directory.md)
-- [08: Implement complete preferences, localization and themes](08-preferences-localization.md)
+Dependencies satisfied: [31](31-public-tools-directory.md) and [08](08-preferences-localization.md).
 
 Triage readiness describes specification quality. Start implementation only when required predecessor outputs are accepted; missing unrelated release credentials do not block independent product work.
 
@@ -48,8 +47,10 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+See [ETF research acceptance evidence](../../../docs/evidence/f5/etf-research-acceptance.md). API, owner isolation, null/partial/unavailable handling, source timestamps, stock-holdings separation, unit checks and Android bundle passed. Device-level presentation and accessibility remain open.
 
 ## Comments
 
 Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+
+2026-09-26: Implemented public ETF research and a distinct private ETF Watchlist, including guest access, bounded benchmark/period choices, per-field null/source timestamps, owner fencing, duplicate/catalog error states and uncertain-write reconciliation. The disposable API acceptance passed against the source E2E harness; the exact command, assertions and build are in the evidence document. Android UI/TalkBack acceptance remains pending because the installed AVD development client is waiting for Metro; bundle output is not counted as runtime acceptance.

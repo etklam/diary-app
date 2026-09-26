@@ -1,7 +1,7 @@
 # [14] Record partial and full SELL transactions without overselling
 
-Status: ready-for-agent
-Execution: not-started
+Status: in-progress
+Execution: acceptance-partial; native-no-holding-and-integrated-verify-pending
 Type: AFK
 Phase: F2
 Work area: diary-app
@@ -20,12 +20,12 @@ Native app implementation; inspect referenced service contracts before changing 
 
 ## Acceptance criteria
 
-- [ ] Allow partial/full sell with source fields and precise execution time.
-- [ ] Display canonical no-holding/oversell errors while retaining input and existing stored data.
-- [ ] Assert canonical remaining position and realized results after valid sells.
-- [ ] Distinguish validation rejection from uncertain committed outcomes; prevent duplicate local submission.
-- [ ] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
-- [ ] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
+- [x] Allow partial/full sell with source fields and precise execution time.
+- [ ] Display canonical no-holding and oversell errors while retaining input and existing stored data. Native oversell is verified; no-holding is API-verified and still needs native UI acceptance.
+- [x] Assert canonical remaining position and realized results after valid sells.
+- [x] Distinguish validation rejection from uncertain committed outcomes; prevent duplicate local submission.
+- [x] Apply relevant PRD invariants and common translation/accessibility/owner-isolation rules; explain any non-applicable check in evidence.
+- [x] Record actual commands/scenarios, source/build and results. No criterion is complete solely because code or an old screenshot exists.
 
 ## Blocked by
 
@@ -47,8 +47,8 @@ Use synthetic data and controlled provider/service fixtures. Native storage/netw
 
 ## Evidence
 
-NOT RUN. This ticket was created by the planning task; implementation and acceptance remain open.
+API acceptance and native partial/full/oversell acceptance passed on 2026-09-27. See [SELL transaction acceptance](../../../docs/evidence/f2/sell-transactions-acceptance.md) for exact commands, outcomes, native screenshots and cleanup checks. Native no-holding error/input retention remains to be checked. Final integrated verification is pending because ticket #16 currently has tests staged that import its not-yet-landed `review-schedule` helper; rerun the editor tests and `npm run verify` after that implementation lands before setting this ticket complete.
 
 ## Comments
 
-Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Append implementation decisions, findings and evidence here without rewriting history.
+Planning baseline: full diary-v3 parity is mandatory; beta is an intermediate test activity. Implementation and partial scenario acceptance are recorded. Native no-holding presentation and final repository-wide test/typecheck/export verification remain open as noted above; preserve the source-defined ledger semantics and do not remove unrelated local drafts or data.

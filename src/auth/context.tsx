@@ -12,7 +12,8 @@ import { createSecureSessionStorage } from './secure-session-storage';
 import { createDiaryAccess, type DiaryReadScope } from '@/diaries/access';
 import { createQuickManager } from '@/quick/manager';
 import { createReviewManager, type ReviewManager } from '@/reviews/manager';
-import { nativeReviewRepository, nativeDraftRepository } from '@/quick/native-storage';
+import { createDiaryEditorManager, type DiaryEditorManager } from '@/diary-editor/manager';
+import { nativeReviewRepository, nativeDraftRepository, nativeAuthoringDraftRepository } from '@/quick/native-storage';
 import type { QuickController } from '@/quick/controller';
 
 export type AppAuthState = AuthState | { status: 'configuration-error'; message: string };
@@ -24,6 +25,7 @@ type AuthContextValue = {
   diaryScope: DiaryReadScope | null;
   quick: QuickController | null;
   reviews: ReviewManager | null;
+  diaryEditor: DiaryEditorManager | null;
   diaryMutation: number;
   beginQuick(date?: string): Promise<boolean>;
   login(email: string, password: string): Promise<void>;
@@ -54,7 +56,10 @@ function buildRuntime() {
       scope: JSON.stringify([config.appEnvironment, config.baseUrl]), repository: nativeDraftRepository, attemptId: randomUUID });
     const reviews = createReviewManager({ api: runtime.api, diaries, scope: JSON.stringify([config.appEnvironment, config.baseUrl]),
       repository: nativeReviewRepository, attemptId: randomUUID });
-    return { lifecycle, diaries, quick, reviews, api: runtime.api, environmentKey: config.sessionStorageKey };
+    const diaryEditor = createDiaryEditorManager({ api: runtime.api, lifecycle, diaries, scope: JSON.stringify([config.appEnvironment, config.baseUrl]),
+      repository: nativeAuthoringDraftRepository, attemptId: randomUUID });
+    return { lifecycle, diaries, quick, reviews, diaryEditor, api: runtime.api, environmentKey: config.sessionStorageKey,
+      draftScope: JSON.stringify([config.appEnvironment, config.baseUrl]) };
   } catch (error) {
     if (error instanceof ApiConfigurationError) return null;
     throw error;
@@ -91,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lifecycle) return;
     const subscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState !== 'active') { void application?.quick.getSnapshot()?.flush().catch(() => {}); void application?.reviews.flush().catch(() => {}); }
+      if (nextState !== 'active') { void application?.quick.getSnapshot()?.flush().catch(() => {}); void application?.reviews.flush().catch(() => {}); void application?.diaryEditor.flush().catch(() => {}); }
       if (nextState !== 'active') return;
       const current = stateRef.current;
       if (current.status === 'signed-in' || (current.status === 'recoverable-error' && current.user)) {
@@ -109,17 +114,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!application) return;
       const expected = application.diaries.getScope();
       const hasReviews = await application.reviews.hasAny();
+      const hasAuthoringDrafts = expected
+        ? await (await nativeAuthoringDraftRepository()).hasAny(application.draftScope, expected.ownerId)
+        : false;
       let approved = false;
       const confirm = () => new Promise<boolean>(resolve => Alert.alert(
         t('Discard draft and log out?'),
-        t('Logging out discards your local Quick Diary and Review drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.'),
+        t('Logging out discards your local Quick Diary, Review and authoring drafts for this account. Discarding an unresolved attempt does not cancel or reverse a possible server write.'),
         [{ text: t('Cancel'), style: 'cancel', onPress: () => resolve(false) },
           { text: t('Discard draft and log out'), style: 'destructive', onPress: () => resolve(true) }],
         { cancelable: false },
       ));
-      if (hasReviews) { approved = await confirm(); if (!approved) return; }
+      if (hasReviews || hasAuthoringDrafts) { approved = await confirm(); if (!approved) return; }
       if (expected !== application.diaries.getScope()) return;
-      await application.quick.logout(async () => approved || await confirm(), async () => application.reviews.discardOwner());
+      await application.quick.logout(async () => approved || await confirm(), async () => {
+        await application.reviews.discardOwner();
+        if (expected) await (await nativeAuthoringDraftRepository()).removeOwner(application.draftScope, expected.ownerId);
+      });
     } catch {
       Alert.alert(t('Draft storage unavailable'), t('We could not safely remove your encrypted draft. You are still signed in. Please reopen the app and try again.'));
     }
@@ -129,9 +140,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [lifecycle]);
 
   return (
-    <AuthContext.Provider value={{ state, diaryScope, quick, reviews: application?.reviews ?? null, diaryMutation, beginQuick, login, logout, retryVerification,
+    <AuthContext.Provider value={{ state, diaryScope, quick, reviews: application?.reviews ?? null, diaryEditor: application?.diaryEditor ?? null, diaryMutation, beginQuick, login, logout, retryVerification,
       api: application?.api ?? null, environmentKey: application?.environmentKey ?? 'unconfigured',
-      flushDrafts: async () => { await application?.quick.getSnapshot()?.flush(); await application?.reviews.flush(); },
+      flushDrafts: async () => { await application?.quick.getSnapshot()?.flush(); await application?.reviews.flush(); await application?.diaryEditor.flush(); },
       finishSecurity: async () => { await lifecycle?.logout(); },
     }}>
       {children}

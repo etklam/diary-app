@@ -1,0 +1,23 @@
+# F2 #11 — Quick templates, related context and append acceptance
+
+Execution: complete for the current source baseline and available Android runtime.
+
+## Implemented
+
+Quick now uses the shared localized template/snippet domain for free writing, trading notes, reflections and market observations. Applying a template merges its generated section with existing writing; replacing writing or replacing it with a snippet requires an explicit confirmation. Custom snippets and recent tags use the existing SQLCipher database in separate rows keyed by API scope and owner. The related-trade selector reads the authenticated recent-sales API and retains exact decimal strings. SPX session data is validated against the shared contract before it can populate reflection context. Save confirmation remains visible until the user chooses to open the saved Diary or return to the source screen; a direct deep link with no back stack returns to Timeline.
+
+## Verification
+
+- `npm run verify` passed: lint, typecheck, **254 tests passed**, **12 environment-gated API suites skipped**, and Android export completed. Bundle: `dist/android/_expo/static/js/android/entry-0a2e073f4cc103fa95d52ba1d29e9cf8.hbc`, 4,885,426 bytes, SHA-256 `5D2F37E7FA0248D4C325016139AD7F0F69738975ABFB96326338AC37578DCE67`.
+- `npm test -- tests/unit/quick-diary.test.ts` passed **50/50**. Coverage includes legacy encrypted-draft migration, non-destructive localized template merge, date/symbol retention, owner-scoped encrypted snippets/tags, recent-trade response validation, and SPX contract/template handling.
+- Live disposable-service check passed with `DIARY_API_BASE_URL=http://127.0.0.1:3101` and `DIARY_DISPOSABLE_TEST_ENV=1` using `npm test -- tests/api/quick-api.test.ts`. It checked real create and sequential append, two concurrent same-date appends, canonical read-back of both contents, tag/symbol union, preservation of the existing transaction, a matched synthetic `SYN` sale (`sellQuantity=0.1`, `realizedPnL=1.01`, `realizedPnLPct=100`), owner isolation and committed-response-loss reconciliation without duplicate POSTs. The test removes its Diary fixtures.
+- On `DiaryApp_API_36` (`emulator-5554`, Android 16 / API 36, x86_64; app locale Traditional Chinese), a free-writing draft survived process force-stop. A localized snippet inserted into existing writing without replacing it. The trading template was applied while the Diary date remained `2026-09-26` and selected Diary symbol remained `SYN`. A custom account snippet remained visible after process restart and inserted its text into the restored draft.
+- On the same AVD, the reflection selector displayed a real service-backed `SYN` sale with quantity `0.1`, realized gain `1.01` and return `100%`. Selecting it and applying the reflection produced the related trade section in the draft; saving showed the explicit confirmation, and the source-return action returned to Timeline. The service-backed test Diary and two transaction source Diaries were then deleted; user 88 has no remaining Diary rows from this acceptance scenario.
+- Recent tag suggestions displayed the tag from the saved Diary and allowed it to be selected in the next draft. The encrypted snippet is retained locally on the test AVD for continued acceptance work.
+- The AVD’s live `/api/market/spx-session` request returned the service’s unavailable response during this run. Quick showed the localized error and kept manual market-condition choices usable. A valid SPX response was also exercised through the unit fixture and generated the localized “Strong rally” reflection context. Provider-backed positive SPX data was not available in this runtime.
+
+## Review artifacts and limits
+
+[`quick-templates-avd`](quick-templates-avd/) contains the captured Android UI hierarchy for template application, encrypted snippet persistence after process restart, recent-tag and recent-trade states, SPX fallback, save confirmation and source return. [`selected-related-trade.png`](quick-templates-avd/selected-related-trade.png) shows the selected sale and exact displayed values; [`timeline-after-return.png`](quick-templates-avd/timeline-after-return.png) shows the saved Diary after return.
+
+The app exposes labels and selected/disabled state for the template radios, context switch, snippet controls and inputs; those were inspected in the AVD hierarchy. Spoken TalkBack behavior was not tested, and physical-device rendering could not be checked because no physical Android device is available. The native positive trade-selection flow was exercised on the emulator using temporary synthetic rows, which were removed afterward.

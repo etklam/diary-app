@@ -1,6 +1,7 @@
 import { NO_AUTOMATIC_SESSION_RETRY_HEADER, type createApiClient } from '@diary/api-client';
-import { apiErrorResponseSchema, registerRequestSchema, registerResponseSchema, changePasswordRequestSchema, changePasswordResponseSchema, authMutationResponseSchema } from '@diary/contracts';
+import { apiErrorResponseSchema, registerRequestSchema, registerResponseSchema, changePasswordRequestSchema, changePasswordResponseSchema, authMutationResponseSchema, deleteDiaryResponseSchema } from '@diary/contracts';
 import { userSettingsResponseSchema, updateUserSettingsSchema } from '@diary/contracts/settings';
+import { apiKeyCreateResponseSchema, apiKeyListResponseSchema, createApiKeySchema } from '@diary/contracts/api-keys';
 import type { DiaryReadScope } from '../diaries/access';
 
 export class AccountFailure extends Error {
@@ -40,5 +41,13 @@ export function accountService(api: Api, scope: Pick<DiaryReadScope, 'isCurrent'
       return run(() => api.PUT('/api/user/password', { body, headers }), data => changePasswordResponseSchema.parse(data));
     },
     logoutAll: () => run(() => api.POST('/api/auth/logout-all', { headers }), data => authMutationResponseSchema.parse(data)),
+    listApiKeys: () => run(() => api.GET('/api/api-keys', { headers }), data => apiKeyListResponseSchema.parse(data)),
+    createApiKey(input: unknown) {
+      const body = createApiKeySchema.parse(input);
+      return run(() => api.POST('/api/api-keys', { body, headers }), data => apiKeyCreateResponseSchema.parse(data));
+    },
+    revokeApiKey(id: string) {
+      return run(() => api.DELETE('/api/api-keys/{id}', { params: { path: { id } }, headers }), data => deleteDiaryResponseSchema.parse(data));
+    },
   };
 }

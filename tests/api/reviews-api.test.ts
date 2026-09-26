@@ -16,8 +16,13 @@ describe.runIf(process.env.DIARY_DISPOSABLE_TEST_ENV === '1')('P1C-2A disposable
     const baseUrl = process.env.DIARY_API_BASE_URL!;
     expect(['localhost', '127.0.0.1', '[::1]']).toContain(new URL(baseUrl).hostname);
     const scenario = randomUUID();
+    const clientId = scenario.replaceAll('-', '');
+    const testClientIp = `fd00:${clientId.slice(0, 4)}:${clientId.slice(4, 8)}:${clientId.slice(8, 12)}::1`;
     const transport: typeof fetch = (input, init) => {
-      const request = new Request(input, init); request.headers.set('x-e2e-test-id', scenario); return fetch(request);
+      const request = new Request(input, init);
+      request.headers.set('x-e2e-test-id', scenario);
+      request.headers.set('x-forwarded-for', testClientIp);
+      return fetch(request);
     };
     const register = async (label: string) => {
       const credentials = { email: `review-${label}-${randomUUID().slice(0, 8)}@example.test`, password: `Synthetic-${randomUUID()}` };
